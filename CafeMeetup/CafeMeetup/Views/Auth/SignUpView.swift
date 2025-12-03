@@ -38,18 +38,22 @@ struct SignUpView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Progress indicator
-                HStack(spacing: 8) {
-                    ForEach(1...4, id: \.self) { step in
-                        Circle()
-                            .fill(step <= currentStep ? Color.primaryPink : Color.gray.opacity(0.3))
-                            .frame(width: 10, height: 10)
-                            .shadow(color: step <= currentStep ? Color.primaryPink.opacity(0.4) : Color.clear, radius: 4)
+        ZStack {
+            Color.backgroundGradient
+                .ignoresSafeArea()
+            
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Progress indicator
+                    HStack(spacing: 8) {
+                        ForEach(1...4, id: \.self) { step in
+                            Circle()
+                                .fill(step <= currentStep ? Color.primaryPink : Color.gray.opacity(0.3))
+                                .frame(width: 10, height: 10)
+                                .shadow(color: step <= currentStep ? Color.primaryPink.opacity(0.4) : Color.clear, radius: 4)
+                        }
                     }
-                }
-                .padding(.top)
+                    .padding(.top)
                 
                 // Step content
                 switch currentStep {
@@ -125,8 +129,10 @@ struct SignUpView: View {
             }
             .padding()
         }
+        }
         .navigationTitle("Sign Up")
         .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.dark)
         .alert("Error", isPresented: $showError) {
             Button("OK") { 
                 errorMessage = ""
@@ -159,6 +165,7 @@ struct SignUpView: View {
             Text("Get Started")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.lightText)
             
             Text("Sign up with Apple for a fast, private way to create your account.")
                 .font(.subheadline)
@@ -233,15 +240,36 @@ struct SignUpView: View {
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             SecureField("Password (min 6 characters)", text: $password)
                 .textContentType(.newPassword)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             SecureField("Confirm Password", text: $confirmPassword)
                 .textContentType(.newPassword)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             if !password.isEmpty && password != confirmPassword {
                 Text("Passwords don't match")
@@ -256,13 +284,28 @@ struct SignUpView: View {
             Text("Personal Information")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.lightText)
             
             TextField("Full Name", text: $fullName)
                 .textContentType(.name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             TextField("College/University", text: $college)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
         }
     }
     
@@ -271,6 +314,7 @@ struct SignUpView: View {
             Text("Your Location")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.lightText)
             
             // State Picker
             VStack(alignment: .leading, spacing: 8) {
@@ -322,7 +366,14 @@ struct SignUpView: View {
             }
             
             TextField("Address (Optional)", text: $address)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             Text("e.g., 123 Main St")
                 .font(.caption)
@@ -335,16 +386,31 @@ struct SignUpView: View {
             Text("Coffee Preferences")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.lightText)
             
             TextField("Favorite Coffee", text: $favoriteCoffee)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             Text("e.g., Latte, Cappuccino, Cold Brew")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
             TextField("Favorite Coffee Shop", text: $favoriteCoffeeShop)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .background(Color.darkSecondary)
+                .foregroundColor(.lightText)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                )
             
             Text("e.g., Starbucks, Local Café")
                 .font(.caption)

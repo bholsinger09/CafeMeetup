@@ -128,6 +128,7 @@ struct WelcomeView: View {
             .navigationDestination(isPresented: $showSignIn) {
                 SignInView()
             }
+            .preferredColorScheme(.dark)
         }
     }
 }
