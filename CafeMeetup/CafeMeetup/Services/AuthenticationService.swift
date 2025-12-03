@@ -18,6 +18,7 @@ class AuthenticationService: AuthenticationServiceProtocol {
     // Mock implementation - replace with Firebase/backend integration
     private var currentUser: User?
     private var mockUsers: [String: (password: String, user: User)] = [:]
+    private let userService = UserService.shared
     
     func signUp(email: String, password: String, user: User) async throws -> User {
         // Simulate network delay
@@ -37,6 +38,10 @@ class AuthenticationService: AuthenticationServiceProtocol {
         mockUsers[email] = (password, user)
         currentUser = user
         
+        // Also add to UserService so they appear on map
+        userService.addMockUser(user)
+        print("[AuthService] Registered new user in UserService: \(user.fullName)")
+        
         return user
     }
     
@@ -53,6 +58,11 @@ class AuthenticationService: AuthenticationServiceProtocol {
         }
         
         currentUser = stored.user
+        
+        // Update user in UserService
+        userService.updateUser(stored.user)
+        print("[AuthService] Updated user in UserService on sign in: \(stored.user.fullName)")
+        
         return stored.user
     }
     
@@ -92,6 +102,10 @@ class AuthenticationService: AuthenticationServiceProtocol {
         mockUsers[email] = (userID, newUser)
         currentUser = newUser
         
+        // Add to UserService
+        userService.addMockUser(newUser)
+        print("[AuthService] Registered Apple user in UserService: \(newUser.fullName)")
+        
         return newUser
     }
     
@@ -122,6 +136,10 @@ class AuthenticationService: AuthenticationServiceProtocol {
         stored.user = user
         mockUsers[email] = stored
         currentUser = user
+        
+        // Update in UserService
+        userService.updateUser(user)
+        print("[AuthService] Updated user in UserService: \(user.fullName)")
         
         return user
     }

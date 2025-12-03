@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreLocation
 
 @MainActor
 class AuthenticationViewModel: ObservableObject {
@@ -9,10 +10,12 @@ class AuthenticationViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     private let authService: AuthenticationServiceProtocol
+    private let locationService: LocationServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authService: AuthenticationServiceProtocol = AuthenticationService.shared) {
+    init(authService: AuthenticationServiceProtocol = AuthenticationService.shared, locationService: LocationServiceProtocol = LocationService.shared) {
         self.authService = authService
+        self.locationService = locationService
         checkAuthStatus()
     }
     
@@ -36,11 +39,25 @@ class AuthenticationViewModel: ObservableObject {
         // In a real app, this would persist to backend
     }
     
+    private func getCurrentLocationForUser() async -> Location? {
+        do {
+            let coordinate = try await locationService.getCurrentLocation()
+            print("[AuthViewModel] Got location for user: \(coordinate.latitude), \(coordinate.longitude)")
+            return Location(coordinate: coordinate)
+        } catch {
+            print("[AuthViewModel] Failed to get location: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     func signUp(email: String, password: String, fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String) async {
         isLoading = true
         errorMessage = nil
         
         do {
+            // Get current location
+            let location = await getCurrentLocationForUser()
+            
             let user = User(
                 email: email,
                 fullName: fullName,
@@ -50,11 +67,13 @@ class AuthenticationViewModel: ObservableObject {
                 address: address,
                 favoriteCoffee: favoriteCoffee,
                 favoriteCoffeeShop: favoriteCoffeeShop,
+                location: location,
                 lastActiveAt: Date()
             )
             
             currentUser = try await authService.signUp(email: email, password: password, user: user)
             isAuthenticated = true
+            await updateLastActive()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -69,6 +88,14 @@ class AuthenticationViewModel: ObservableObject {
         do {
             currentUser = try await authService.signIn(email: email, password: password)
             isAuthenticated = true
+            
+            // Update location and lastActive on sign in
+            if var user = currentUser {
+                user.location = await getCurrentLocationForUser()
+                user.lastActiveAt = Date()
+                currentUser = user
+                // In real app, persist to backend
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -89,6 +116,15 @@ class AuthenticationViewModel: ObservableObject {
             print("🔐 [AuthViewModel] Calling authService.signInWithApple...")
             currentUser = try await authService.signInWithApple(userID: userID, email: email, fullName: fullName)
             isAuthenticated = true
+            
+            // Update location and lastActive for Apple sign in
+            if var user = currentUser {
+                user.location = await getCurrentLocationForUser()
+                user.lastActiveAt = Date()
+                currentUser = user
+                print("✅ [AuthViewModel] Updated location for user")
+            }
+            
             print("✅ [AuthViewModel] Sign in successful")
             print("✅ [AuthViewModel] currentUser: \(currentUser?.email ?? "nil")")
         } catch {

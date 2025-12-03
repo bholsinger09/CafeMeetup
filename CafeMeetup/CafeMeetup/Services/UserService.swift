@@ -46,7 +46,34 @@ class UserService: UserServiceProtocol {
     
     // Helper method to add mock users for testing
     func addMockUser(_ user: User) {
-        users.append(user)
+        // Check if user already exists
+        if let index = users.firstIndex(where: { $0.id == user.id }) {
+            users[index] = user
+            print("[UserService] Updated existing user: \(user.fullName)")
+        } else {
+            users.append(user)
+            print("[UserService] Added new user: \(user.fullName) at location: \(user.location?.latitude ?? 0), \(user.location?.longitude ?? 0)")
+        }
+    }
+    
+    // Update user in the mock storage
+    func updateUser(_ user: User) {
+        if let index = users.firstIndex(where: { $0.id == user.id }) {
+            users[index] = user
+            print("[UserService] Updated user: \(user.fullName) with location: \(user.location?.latitude ?? 0), \(user.location?.longitude ?? 0), lastActive: \(user.lastActiveAt?.description ?? "nil")")
+        } else {
+            users.append(user)
+            print("[UserService] Added user (via update): \(user.fullName)")
+        }
+    }
+    
+    // Debug method to see all users
+    func getAllUsers() -> [User] {
+        print("[UserService] Total users in storage: \(users.count)")
+        for user in users {
+            print("  - \(user.fullName): location=\(user.location != nil ? "YES" : "NO"), lastActive=\(user.isRecentlyActive ? "YES" : "NO")")
+        }
+        return users
     }
 }
 
