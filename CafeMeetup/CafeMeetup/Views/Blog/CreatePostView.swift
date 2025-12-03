@@ -120,8 +120,19 @@ struct CreatePostView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        print("📝 [CreatePost] Post button tapped")
+                        print("📝 [CreatePost] Title: '\(title)'")
+                        print("📝 [CreatePost] Content: '\(content)'")
+                        print("📝 [CreatePost] isValid: \(isValid)")
+                        
                         Task {
-                            guard let currentUser = authViewModel.currentUser else { return }
+                            guard let currentUser = authViewModel.currentUser else {
+                                print("❌ [CreatePost] No current user found")
+                                return
+                            }
+                            
+                            print("✅ [CreatePost] Current user: \(currentUser.fullName)")
+                            print("📝 [CreatePost] Creating post...")
                             
                             await blogViewModel.createPost(
                                 title: title,
@@ -133,6 +144,8 @@ struct CreatePostView: View {
                                 currentUser: currentUser
                             )
                             
+                            print("✅ [CreatePost] Post created successfully")
+                            print("📝 [CreatePost] Dismissing view...")
                             dismiss()
                         }
                     } label: {

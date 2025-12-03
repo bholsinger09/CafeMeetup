@@ -29,6 +29,11 @@ class BlogViewModel: ObservableObject {
     }
     
     func createPost(title: String, content: String, tags: [String], coffeeShopId: String?, coffeeShopName: String?, meetupDate: Date?, currentUser: User) async {
+        print("📝 [BlogViewModel] createPost called")
+        print("📝 [BlogViewModel] Title: '\(title)'")
+        print("📝 [BlogViewModel] Content: '\(content)'")
+        print("📝 [BlogViewModel] Tags: \(tags)")
+        
         isLoading = true
         errorMessage = nil
         
@@ -46,13 +51,23 @@ class BlogViewModel: ObservableObject {
                 location: currentUser.location
             )
             
+            print("📝 [BlogViewModel] Post object created: \(post.id)")
+            print("📝 [BlogViewModel] Calling blogService.createPost...")
+            
             let createdPost = try await blogService.createPost(post)
+            
+            print("✅ [BlogViewModel] Post created successfully: \(createdPost.id)")
+            
             posts.insert(createdPost, at: 0)
+            
+            print("✅ [BlogViewModel] Post added to posts array. Total posts: \(posts.count)")
         } catch {
+            print("❌ [BlogViewModel] Error creating post: \(error)")
             errorMessage = error.localizedDescription
         }
         
         isLoading = false
+        print("📝 [BlogViewModel] isLoading set to false")
     }
     
     func updatePost(_ post: BlogPost) async {
