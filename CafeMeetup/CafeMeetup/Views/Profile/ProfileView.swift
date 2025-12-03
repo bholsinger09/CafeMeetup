@@ -112,24 +112,51 @@ struct ProfileView: View {
                         .padding(.horizontal)
                     }
                     
-                    // Sign Out Button
-                    Button {
-                        showSignOutAlert = true
-                    } label: {
-                        Text("Sign Out")
+                    // Account Actions Section
+                    VStack(spacing: 12) {
+                        // Account Settings Button
+                        NavigationLink {
+                            AccountSettingsView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "gearshape.fill")
+                                Text("Account Settings")
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(
-                                LinearGradient(
-                                    colors: [Color.red.opacity(0.8), Color.red],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .background(Color.darkSecondary)
                             .cornerRadius(12)
-                            .shadow(color: Color.red.opacity(0.3), radius: 8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.primaryPink.opacity(0.3), lineWidth: 1)
+                            )
+                        }
+                        
+                        // Sign Out Button
+                        Button {
+                            showSignOutAlert = true
+                        } label: {
+                            Text("Sign Out")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    LinearGradient(
+                                        colors: [Color.red.opacity(0.8), Color.red],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .cornerRadius(12)
+                                .shadow(color: Color.red.opacity(0.3), radius: 8)
+                        }
                     }
                     .padding(.horizontal)
                     .padding(.top, 20)
