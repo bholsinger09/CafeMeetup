@@ -67,17 +67,27 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     func signInWithApple(userID: String, email: String, fullName: String?) async {
+        print("🔐 [AuthViewModel] signInWithApple called")
+        print("🔐 [AuthViewModel] userID: \(userID)")
+        print("🔐 [AuthViewModel] email: \(email)")
+        print("🔐 [AuthViewModel] fullName: \(fullName ?? "nil")")
+        
         isLoading = true
         errorMessage = nil
         
         do {
+            print("🔐 [AuthViewModel] Calling authService.signInWithApple...")
             currentUser = try await authService.signInWithApple(userID: userID, email: email, fullName: fullName)
             isAuthenticated = true
+            print("✅ [AuthViewModel] Sign in successful")
+            print("✅ [AuthViewModel] currentUser: \(currentUser?.email ?? "nil")")
         } catch {
+            print("❌ [AuthViewModel] Sign in failed: \(error.localizedDescription)")
             errorMessage = error.localizedDescription
         }
         
         isLoading = false
+        print("🔐 [AuthViewModel] signInWithApple completed. isAuthenticated: \(isAuthenticated)")
     }
     
     func signOut() async {

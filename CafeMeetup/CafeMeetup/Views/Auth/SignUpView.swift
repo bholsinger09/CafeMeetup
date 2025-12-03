@@ -166,17 +166,27 @@ struct SignUpView: View {
             // Sign up with Apple - Primary option
             SignInWithAppleButton(
                 onRequest: { request in
+                    print("🍎 [SignUp] SignInWithAppleButton onRequest called")
                     request.requestedScopes = [.fullName, .email]
                 },
                 onCompletion: { result in
+                    print("🍎 [SignUp] SignInWithAppleButton onCompletion called")
                     switch result {
                     case .success(let authorization):
+                        print("✅ [SignUp] Apple Sign In successful")
                         handleAppleSignUp(authorization: authorization)
                     case .failure(let error):
+                        print("❌ [SignUp] Apple Sign In failed")
+                        print("❌ [SignUp] Error code: \((error as NSError).code)")
+                        print("❌ [SignUp] Error domain: \((error as NSError).domain)")
+                        print("❌ [SignUp] Error description: \(error.localizedDescription)")
+                        
                         // Only show error if it's not a user cancellation
                         if (error as NSError).code != 1001 {
-                            errorMessage = "Sign in with Apple failed. Please try again or use email/password sign up."
+                            errorMessage = "Sign in with Apple failed: \(error.localizedDescription)"
                             showError = true
+                        } else {
+                            print("ℹ️ [SignUp] User cancelled - not showing error")
                         }
                     }
                 }
@@ -273,7 +283,10 @@ struct SignUpView: View {
     }
     
     private func handleAppleSignUp(authorization: ASAuthorization) {
+        print("🍎 [SignUp] handleAppleSignUp called")
+        
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            print("❌ [SignUp] Failed to get appleIDCredential")
             return
         }
         
@@ -284,6 +297,12 @@ struct SignUpView: View {
         let familyName = appleIDCredential.fullName?.familyName ?? ""
         let appleFullName = [givenName, familyName].filter { !$0.isEmpty }.joined(separator: " ")
         
+        print("🍎 [SignUp] User ID: \(userID)")
+        print("🍎 [SignUp] Email: \(appleEmail)")
+        print("🍎 [SignUp] Full Name: \(appleFullName)")
+        print("🍎 [SignUp] Given Name: \(givenName)")
+        print("🍎 [SignUp] Family Name: \(familyName)")
+        
         // Pre-fill form with Apple ID info
         email = appleEmail
         password = userID
@@ -292,24 +311,33 @@ struct SignUpView: View {
             fullName = appleFullName
         }
         
+        print("🍎 [SignUp] Calling authViewModel.signInWithApple...")
+        
         // Try to sign in with Apple (handles both new and returning users)
         Task {
             await authViewModel.signInWithApple(userID: userID, email: appleEmail, fullName: appleFullName.isEmpty ? nil : appleFullName)
             
+            print("🍎 [SignUp] signInWithApple completed")
+            print("🍎 [SignUp] isAuthenticated: \(authViewModel.isAuthenticated)")
+            print("🍎 [SignUp] errorMessage: \(authViewModel.errorMessage ?? "nil")")
+            print("🍎 [SignUp] currentUser: \(authViewModel.currentUser?.email ?? "nil")")
+            
             if authViewModel.isAuthenticated {
+                print("✅ [SignUp] Authentication successful")
                 // Check if profile is complete
                 if let user = authViewModel.currentUser,
                    !user.college.isEmpty && !user.state.isEmpty && !user.city.isEmpty && !user.favoriteCoffee.isEmpty {
-                    // Profile complete, dismiss
+                    print("✅ [SignUp] Profile complete, dismissing")
                     dismiss()
                 } else {
-                    // Profile incomplete, continue to step 2 to collect info
+                    print("⏭️ [SignUp] Profile incomplete, moving to step 2")
                     withAnimation {
                         currentStep = 2
                     }
                 }
             } else {
                 // Sign in failed, show error
+                print("❌ [SignUp] Authentication failed")
                 errorMessage = authViewModel.errorMessage ?? "Failed to sign up with Apple"
                 showError = true
             }

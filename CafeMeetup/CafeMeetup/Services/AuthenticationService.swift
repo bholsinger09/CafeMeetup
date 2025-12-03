@@ -57,14 +57,22 @@ class AuthenticationService: AuthenticationServiceProtocol {
     }
     
     func signInWithApple(userID: String, email: String, fullName: String?) async throws -> User {
+        print("🔒 [AuthService] signInWithApple called")
+        print("🔒 [AuthService] userID: \(userID)")
+        print("🔒 [AuthService] email: \(email)")
+        print("🔒 [AuthService] fullName: \(fullName ?? "nil")")
+        
         // Simulate network delay
         try await Task.sleep(nanoseconds: 500_000_000)
         
         // Check if user already exists with this Apple ID
         if let stored = mockUsers[email] {
+            print("✅ [AuthService] Found existing user for email: \(email)")
             currentUser = stored.user
             return stored.user
         }
+        
+        print("🆕 [AuthService] Creating new user")
         
         // Create new user with Apple Sign In
         let newUser = User(
@@ -80,6 +88,7 @@ class AuthenticationService: AuthenticationServiceProtocol {
             location: nil
         )
         
+        print("✅ [AuthService] New user created: \(newUser.email)")
         mockUsers[email] = (userID, newUser)
         currentUser = newUser
         

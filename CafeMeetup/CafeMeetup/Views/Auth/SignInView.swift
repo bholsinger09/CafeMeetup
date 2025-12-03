@@ -34,20 +34,29 @@ struct SignInView: View {
                     // Sign in with Apple - Primary option
                     SignInWithAppleButton(
                         onRequest: { request in
+                            print("🍎 [SignIn] SignInWithAppleButton onRequest called")
                             request.requestedScopes = [.fullName, .email]
                         },
                         onCompletion: { result in
+                            print("🍎 [SignIn] SignInWithAppleButton onCompletion called")
                             switch result {
                             case .success(let authorization):
-                                // Handle successful Sign in with Apple
+                                print("✅ [SignIn] Apple Sign In successful")
                                 Task {
                                     await handleAppleSignIn(authorization: authorization)
                                 }
                             case .failure(let error):
+                                print("❌ [SignIn] Apple Sign In failed")
+                                print("❌ [SignIn] Error code: \((error as NSError).code)")
+                                print("❌ [SignIn] Error domain: \((error as NSError).domain)")
+                                print("❌ [SignIn] Error description: \(error.localizedDescription)")
+                                
                                 // Only show error if it's not a user cancellation
                                 if (error as NSError).code != 1001 {
-                                    errorMessage = "Sign in with Apple failed. Please try again or use email/password sign in."
+                                    errorMessage = "Sign in with Apple failed: \(error.localizedDescription)"
                                     showError = true
+                                } else {
+                                    print("ℹ️ [SignIn] User cancelled - not showing error")
                                 }
                             }
                         }
@@ -148,7 +157,10 @@ struct SignInView: View {
     }
     
     private func handleAppleSignIn(authorization: ASAuthorization) async {
+        print("🍎 [SignIn] handleAppleSignIn called")
+        
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            print("❌ [SignIn] Failed to get appleIDCredential")
             return
         }
         
@@ -158,12 +170,22 @@ struct SignInView: View {
             .compactMap { $0 }
             .joined(separator: " ")
         
+        print("🍎 [SignIn] User ID: \(userID)")
+        print("🍎 [SignIn] Email: \(email)")
+        print("🍎 [SignIn] Full Name: \(fullName)")
+        print("🍎 [SignIn] Calling authViewModel.signInWithApple...")
+        
         // Sign in with Apple ID using dedicated method
         await authViewModel.signInWithApple(userID: userID, email: email, fullName: fullName.isEmpty ? nil : fullName)
         
+        print("🍎 [SignIn] signInWithApple completed")
+        print("🍎 [SignIn] isAuthenticated: \(authViewModel.isAuthenticated)")
+        
         if authViewModel.isAuthenticated {
+            print("✅ [SignIn] Authentication successful, dismissing")
             dismiss()
         } else {
+            print("❌ [SignIn] Authentication failed")
             errorMessage = authViewModel.errorMessage ?? "Failed to sign in with Apple"
             showError = true
         }
