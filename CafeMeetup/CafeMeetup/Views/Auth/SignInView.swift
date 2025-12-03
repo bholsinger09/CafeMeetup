@@ -51,12 +51,21 @@ struct SignInView: View {
                                 print("❌ [SignIn] Error domain: \((error as NSError).domain)")
                                 print("❌ [SignIn] Error description: \(error.localizedDescription)")
                                 
-                                // Only show error if it's not a user cancellation
-                                if (error as NSError).code != 1001 {
-                                    errorMessage = "Sign in with Apple failed: \(error.localizedDescription)"
+                                let errorCode = (error as NSError).code
+                                
+                                // Handle different error codes
+                                if errorCode == 1001 {
+                                    // User cancelled
+                                    print("ℹ️ [SignIn] User cancelled - not showing error")
+                                } else if errorCode == 1000 {
+                                    // Configuration error
+                                    print("❌ [SignIn] Configuration error - Sign in with Apple not properly set up")
+                                    errorMessage = "Sign in with Apple is not configured for this app yet. Please use email/password sign in for now.\n\n(Developer: Enable Sign in with Apple capability in Apple Developer Portal for bundle ID: com.Ben.CafeMeetup)"
                                     showError = true
                                 } else {
-                                    print("ℹ️ [SignIn] User cancelled - not showing error")
+                                    // Other errors
+                                    errorMessage = "Sign in with Apple failed: \(error.localizedDescription)"
+                                    showError = true
                                 }
                             }
                         }
