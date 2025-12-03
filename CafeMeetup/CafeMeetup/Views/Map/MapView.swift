@@ -110,11 +110,17 @@ struct MapView: View {
                 UserDetailSheet(user: user)
             }
             .task {
+                // Request permission first
                 mapViewModel.requestLocationPermission()
+                
+                // Give a moment for permission to be granted
+                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                
+                // Get current location and center map
                 await mapViewModel.startTrackingLocation()
                 
+                // Then fetch nearby users if we have a current user
                 if let currentUser = authViewModel.currentUser {
-                    // Fetch users in the user's city/state
                     await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
                 }
             }

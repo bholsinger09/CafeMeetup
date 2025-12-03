@@ -53,11 +53,8 @@ class MapViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Get current location first
+            // Get current location first and keep region centered there
             await centerOnCurrentLocation()
-            
-            // Geocode city and state to get coordinates
-            await geocodeLocation(city: city, state: state)
             
             // Fetch all users in the city/state
             var allUsers = try await userService.fetchUsers(inCity: city, state: state)
@@ -73,20 +70,17 @@ class MapViewModel: ObservableObject {
                 users = recentlyActiveUsers.filter { user in
                     guard let userLocation = user.location else { return false }
                     let distance = currentLocation.distance(to: userLocation)
+                    print("[MapViewModel] User \(user.fullName) is \(String(format: "%.2f", distance)) miles away")
                     return distance <= maxDistanceMiles
                 }
+                print("[MapViewModel] Found \(users.count) nearby users within \(maxDistanceMiles) miles")
             } else {
                 // If no current location, just show recently active users
                 users = recentlyActiveUsers
+                print("[MapViewModel] No current location, showing \(users.count) recently active users")
             }
             
-            // Center map on first user if available, otherwise keep geocoded location
-            if let firstUser = users.first, let location = firstUser.location {
-                region = MKCoordinateRegion(
-                    center: location.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                )
-            }
+            // Keep map centered on current user's location (don't override)
         } catch {
             errorMessage = error.localizedDescription
         }
