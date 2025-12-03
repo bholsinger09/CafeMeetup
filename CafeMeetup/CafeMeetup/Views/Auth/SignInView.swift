@@ -111,7 +111,7 @@ struct SignInView: View {
                             case .failure(let error):
                                 // Only show error if it's not a user cancellation
                                 if (error as NSError).code != 1001 {
-                                    errorMessage = "Sign in with Apple is not available in the simulator. Please test on a real device or use email/password sign in."
+                                    errorMessage = "Sign in with Apple failed. Please try again or use email/password sign in."
                                     showError = true
                                 }
                             }
@@ -158,12 +158,13 @@ struct SignInView: View {
             .compactMap { $0 }
             .joined(separator: " ")
         
-        // Sign in with Apple ID - in a real app, send this to your backend
-        await authViewModel.signIn(email: email, password: userID)
+        // Sign in with Apple ID using dedicated method
+        await authViewModel.signInWithApple(userID: userID, email: email, fullName: fullName.isEmpty ? nil : fullName)
         
         if authViewModel.isAuthenticated {
             dismiss()
         } else {
+            errorMessage = authViewModel.errorMessage ?? "Failed to sign in with Apple"
             showError = true
         }
     }

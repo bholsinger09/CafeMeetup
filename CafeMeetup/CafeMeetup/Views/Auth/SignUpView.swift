@@ -204,7 +204,7 @@ struct SignUpView: View {
                     case .failure(let error):
                         // Only show error if it's not a user cancellation
                         if (error as NSError).code != 1001 {
-                            errorMessage = "Sign in with Apple is not available in the simulator. Please test on a real device or use email/password sign up."
+                            errorMessage = "Sign in with Apple failed. Please try again or use email/password sign up."
                             showError = true
                         }
                     }
@@ -279,7 +279,7 @@ struct SignUpView: View {
         let familyName = appleIDCredential.fullName?.familyName ?? ""
         let appleFullName = [givenName, familyName].filter { !$0.isEmpty }.joined(separator: " ")
         
-        // Pre-fill form with Apple ID info and move to step 2
+        // Pre-fill form with Apple ID info
         email = appleEmail
         password = userID
         confirmPassword = userID
@@ -287,8 +287,27 @@ struct SignUpView: View {
             fullName = appleFullName
         }
         
-        withAnimation {
-            currentStep = 2
+        // Try to sign in with Apple (handles both new and returning users)
+        Task {
+            await authViewModel.signInWithApple(userID: userID, email: appleEmail, fullName: appleFullName.isEmpty ? nil : appleFullName)
+            
+            if authViewModel.isAuthenticated {
+                // Check if profile is complete
+                if let user = authViewModel.currentUser,
+                   !user.college.isEmpty && !user.state.isEmpty && !user.city.isEmpty && !user.favoriteCoffee.isEmpty {
+                    // Profile complete, dismiss
+                    dismiss()
+                } else {
+                    // Profile incomplete, continue to step 2 to collect info
+                    withAnimation {
+                        currentStep = 2
+                    }
+                }
+            } else {
+                // Sign in failed, show error
+                errorMessage = authViewModel.errorMessage ?? "Failed to sign up with Apple"
+                showError = true
+            }
         }
     }
 }

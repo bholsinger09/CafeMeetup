@@ -3,6 +3,7 @@ import Foundation
 protocol AuthenticationServiceProtocol {
     func signUp(email: String, password: String, user: User) async throws -> User
     func signIn(email: String, password: String) async throws -> User
+    func signInWithApple(userID: String, email: String, fullName: String?) async throws -> User
     func signOut() async throws
     func getCurrentUser() async throws -> User?
     func updateUser(_ user: User) async throws -> User
@@ -53,6 +54,36 @@ class AuthenticationService: AuthenticationServiceProtocol {
         
         currentUser = stored.user
         return stored.user
+    }
+    
+    func signInWithApple(userID: String, email: String, fullName: String?) async throws -> User {
+        // Simulate network delay
+        try await Task.sleep(nanoseconds: 500_000_000)
+        
+        // Check if user already exists with this Apple ID
+        if let stored = mockUsers[email] {
+            currentUser = stored.user
+            return stored.user
+        }
+        
+        // Create new user with Apple Sign In
+        let newUser = User(
+            id: userID,
+            email: email,
+            fullName: fullName ?? "Apple User",
+            college: "",
+            state: "",
+            city: "",
+            favoriteCoffee: "",
+            favoriteCoffeeShop: "",
+            bio: nil,
+            location: nil
+        )
+        
+        mockUsers[email] = (userID, newUser)
+        currentUser = newUser
+        
+        return newUser
     }
     
     func signOut() async throws {
