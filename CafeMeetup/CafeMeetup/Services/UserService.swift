@@ -4,6 +4,7 @@ protocol UserServiceProtocol {
     func fetchUsers(inCity city: String, state: String) async throws -> [User]
     func fetchUser(id: String) async throws -> User
     func searchUsers(query: String) async throws -> [User]
+    func getAllUsers() -> [User]
 }
 
 class UserService: UserServiceProtocol {

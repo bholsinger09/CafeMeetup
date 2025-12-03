@@ -56,19 +56,32 @@ class MapViewModel: ObservableObject {
             // Get current location first and keep region centered there
             await centerOnCurrentLocation()
             
+            // DEBUG: Check all users in UserService
+            let allStoredUsers = userService.getAllUsers()
+            print("[MapViewModel] DEBUG: Total users in UserService: \(allStoredUsers.count)")
+            
             // Fetch all users in the city/state
             var allUsers = try await userService.fetchUsers(inCity: city, state: state)
+            print("[MapViewModel] Found \(allUsers.count) users in \(city), \(state)")
             
             // Filter out current user
             allUsers = allUsers.filter { $0.id != currentUserId }
+            print("[MapViewModel] After filtering current user: \(allUsers.count) users")
             
             // Filter by recently active (within last 30 minutes)
             let recentlyActiveUsers = allUsers.filter { $0.isRecentlyActive }
+            print("[MapViewModel] Recently active users: \(recentlyActiveUsers.count)")
+            for user in recentlyActiveUsers {
+                print("[MapViewModel]   - \(user.fullName): lastActive=\(user.lastActiveAt?.description ?? "nil"), hasLocation=\(user.location != nil)")
+            }
             
             // Filter by distance (5 miles) if we have current location
             if let currentLocation = currentUserLocation {
                 users = recentlyActiveUsers.filter { user in
-                    guard let userLocation = user.location else { return false }
+                    guard let userLocation = user.location else {
+                        print("[MapViewModel] User \(user.fullName) has no location")
+                        return false
+                    }
                     let distance = currentLocation.distance(to: userLocation)
                     print("[MapViewModel] User \(user.fullName) is \(String(format: "%.2f", distance)) miles away")
                     return distance <= maxDistanceMiles
