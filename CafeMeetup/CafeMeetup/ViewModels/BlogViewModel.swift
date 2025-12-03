@@ -121,4 +121,70 @@ class BlogViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
+    
+    func addComment(postId: String, content: String, currentUser: User) async {
+        do {
+            let comment = Comment(
+                postId: postId,
+                authorId: currentUser.id,
+                authorName: currentUser.fullName,
+                authorImageURL: currentUser.profileImageURL,
+                content: content
+            )
+            _ = try await blogService.addComment(comment)
+            
+            if let index = posts.firstIndex(where: { $0.id == postId }) {
+                posts[index].commentCount += 1
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    func fetchComments(postId: String) async -> [Comment] {
+        do {
+            return try await blogService.fetchComments(postId: postId)
+        } catch {
+            errorMessage = error.localizedDescription
+            return []
+        }
+    }
+    
+    func addMeetupInterest(postId: String, currentUser: User) async {
+        do {
+            let interest = MeetupInterest(
+                postId: postId,
+                userId: currentUser.id,
+                userName: currentUser.fullName,
+                userEmail: currentUser.email
+            )
+            _ = try await blogService.addMeetupInterest(interest)
+            
+            if let index = posts.firstIndex(where: { $0.id == postId }) {
+                posts[index].meetupInterestCount += 1
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    func removeMeetupInterest(postId: String, userId: String) async {
+        do {
+            try await blogService.removeMeetupInterest(postId: postId, userId: userId)
+            if let index = posts.firstIndex(where: { $0.id == postId }) {
+                posts[index].meetupInterestCount = max(0, posts[index].meetupInterestCount - 1)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    func fetchMeetupInterests(postId: String) async -> [MeetupInterest] {
+        do {
+            return try await blogService.fetchMeetupInterests(postId: postId)
+        } catch {
+            errorMessage = error.localizedDescription
+            return []
+        }
+    }
 }

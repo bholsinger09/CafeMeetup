@@ -15,6 +15,7 @@ struct BlogPost: Identifiable, Codable, Equatable {
     var images: [String]
     var likeCount: Int
     var commentCount: Int
+    var meetupInterestCount: Int
     var createdAt: Date
     var updatedAt: Date
     
@@ -33,6 +34,7 @@ struct BlogPost: Identifiable, Codable, Equatable {
         images: [String] = [],
         likeCount: Int = 0,
         commentCount: Int = 0,
+        meetupInterestCount: Int = 0,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -50,6 +52,7 @@ struct BlogPost: Identifiable, Codable, Equatable {
         self.images = images
         self.likeCount = likeCount
         self.commentCount = commentCount
+        self.meetupInterestCount = meetupInterestCount
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -100,6 +103,32 @@ struct Like: Identifiable, Codable, Equatable {
         self.id = id
         self.postId = postId
         self.userId = userId
+        self.createdAt = createdAt
+    }
+}
+
+// MARK: - MeetupInterest
+struct MeetupInterest: Identifiable, Codable, Equatable {
+    let id: String
+    let postId: String
+    let userId: String
+    var userName: String
+    var userEmail: String
+    var createdAt: Date
+    
+    init(
+        id: String = UUID().uuidString,
+        postId: String,
+        userId: String,
+        userName: String,
+        userEmail: String,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.postId = postId
+        self.userId = userId
+        self.userName = userName
+        self.userEmail = userEmail
         self.createdAt = createdAt
     }
 }

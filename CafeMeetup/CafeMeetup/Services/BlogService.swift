@@ -11,6 +11,9 @@ protocol BlogServiceProtocol {
     func fetchComments(postId: String) async throws -> [Comment]
     func addComment(_ comment: Comment) async throws -> Comment
     func deleteComment(id: String) async throws
+    func addMeetupInterest(_ interest: MeetupInterest) async throws -> MeetupInterest
+    func removeMeetupInterest(postId: String, userId: String) async throws
+    func fetchMeetupInterests(postId: String) async throws -> [MeetupInterest]
 }
 
 class BlogService: BlogServiceProtocol {
@@ -22,6 +25,7 @@ class BlogService: BlogServiceProtocol {
     private var posts: [BlogPost] = []
     private var comments: [Comment] = []
     private var likes: [Like] = []
+    private var meetupInterests: [MeetupInterest] = []
     
     func fetchPosts(limit: Int = 50) async throws -> [BlogPost] {
         // Simulate network delay
@@ -141,6 +145,44 @@ class BlogService: BlogServiceProtocol {
         if let index = posts.firstIndex(where: { $0.id == comment.postId }) {
             posts[index].commentCount = max(0, posts[index].commentCount - 1)
         }
+    }
+    
+    func addMeetupInterest(_ interest: MeetupInterest) async throws -> MeetupInterest {
+        // Simulate network delay
+        try await Task.sleep(nanoseconds: 300_000_000)
+        
+        guard let index = posts.firstIndex(where: { $0.id == interest.postId }) else {
+            throw BlogError.postNotFound
+        }
+        
+        // Check if already interested
+        if meetupInterests.contains(where: { $0.postId == interest.postId && $0.userId == interest.userId }) {
+            return interest
+        }
+        
+        meetupInterests.append(interest)
+        posts[index].meetupInterestCount += 1
+        
+        return interest
+    }
+    
+    func removeMeetupInterest(postId: String, userId: String) async throws {
+        // Simulate network delay
+        try await Task.sleep(nanoseconds: 200_000_000)
+        
+        guard let index = posts.firstIndex(where: { $0.id == postId }) else {
+            throw BlogError.postNotFound
+        }
+        
+        meetupInterests.removeAll { $0.postId == postId && $0.userId == userId }
+        posts[index].meetupInterestCount = max(0, posts[index].meetupInterestCount - 1)
+    }
+    
+    func fetchMeetupInterests(postId: String) async throws -> [MeetupInterest] {
+        // Simulate network delay
+        try await Task.sleep(nanoseconds: 300_000_000)
+        
+        return meetupInterests.filter { $0.postId == postId }.sorted { $0.createdAt > $1.createdAt }
     }
 }
 

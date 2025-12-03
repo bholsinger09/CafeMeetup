@@ -21,11 +21,19 @@ class AuthenticationViewModel: ObservableObject {
             do {
                 currentUser = try await authService.getCurrentUser()
                 isAuthenticated = currentUser != nil
+                await updateLastActive()
             } catch {
                 isAuthenticated = false
                 currentUser = nil
             }
         }
+    }
+    
+    func updateLastActive() async {
+        guard var user = currentUser else { return }
+        user.lastActiveAt = Date()
+        currentUser = user
+        // In a real app, this would persist to backend
     }
     
     func signUp(email: String, password: String, fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String) async {

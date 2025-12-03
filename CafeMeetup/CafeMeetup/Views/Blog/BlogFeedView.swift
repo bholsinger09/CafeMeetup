@@ -83,8 +83,21 @@ struct BlogPostCard: View {
     @EnvironmentObject var blogViewModel: BlogViewModel
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var isLiked = false
+    @State private var showDetail = false
     
     var body: some View {
+        Button {
+            showDetail = true
+        } label: {
+            cardContent
+        }
+        .buttonStyle(PlainButtonStyle())
+        .sheet(isPresented: $showDetail) {
+            BlogPostDetailView(post: post)
+        }
+    }
+    
+    private var cardContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Author info
             HStack {
@@ -186,6 +199,19 @@ struct BlogPostCard: View {
                     Text("\(post.commentCount)")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                // Let's Meet indicator
+                if post.meetupInterestCount > 0 {
+                    HStack(spacing: 4) {
+                        Image(systemName: "cup.and.saucer.fill")
+                            .foregroundColor(.primaryPink)
+                        Text("\(post.meetupInterestCount)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         }
