@@ -13,12 +13,46 @@ protocol AuthenticationServiceProtocol {
 class AuthenticationService: AuthenticationServiceProtocol {
     static let shared = AuthenticationService()
     
-    private init() {}
+    private init() {
+        // Initialize reviewer demo account
+        initializeReviewerAccount()
+    }
     
     // Mock implementation - replace with Firebase/backend integration
     private var currentUser: User?
     private var mockUsers: [String: (password: String, user: User)] = [:]
     private let userService = UserService.shared
+    
+    private func initializeReviewerAccount() {
+        // Create demo account for Apple App Review
+        let reviewerUser = User(
+            id: "reviewer-demo-account",
+            email: "reviewer@lattelink.demo",
+            fullName: "Sarah Johnson",
+            college: "Boise State University",
+            state: "Idaho",
+            city: "Boise",
+            address: nil,
+            favoriteCoffee: "Vanilla Latte",
+            favoriteCoffeeShop: "The Human Bean",
+            bio: "Coffee enthusiast and Boise State student. Love meeting new people over a good cup of coffee!",
+            gender: "Female",
+            relationshipStatus: "Single",
+            location: Location(latitude: 43.6150, longitude: -116.2023), // Boise, ID
+            profileImageURL: nil,
+            lastActiveAt: Date(),
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+        
+        // Store in auth system
+        mockUsers["reviewer@lattelink.demo"] = ("Review2025!", reviewerUser)
+        
+        // Add to user service so they appear in searches
+        userService.addMockUser(reviewerUser)
+        
+        print("✅ [AuthService] Reviewer demo account initialized: reviewer@lattelink.demo")
+    }
     
     func signUp(email: String, password: String, user: User) async throws -> User {
         // Simulate network delay
