@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct SignInView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -79,6 +80,44 @@ struct SignInView: View {
                     .disabled(email.isEmpty || password.isEmpty)
                     .padding(.horizontal)
                     
+                    // Divider
+                    HStack {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(.gray.opacity(0.3))
+                        Text("or")
+                            .foregroundColor(.secondaryText)
+                            .padding(.horizontal, 8)
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(.gray.opacity(0.3))
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    
+                    // Sign in with Apple
+                    SignInWithAppleButton(
+                        onRequest: { request in
+                            request.requestedScopes = [.fullName, .email]
+                        },
+                        onCompletion: { result in
+                            switch result {
+                            case .success(let authorization):
+                                // Handle successful Sign in with Apple
+                                Task {
+                                    await handleAppleSignIn(authorization: authorization)
+                                }
+                            case .failure(let error):
+                                print("Sign in with Apple failed: \(error.localizedDescription)")
+                                showError = true
+                            }
+                        }
+                    )
+                    .signInWithAppleButtonStyle(.white)
+                    .frame(height: 50)
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                    
                     Spacer()
                 }
                 .padding()
@@ -99,6 +138,27 @@ struct SignInView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black.opacity(0.2))
             }
+        }
+    }
+    
+    private func handleAppleSignIn(authorization: ASAuthorization) async {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            return
+        }
+        
+        let userID = appleIDCredential.user
+        let email = appleIDCredential.email ?? "\(userID)@privaterelay.appleid.com"
+        let fullName = [appleIDCredential.fullName?.givenName, appleIDCredential.fullName?.familyName]
+            .compactMap { $0 }
+            .joined(separator: " ")
+        
+        // Sign in with Apple ID - in a real app, send this to your backend
+        await authViewModel.signIn(email: email, password: userID)
+        
+        if authViewModel.isAuthenticated {
+            dismiss()
+        } else {
+            showError = true
         }
     }
 }

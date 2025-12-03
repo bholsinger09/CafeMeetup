@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct SignUpView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -172,6 +173,39 @@ struct SignUpView: View {
                     .font(.caption)
                     .foregroundColor(.red)
             }
+            
+            // Divider
+            HStack {
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
+                Text("or")
+                    .foregroundColor(.secondaryText)
+                    .padding(.horizontal, 8)
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
+            }
+            .padding(.vertical, 8)
+            
+            // Sign up with Apple
+            SignInWithAppleButton(
+                onRequest: { request in
+                    request.requestedScopes = [.fullName, .email]
+                },
+                onCompletion: { result in
+                    switch result {
+                    case .success(let authorization):
+                        handleAppleSignUp(authorization: authorization)
+                    case .failure(let error):
+                        print("Sign up with Apple failed: \(error.localizedDescription)")
+                        showError = true
+                    }
+                }
+            )
+            .signInWithAppleButtonStyle(.white)
+            .frame(height: 50)
+            .cornerRadius(12)
         }
     }
     
@@ -223,6 +257,30 @@ struct SignUpView: View {
             Text("e.g., Starbucks, Local Café")
                 .font(.caption)
                 .foregroundColor(.secondary)
+        }
+    }
+    
+    private func handleAppleSignUp(authorization: ASAuthorization) {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            return
+        }
+        
+        let userID = appleIDCredential.user
+        let appleEmail = appleIDCredential.email ?? "\(userID)@privaterelay.appleid.com"
+        let givenName = appleIDCredential.fullName?.givenName ?? ""
+        let familyName = appleIDCredential.fullName?.familyName ?? ""
+        let appleFullName = [givenName, familyName].filter { !$0.isEmpty }.joined(separator: " ")
+        
+        // Pre-fill form with Apple ID info and move to step 2
+        email = appleEmail
+        password = userID
+        confirmPassword = userID
+        if !appleFullName.isEmpty {
+            fullName = appleFullName
+        }
+        
+        withAnimation {
+            currentStep = 2
         }
     }
 }

@@ -22,19 +22,26 @@ struct WelcomeView: View {
                 VStack(spacing: 30) {
                     Spacer()
                     
-                    // App Icon/Logo
-                    Image(systemName: "cup.and.saucer.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120)
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [Color(red: 0.85, green: 0.65, blue: 0.75), Color(red: 0.75, green: 0.55, blue: 0.70)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .shadow(color: Color(red: 0.85, green: 0.65, blue: 0.75).opacity(0.3), radius: 20)
+                    // App Icon/Logo - Black coffee mug with gold lightning bolt
+                    ZStack {
+                        // Black coffee mug
+                        Image(systemName: "cup.and.saucer.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 120, height: 120)
+                            .foregroundColor(.black)
+                            .shadow(color: Color.black.opacity(0.5), radius: 10)
+                        
+                        // Gold lightning bolt accent on the mug
+                        Image(systemName: "bolt.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(Color(red: 0.85, green: 0.65, blue: 0.13))
+                            .shadow(color: Color(red: 0.85, green: 0.65, blue: 0.13).opacity(0.8), radius: 6)
+                            .offset(x: 25, y: -5)
+                    }
+                    .frame(height: 140)
                     
                     // Title
                     VStack(spacing: 10) {
