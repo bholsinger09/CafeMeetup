@@ -55,7 +55,7 @@ struct WelcomeView: View {
                                 )
                             )
                         
-                        Text("Connect with Christian students over coffee")
+                        Text("Connect with college students over coffee")
                             .font(.subheadline)
                             .foregroundColor(Color(red: 0.85, green: 0.80, blue: 0.85))
                             .multilineTextAlignment(.center)
@@ -66,7 +66,7 @@ struct WelcomeView: View {
                     
                     // Value proposition
                     VStack(spacing: 12) {
-                        BenefitRow(icon: "person.2.fill", text: "Meet Christian college students")
+                        BenefitRow(icon: "person.2.fill", text: "Meet college students in your area")
                         BenefitRow(icon: "map.fill", text: "Find coffee meetups near you")
                         BenefitRow(icon: "bubble.left.and.bubble.right.fill", text: "Share and connect through posts")
                     }

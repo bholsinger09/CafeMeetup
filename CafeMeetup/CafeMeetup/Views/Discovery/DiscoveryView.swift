@@ -179,28 +179,33 @@ struct ProfileCard: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Profile Image Placeholder
+            // Profile Image
             ZStack {
-                Rectangle()
-                    .fill(Color.primaryGradient)
-                
-                VStack(spacing: 16) {
-                    Circle()
-                        .fill(Color.white.opacity(0.3))
-                        .frame(width: 120, height: 120)
-                        .overlay(
-                            Text(user.fullName.prefix(1))
-                                .font(.system(size: 60, weight: .bold))
-                                .foregroundColor(.white)
-                        )
+                if let profileImageURL = user.profileImageURL,
+                   let uiImage = UIImage.fromBase64String(profileImageURL) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 450)
+                        .clipped()
+                } else {
+                    Rectangle()
+                        .fill(Color.primaryGradient)
                     
-                    Image(systemName: "photo")
-                        .font(.system(size: 40))
-                        .foregroundColor(.white.opacity(0.5))
-                    
-                    Text("Profile Photo Coming Soon")
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.7))
+                    VStack(spacing: 16) {
+                        Circle()
+                            .fill(Color.white.opacity(0.3))
+                            .frame(width: 120, height: 120)
+                            .overlay(
+                                Text(user.fullName.prefix(1))
+                                    .font(.system(size: 60, weight: .bold))
+                                    .foregroundColor(.white)
+                            )
+                        
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.white.opacity(0.5))
+                    }
                 }
             }
             .frame(height: 450)

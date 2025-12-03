@@ -14,10 +14,61 @@ struct EditProfileView: View {
     @State private var bio: String = ""
     @State private var gender: String = ""
     @State private var relationshipStatus: String = ""
+    @State private var profileImage: UIImage?
+    @State private var showImagePicker = false
     
     var body: some View {
         NavigationStack {
             Form {
+                Section("Profile Photo") {
+                    HStack {
+                        Spacer()
+                        
+                        VStack(spacing: 12) {
+                            if let profileImage = profileImage {
+                                Image(uiImage: profileImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                            } else if let profileImageURL = authViewModel.currentUser?.profileImageURL,
+                                      let uiImage = UIImage.fromBase64String(profileImageURL) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                            } else {
+                                Circle()
+                                    .fill(Color.primaryGradient)
+                                    .frame(width: 100, height: 100)
+                                    .overlay(
+                                        Text(fullName.prefix(1).uppercased())
+                                            .font(.system(size: 40, weight: .semibold))
+                                            .foregroundColor(.white)
+                                    )
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                            }
+                            
+                            Button {
+                                showImagePicker = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "camera.fill")
+                                    Text(profileImage != nil || authViewModel.currentUser?.profileImageURL != nil ? "Change Photo" : "Add Photo")
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.primaryPink)
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                    .listRowBackground(Color.clear)
+                }
+                
                 Section("Personal Information") {
                     TextField("Full Name", text: $fullName)
                     TextField("College/University", text: $college)
@@ -98,6 +149,8 @@ struct EditProfileView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
+                            let profileImageBase64 = profileImage?.toBase64String()
+                            
                             await authViewModel.updateProfile(
                                 fullName: fullName,
                                 college: college,
@@ -108,7 +161,8 @@ struct EditProfileView: View {
                                 favoriteCoffeeShop: favoriteCoffeeShop,
                                 bio: bio.isEmpty ? nil : bio,
                                 gender: gender.isEmpty ? nil : gender,
-                                relationshipStatus: relationshipStatus.isEmpty ? nil : relationshipStatus
+                                relationshipStatus: relationshipStatus.isEmpty ? nil : relationshipStatus,
+                                profileImageURL: profileImageBase64
                             )
                             dismiss()
                         }
@@ -122,6 +176,9 @@ struct EditProfileView: View {
             }
             .onAppear {
                 loadCurrentProfile()
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $profileImage)
             }
         }
     }

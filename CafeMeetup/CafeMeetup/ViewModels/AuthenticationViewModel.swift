@@ -151,7 +151,7 @@ class AuthenticationViewModel: ObservableObject {
         isLoading = false
     }
     
-    func updateProfile(fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?, gender: String?, relationshipStatus: String?) async {
+    func updateProfile(fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?, gender: String?, relationshipStatus: String?, profileImageURL: String? = nil) async {
         guard var user = currentUser else { return }
         
         isLoading = true
@@ -168,6 +168,9 @@ class AuthenticationViewModel: ObservableObject {
             user.bio = bio
             user.gender = gender
             user.relationshipStatus = relationshipStatus
+            if let profileImageURL = profileImageURL {
+                user.profileImageURL = profileImageURL
+            }
             user.updatedAt = Date()
             user.lastActiveAt = Date()
             

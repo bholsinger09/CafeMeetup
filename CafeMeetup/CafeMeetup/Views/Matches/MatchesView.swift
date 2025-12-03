@@ -76,16 +76,27 @@ struct MatchRow: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            // Profile Circle
-            Circle()
-                .fill(Color.primaryGradient)
-                .frame(width: 60, height: 60)
-                .overlay(
-                    Text(matchedUser?.fullName.prefix(1) ?? "?")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                )
-                .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+            // Profile Photo
+            if let matchedUser = matchedUser,
+               let profileImageURL = matchedUser.profileImageURL,
+               let uiImage = UIImage.fromBase64String(profileImageURL) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 60, height: 60)
+                    .clipShape(Circle())
+                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+            } else {
+                Circle()
+                    .fill(Color.primaryGradient)
+                    .frame(width: 60, height: 60)
+                    .overlay(
+                        Text(matchedUser?.fullName.prefix(1) ?? "?")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    )
+                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+            }
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(matchedUser?.fullName ?? "Loading...")

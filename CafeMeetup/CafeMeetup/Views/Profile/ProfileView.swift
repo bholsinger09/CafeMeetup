@@ -11,15 +11,25 @@ struct ProfileView: View {
                 VStack(spacing: 24) {
                     // Profile Header
                     VStack(spacing: 16) {
-                        Circle()
-                            .fill(Color.primaryGradient)
-                            .frame(width: 100, height: 100)
-                            .overlay(
-                                Text(authViewModel.currentUser?.fullName.prefix(1) ?? "?")
-                                    .font(.system(size: 40, weight: .semibold))
-                                    .foregroundColor(.white)
-                            )
-                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+                        if let profileImageURL = authViewModel.currentUser?.profileImageURL,
+                           let uiImage = UIImage.fromBase64String(profileImageURL) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                                .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+                        } else {
+                            Circle()
+                                .fill(Color.primaryGradient)
+                                .frame(width: 100, height: 100)
+                                .overlay(
+                                    Text(authViewModel.currentUser?.fullName.prefix(1) ?? "?")
+                                        .font(.system(size: 40, weight: .semibold))
+                                        .foregroundColor(.white)
+                                )
+                                .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+                        }
                         
                         VStack(spacing: 4) {
                             Text(authViewModel.currentUser?.fullName ?? "")
