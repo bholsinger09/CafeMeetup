@@ -110,18 +110,28 @@ struct MapView: View {
                 UserDetailSheet(user: user)
             }
             .task {
+                print("[MapView] Task started")
+                
                 // Request permission first
                 mapViewModel.requestLocationPermission()
                 
-                // Give a moment for permission to be granted
-                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                // Give time for user to grant permission (iOS shows dialog)
+                print("[MapView] Waiting for permission...")
+                try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
                 
                 // Get current location and center map
+                print("[MapView] Starting location tracking...")
                 await mapViewModel.startTrackingLocation()
+                
+                // Give it another moment to stabilize
+                try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 
                 // Then fetch nearby users if we have a current user
                 if let currentUser = authViewModel.currentUser {
+                    print("[MapView] Fetching nearby users for \\(currentUser.city), \\(currentUser.state)")
                     await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
+                } else {
+                    print("[MapView] No current user, skipping nearby users fetch")
                 }
             }
             .overlay {

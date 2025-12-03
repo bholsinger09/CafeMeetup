@@ -23,13 +23,31 @@ class LocationService: NSObject, LocationServiceProtocol, ObservableObject {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         authorizationStatus = locationManager.authorizationStatus
+        print("[LocationService] Initialized with authorization status: \(authorizationStatus.rawValue)")
     }
     
     func requestAuthorization() {
+        print("[LocationService] Requesting authorization, current status: \(authorizationStatus.rawValue)")
         locationManager.requestWhenInUseAuthorization()
     }
     
     func getCurrentLocation() async throws -> CLLocationCoordinate2D {
+        print("[LocationService] getCurrentLocation called, auth status: \(locationManager.authorizationStatus.rawValue)")
+        
+        // Check authorization status
+        switch locationManager.authorizationStatus {
+        case .notDetermined:
+            print("[LocationService] Location not determined, requesting authorization")
+            throw LocationError.unauthorized
+        case .restricted, .denied:
+            print("[LocationService] Location access denied or restricted")
+            throw LocationError.unauthorized
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("[LocationService] Location authorized, requesting location...")
+        @unknown default:
+            print("[LocationService] Unknown authorization status")
+        }
+        
         return try await withCheckedThrowingContinuation { continuation in
             self.locationContinuation = continuation
             locationManager.requestLocation()
@@ -48,17 +66,24 @@ class LocationService: NSObject, LocationServiceProtocol, ObservableObject {
 // MARK: - CLLocationManagerDelegate
 extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
+        print("[LocationService] didUpdateLocations called with \(locations.count) locations")
+        guard let location = locations.last else {
+            print("[LocationService] No location in array")
+            return
+        }
         
+        print("[LocationService] Got location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
         currentLocation = location.coordinate
         
         if let continuation = locationContinuation {
+            print("[LocationService] Resuming continuation with location")
             continuation.resume(returning: location.coordinate)
             locationContinuation = nil
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("[LocationService] Location manager failed with error: \(error.localizedDescription)")
         if let continuation = locationContinuation {
             continuation.resume(throwing: LocationError.unableToGetLocation)
             locationContinuation = nil
@@ -66,7 +91,9 @@ extension LocationService: CLLocationManagerDelegate {
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let oldStatus = authorizationStatus
         authorizationStatus = manager.authorizationStatus
+        print("[LocationService] Authorization changed from \(oldStatus.rawValue) to \(authorizationStatus.rawValue)")
     }
 }
 
