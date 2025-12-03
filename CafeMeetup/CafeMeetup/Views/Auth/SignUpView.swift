@@ -167,19 +167,28 @@ struct SignUpView: View {
             SignInWithAppleButton(
                 onRequest: { request in
                     print("🍎 [SignUp] SignInWithAppleButton onRequest called")
+                    print("🍎 [SignUp] Bundle ID: \(Bundle.main.bundleIdentifier ?? "unknown")")
+                    print("🍎 [SignUp] Team ID: \(Bundle.main.object(forInfoDictionaryKey: "AppIdentifierPrefix") as? String ?? "unknown")")
                     request.requestedScopes = [.fullName, .email]
+                    print("🍎 [SignUp] Requested scopes: \(request.requestedScopes ?? [])")
                 },
                 onCompletion: { result in
                     print("🍎 [SignUp] SignInWithAppleButton onCompletion called")
+                    print("🍎 [SignUp] Result type: \(type(of: result))")
+                    
                     switch result {
                     case .success(let authorization):
                         print("✅ [SignUp] Apple Sign In successful")
+                        print("✅ [SignUp] Authorization type: \(type(of: authorization))")
+                        print("✅ [SignUp] Credential type: \(type(of: authorization.credential))")
                         handleAppleSignUp(authorization: authorization)
                     case .failure(let error):
                         print("❌ [SignUp] Apple Sign In failed")
+                        print("❌ [SignUp] Error: \(error)")
                         print("❌ [SignUp] Error code: \((error as NSError).code)")
                         print("❌ [SignUp] Error domain: \((error as NSError).domain)")
                         print("❌ [SignUp] Error description: \(error.localizedDescription)")
+                        print("❌ [SignUp] Error userInfo: \((error as NSError).userInfo)")
                         
                         let errorCode = (error as NSError).code
                         

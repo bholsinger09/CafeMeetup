@@ -35,21 +35,30 @@ struct SignInView: View {
                     SignInWithAppleButton(
                         onRequest: { request in
                             print("🍎 [SignIn] SignInWithAppleButton onRequest called")
+                            print("🍎 [SignIn] Bundle ID: \(Bundle.main.bundleIdentifier ?? "unknown")")
+                            print("🍎 [SignIn] Team ID: \(Bundle.main.object(forInfoDictionaryKey: "AppIdentifierPrefix") as? String ?? "unknown")")
                             request.requestedScopes = [.fullName, .email]
+                            print("🍎 [SignIn] Requested scopes: \(request.requestedScopes ?? [])")
                         },
                         onCompletion: { result in
                             print("🍎 [SignIn] SignInWithAppleButton onCompletion called")
+                            print("🍎 [SignIn] Result type: \(type(of: result))")
+                            
                             switch result {
                             case .success(let authorization):
                                 print("✅ [SignIn] Apple Sign In successful")
+                                print("✅ [SignIn] Authorization type: \(type(of: authorization))")
+                                print("✅ [SignIn] Credential type: \(type(of: authorization.credential))")
                                 Task {
                                     await handleAppleSignIn(authorization: authorization)
                                 }
                             case .failure(let error):
                                 print("❌ [SignIn] Apple Sign In failed")
+                                print("❌ [SignIn] Error: \(error)")
                                 print("❌ [SignIn] Error code: \((error as NSError).code)")
                                 print("❌ [SignIn] Error domain: \((error as NSError).domain)")
                                 print("❌ [SignIn] Error description: \(error.localizedDescription)")
+                                print("❌ [SignIn] Error userInfo: \((error as NSError).userInfo)")
                                 
                                 let errorCode = (error as NSError).code
                                 
