@@ -7,16 +7,6 @@ struct MainTabView: View {
     
     var body: some View {
         TabView {
-            DiscoveryView()
-                .tabItem {
-                    Label("Discover", systemImage: "heart.circle.fill")
-                }
-            
-            MatchesView()
-                .tabItem {
-                    Label("Matches", systemImage: "message.fill")
-                }
-            
             BlogFeedView()
                 .environmentObject(blogViewModel)
                 .tabItem {
@@ -34,8 +24,7 @@ struct MainTabView: View {
                     Label("Profile", systemImage: "person.fill")
                 }
         }
-        .accentColor(Color(red: 0.85, green: 0.65, blue: 0.75))
-        .preferredColorScheme(.dark)
+        .accentColor(.brown)
     }
 }
 
