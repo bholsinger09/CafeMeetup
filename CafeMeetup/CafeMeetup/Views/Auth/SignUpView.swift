@@ -12,6 +12,7 @@ struct SignUpView: View {
     @State private var college = ""
     @State private var state = ""
     @State private var city = ""
+    @State private var address = ""
     @State private var favoriteCoffee = ""
     @State private var favoriteCoffeeShop = ""
     
@@ -88,6 +89,7 @@ struct SignUpView: View {
                                     college: college,
                                     state: state,
                                     city: city,
+                                    address: address.isEmpty ? nil : address,
                                     favoriteCoffee: favoriteCoffee,
                                     favoriteCoffeeShop: favoriteCoffeeShop
                                 )
@@ -275,6 +277,13 @@ struct SignUpView: View {
             
             TextField("City", text: $city)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            TextField("Address (Optional)", text: $address)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Text("e.g., 123 Main St")
+                .font(.caption)
+                .foregroundColor(.secondary)
         }
     }
     

@@ -28,7 +28,7 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    func signUp(email: String, password: String, fullName: String, college: String, state: String, city: String, favoriteCoffee: String, favoriteCoffeeShop: String) async {
+    func signUp(email: String, password: String, fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String) async {
         isLoading = true
         errorMessage = nil
         
@@ -39,8 +39,10 @@ class AuthenticationViewModel: ObservableObject {
                 college: college,
                 state: state,
                 city: city,
+                address: address,
                 favoriteCoffee: favoriteCoffee,
-                favoriteCoffeeShop: favoriteCoffeeShop
+                favoriteCoffeeShop: favoriteCoffeeShop,
+                lastActiveAt: Date()
             )
             
             currentUser = try await authService.signUp(email: email, password: password, user: user)
@@ -105,7 +107,7 @@ class AuthenticationViewModel: ObservableObject {
         isLoading = false
     }
     
-    func updateProfile(fullName: String, college: String, state: String, city: String, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?) async {
+    func updateProfile(fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?) async {
         guard var user = currentUser else { return }
         
         isLoading = true
@@ -116,10 +118,12 @@ class AuthenticationViewModel: ObservableObject {
             user.college = college
             user.state = state
             user.city = city
+            user.address = address
             user.favoriteCoffee = favoriteCoffee
             user.favoriteCoffeeShop = favoriteCoffeeShop
             user.bio = bio
             user.updatedAt = Date()
+            user.lastActiveAt = Date()
             
             currentUser = try await authService.updateUser(user)
         } catch {

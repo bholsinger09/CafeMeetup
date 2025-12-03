@@ -8,11 +8,13 @@ struct User: Identifiable, Codable, Equatable {
     var college: String
     var state: String
     var city: String
+    var address: String?
     var favoriteCoffee: String
     var favoriteCoffeeShop: String
     var bio: String?
     var location: Location?
     var profileImageURL: String?
+    var lastActiveAt: Date?
     var createdAt: Date
     var updatedAt: Date
     
@@ -23,11 +25,13 @@ struct User: Identifiable, Codable, Equatable {
         college: String,
         state: String,
         city: String,
+        address: String? = nil,
         favoriteCoffee: String,
         favoriteCoffeeShop: String,
         bio: String? = nil,
         location: Location? = nil,
         profileImageURL: String? = nil,
+        lastActiveAt: Date? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -37,13 +41,21 @@ struct User: Identifiable, Codable, Equatable {
         self.college = college
         self.state = state
         self.city = city
+        self.address = address
         self.favoriteCoffee = favoriteCoffee
         self.favoriteCoffeeShop = favoriteCoffeeShop
         self.bio = bio
         self.location = location
         self.profileImageURL = profileImageURL
+        self.lastActiveAt = lastActiveAt
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+    
+    // Helper to check if user is recently active (within last 30 minutes)
+    var isRecentlyActive: Bool {
+        guard let lastActive = lastActiveAt else { return false }
+        return Date().timeIntervalSince(lastActive) < 1800 // 30 minutes
     }
 }
 
@@ -64,5 +76,13 @@ struct Location: Codable, Equatable {
     init(coordinate: CLLocationCoordinate2D) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
+    }
+    
+    // Calculate distance in miles to another location
+    func distance(to other: Location) -> Double {
+        let from = CLLocation(latitude: latitude, longitude: longitude)
+        let to = CLLocation(latitude: other.latitude, longitude: other.longitude)
+        let distanceMeters = from.distance(from: to)
+        return distanceMeters / 1609.34 // Convert meters to miles
     }
 }

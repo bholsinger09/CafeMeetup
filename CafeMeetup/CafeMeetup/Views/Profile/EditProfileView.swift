@@ -8,6 +8,7 @@ struct EditProfileView: View {
     @State private var college: String = ""
     @State private var state: String = ""
     @State private var city: String = ""
+    @State private var address: String = ""
     @State private var favoriteCoffee: String = ""
     @State private var favoriteCoffeeShop: String = ""
     @State private var bio: String = ""
@@ -23,6 +24,7 @@ struct EditProfileView: View {
                 Section("Location") {
                     TextField("State", text: $state)
                     TextField("City", text: $city)
+                    TextField("Address (Optional)", text: $address)
                 }
                 
                 Section("Coffee Preferences") {
@@ -64,6 +66,7 @@ struct EditProfileView: View {
                                 college: college,
                                 state: state,
                                 city: city,
+                                address: address.isEmpty ? nil : address,
                                 favoriteCoffee: favoriteCoffee,
                                 favoriteCoffeeShop: favoriteCoffeeShop,
                                 bio: bio.isEmpty ? nil : bio
@@ -90,6 +93,7 @@ struct EditProfileView: View {
         college = user.college
         state = user.state
         city = user.city
+        address = user.address ?? ""
         favoriteCoffee = user.favoriteCoffee
         favoriteCoffeeShop = user.favoriteCoffeeShop
         bio = user.bio ?? ""
