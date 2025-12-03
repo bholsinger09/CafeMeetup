@@ -1,20 +1,59 @@
 import SwiftUI
 import MapKit
 
+// Helper struct for map annotations
+struct MapAnnotationData: Identifiable {
+    let id = UUID()
+    let coordinate: CLLocationCoordinate2D
+    let isCurrentUser: Bool
+    let user: User?
+}
+
 struct MapView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var selectedUser: User?
     
+    // Combine current user location and other users into annotations
+    private var allMapAnnotations: [MapAnnotationData] {
+        var annotations: [MapAnnotationData] = []
+        
+        // Add current user's location
+        if let currentLocation = mapViewModel.currentUserLocation {
+            annotations.append(MapAnnotationData(
+                coordinate: currentLocation.coordinate,
+                isCurrentUser: true,
+                user: nil
+            ))
+        }
+        
+        // Add other users
+        for user in mapViewModel.users {
+            if let location = user.location {
+                annotations.append(MapAnnotationData(
+                    coordinate: location.coordinate,
+                    isCurrentUser: false,
+                    user: user
+                ))
+            }
+        }
+        
+        return annotations
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
-                Map(coordinateRegion: $mapViewModel.region, annotationItems: mapViewModel.users) { user in
-                    MapAnnotation(coordinate: user.location?.coordinate ?? CLLocationCoordinate2D()) {
-                        UserMapMarker(user: user)
-                            .onTapGesture {
-                                selectedUser = user
-                            }
+                Map(coordinateRegion: $mapViewModel.region, annotationItems: allMapAnnotations) { annotation in
+                    MapAnnotation(coordinate: annotation.coordinate) {
+                        if annotation.isCurrentUser {
+                            CurrentUserMarker()
+                        } else if let user = annotation.user {
+                            OtherUserMapMarker(user: user)
+                                .onTapGesture {
+                                    selectedUser = user
+                                }
+                        }
                     }
                 }
                 .ignoresSafeArea()
@@ -43,7 +82,7 @@ struct MapView: View {
                             Button {
                                 Task {
                                     if let currentUser = authViewModel.currentUser {
-                                        await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state)
+                                        await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
                                     }
                                 }
                             } label: {
@@ -68,10 +107,11 @@ struct MapView: View {
             }
             .task {
                 mapViewModel.requestLocationPermission()
+                await mapViewModel.startTrackingLocation()
                 
                 if let currentUser = authViewModel.currentUser {
                     // Fetch users in the user's city/state
-                    await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state)
+                    await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
                 }
             }
             .overlay {
@@ -86,7 +126,29 @@ struct MapView: View {
     }
 }
 
-struct UserMapMarker: View {
+// Current user marker - distinctive design
+struct CurrentUserMarker: View {
+    var body: some View {
+        ZStack {
+            // Pulsing circle effect
+            Circle()
+                .fill(Color.blue.opacity(0.2))
+                .frame(width: 60, height: 60)
+            
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 20, height: 20)
+                .overlay(
+                    Circle()
+                        .stroke(Color.white, lineWidth: 3)
+                )
+                .shadow(color: Color.blue.opacity(0.5), radius: 8)
+        }
+    }
+}
+
+// Other users marker - coffee cup style
+struct OtherUserMapMarker: View {
     let user: User
     
     var body: some View {
@@ -110,6 +172,15 @@ struct UserMapMarker: View {
                 .foregroundColor(.primaryPink)
                 .offset(y: -5)
         }
+    }
+}
+
+// Deprecated - kept for compatibility
+struct UserMapMarker: View {
+    let user: User
+    
+    var body: some View {
+        OtherUserMapMarker(user: user)
     }
 }
 
