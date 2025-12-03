@@ -179,29 +179,36 @@ struct CurrentUserMarker: View {
     }
 }
 
-// Other users marker - coffee cup style
+// Other users marker - yellow for nearby active users
 struct OtherUserMapMarker: View {
     let user: User
     
     var body: some View {
         VStack(spacing: 0) {
             Circle()
-                .fill(Color.primaryGradient)
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .frame(width: 40, height: 40)
                 .overlay(
                     Text(user.fullName.prefix(1))
                         .font(.headline)
                         .foregroundColor(.white)
+                        .fontWeight(.bold)
                 )
                 .overlay(
                     Circle()
                         .stroke(Color.white, lineWidth: 3)
                 )
-                .shadow(color: Color.primaryPink.opacity(0.3), radius: 6)
+                .shadow(color: Color.yellow.opacity(0.5), radius: 8)
             
             Image(systemName: "arrowtriangle.down.fill")
                 .font(.caption)
-                .foregroundColor(.primaryPink)
+                .foregroundColor(.yellow)
                 .offset(y: -5)
         }
     }
