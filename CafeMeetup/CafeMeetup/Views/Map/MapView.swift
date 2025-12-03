@@ -20,11 +20,14 @@ struct MapView: View {
         
         // Add current user's location
         if let currentLocation = mapViewModel.currentUserLocation {
+            print("[MapView] Adding current user marker at: \(currentLocation.coordinate.latitude), \(currentLocation.coordinate.longitude)")
             annotations.append(MapAnnotationData(
                 coordinate: currentLocation.coordinate,
                 isCurrentUser: true,
                 user: nil
             ))
+        } else {
+            print("[MapView] No current user location available")
         }
         
         // Add other users
@@ -38,6 +41,7 @@ struct MapView: View {
             }
         }
         
+        print("[MapView] Total annotations: \(annotations.count)")
         return annotations
     }
     
@@ -128,21 +132,33 @@ struct MapView: View {
 
 // Current user marker - distinctive design
 struct CurrentUserMarker: View {
+    @State private var isPulsing = false
+    
     var body: some View {
         ZStack {
-            // Pulsing circle effect
+            // Outer pulsing circle
             Circle()
-                .fill(Color.blue.opacity(0.2))
-                .frame(width: 60, height: 60)
+                .fill(Color.blue.opacity(0.3))
+                .frame(width: isPulsing ? 80 : 60, height: isPulsing ? 80 : 60)
+                .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
             
+            // Middle circle
+            Circle()
+                .fill(Color.blue.opacity(0.5))
+                .frame(width: 40, height: 40)
+            
+            // Inner solid circle
             Circle()
                 .fill(Color.blue)
-                .frame(width: 20, height: 20)
+                .frame(width: 24, height: 24)
                 .overlay(
                     Circle()
                         .stroke(Color.white, lineWidth: 3)
                 )
-                .shadow(color: Color.blue.opacity(0.5), radius: 8)
+                .shadow(color: Color.blue.opacity(0.7), radius: 10)
+        }
+        .onAppear {
+            isPulsing = true
         }
     }
 }

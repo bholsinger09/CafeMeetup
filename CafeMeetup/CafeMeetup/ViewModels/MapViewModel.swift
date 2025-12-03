@@ -31,16 +31,19 @@ class MapViewModel: ObservableObject {
         do {
             let coordinate = try await locationService.getCurrentLocation()
             currentUserLocation = Location(coordinate: coordinate)
+            print("[MapViewModel] Current location updated: \(coordinate.latitude), \(coordinate.longitude)")
             region = MKCoordinateRegion(
                 center: coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
             )
         } catch {
+            print("[MapViewModel] Failed to get current location: \(error.localizedDescription)")
             errorMessage = error.localizedDescription
         }
     }
     
     func startTrackingLocation() async {
+        print("[MapViewModel] Starting location tracking...")
         // Update current location periodically
         await centerOnCurrentLocation()
     }
