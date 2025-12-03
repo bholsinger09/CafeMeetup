@@ -154,9 +154,50 @@ struct SignUpView: View {
     
     private var accountInfoStep: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Account Information")
+            Text("Get Started")
                 .font(.title2)
                 .fontWeight(.bold)
+            
+            Text("Sign up with Apple for a fast, private way to create your account.")
+                .font(.subheadline)
+                .foregroundColor(.secondaryText)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            // Sign up with Apple - Primary option
+            SignInWithAppleButton(
+                onRequest: { request in
+                    request.requestedScopes = [.fullName, .email]
+                },
+                onCompletion: { result in
+                    switch result {
+                    case .success(let authorization):
+                        handleAppleSignUp(authorization: authorization)
+                    case .failure(let error):
+                        // Only show error if it's not a user cancellation
+                        if (error as NSError).code != 1001 {
+                            errorMessage = "Sign in with Apple failed. Please try again or use email/password sign up."
+                            showError = true
+                        }
+                    }
+                }
+            )
+            .signInWithAppleButtonStyle(.black)
+            .frame(height: 50)
+            .cornerRadius(12)
+            
+            // Divider
+            HStack {
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
+                Text("or")
+                    .foregroundColor(.secondaryText)
+                    .padding(.horizontal, 8)
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.gray.opacity(0.3))
+            }
+            .padding(.vertical, 8)
             
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
@@ -177,42 +218,6 @@ struct SignUpView: View {
                     .font(.caption)
                     .foregroundColor(.red)
             }
-            
-            // Divider
-            HStack {
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.gray.opacity(0.3))
-                Text("or")
-                    .foregroundColor(.secondaryText)
-                    .padding(.horizontal, 8)
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.gray.opacity(0.3))
-            }
-            .padding(.vertical, 8)
-            
-            // Sign up with Apple
-            SignInWithAppleButton(
-                onRequest: { request in
-                    request.requestedScopes = [.fullName, .email]
-                },
-                onCompletion: { result in
-                    switch result {
-                    case .success(let authorization):
-                        handleAppleSignUp(authorization: authorization)
-                    case .failure(let error):
-                        // Only show error if it's not a user cancellation
-                        if (error as NSError).code != 1001 {
-                            errorMessage = "Sign in with Apple failed. Please try again or use email/password sign up."
-                            showError = true
-                        }
-                    }
-                }
-            )
-            .signInWithAppleButtonStyle(.white)
-            .frame(height: 50)
-            .cornerRadius(12)
         }
     }
     

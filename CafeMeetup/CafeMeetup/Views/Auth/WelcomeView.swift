@@ -64,6 +64,16 @@ struct WelcomeView: View {
                     
                     Spacer()
                     
+                    // Value proposition
+                    VStack(spacing: 12) {
+                        BenefitRow(icon: "person.2.fill", text: "Meet Christian college students")
+                        BenefitRow(icon: "map.fill", text: "Find coffee meetups near you")
+                        BenefitRow(icon: "bubble.left.and.bubble.right.fill", text: "Share and connect through posts")
+                    }
+                    .padding(.horizontal, 32)
+                    
+                    Spacer()
+                    
                     // Buttons
                     VStack(spacing: 16) {
                         Button {
@@ -118,6 +128,26 @@ struct WelcomeView: View {
             .navigationDestination(isPresented: $showSignIn) {
                 SignInView()
             }
+        }
+    }
+}
+
+struct BenefitRow: View {
+    let icon: String
+    let text: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 20))
+                .foregroundColor(Color(red: 0.85, green: 0.65, blue: 0.75))
+                .frame(width: 30)
+            
+            Text(text)
+                .font(.subheadline)
+                .foregroundColor(Color(red: 0.90, green: 0.85, blue: 0.90))
+            
+            Spacer()
         }
     }
 }

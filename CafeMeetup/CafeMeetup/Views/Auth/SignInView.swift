@@ -31,6 +31,47 @@ struct SignInView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(Color.primaryGradient)
                     
+                    // Sign in with Apple - Primary option
+                    SignInWithAppleButton(
+                        onRequest: { request in
+                            request.requestedScopes = [.fullName, .email]
+                        },
+                        onCompletion: { result in
+                            switch result {
+                            case .success(let authorization):
+                                // Handle successful Sign in with Apple
+                                Task {
+                                    await handleAppleSignIn(authorization: authorization)
+                                }
+                            case .failure(let error):
+                                // Only show error if it's not a user cancellation
+                                if (error as NSError).code != 1001 {
+                                    errorMessage = "Sign in with Apple failed. Please try again or use email/password sign in."
+                                    showError = true
+                                }
+                            }
+                        }
+                    )
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 50)
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                    
+                    // Divider
+                    HStack {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(.gray.opacity(0.3))
+                        Text("or")
+                            .foregroundColor(.secondaryText)
+                            .padding(.horizontal, 8)
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(.gray.opacity(0.3))
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    
                     VStack(spacing: 16) {
                         TextField("Email", text: $email)
                             .textContentType(.emailAddress)
@@ -79,47 +120,6 @@ struct SignInView: View {
                             .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                     }
                     .disabled(email.isEmpty || password.isEmpty)
-                    .padding(.horizontal)
-                    
-                    // Divider
-                    HStack {
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(.gray.opacity(0.3))
-                        Text("or")
-                            .foregroundColor(.secondaryText)
-                            .padding(.horizontal, 8)
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(.gray.opacity(0.3))
-                    }
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    
-                    // Sign in with Apple
-                    SignInWithAppleButton(
-                        onRequest: { request in
-                            request.requestedScopes = [.fullName, .email]
-                        },
-                        onCompletion: { result in
-                            switch result {
-                            case .success(let authorization):
-                                // Handle successful Sign in with Apple
-                                Task {
-                                    await handleAppleSignIn(authorization: authorization)
-                                }
-                            case .failure(let error):
-                                // Only show error if it's not a user cancellation
-                                if (error as NSError).code != 1001 {
-                                    errorMessage = "Sign in with Apple failed. Please try again or use email/password sign in."
-                                    showError = true
-                                }
-                            }
-                        }
-                    )
-                    .signInWithAppleButtonStyle(.white)
-                    .frame(height: 50)
-                    .cornerRadius(12)
                     .padding(.horizontal)
                     
                     Spacer()
