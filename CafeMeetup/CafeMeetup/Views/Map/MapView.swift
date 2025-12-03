@@ -70,6 +70,7 @@ struct MapView: View {
                 mapViewModel.requestLocationPermission()
                 
                 if let currentUser = authViewModel.currentUser {
+                    // Fetch users in the user's city/state
                     await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state)
                 }
             }

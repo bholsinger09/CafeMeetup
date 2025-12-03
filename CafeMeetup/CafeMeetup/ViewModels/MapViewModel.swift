@@ -42,9 +42,12 @@ class MapViewModel: ObservableObject {
         errorMessage = nil
         
         do {
+            // Geocode city and state to get coordinates
+            await geocodeLocation(city: city, state: state)
+            
             users = try await userService.fetchUsers(inCity: city, state: state)
             
-            // Center map on first user if available
+            // Center map on first user if available, otherwise keep geocoded location
             if let firstUser = users.first, let location = firstUser.location {
                 region = MKCoordinateRegion(
                     center: location.coordinate,
@@ -56,6 +59,24 @@ class MapViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    private func geocodeLocation(city: String, state: String) async {
+        let geocoder = CLGeocoder()
+        let addressString = "\(city), \(state)"
+        
+        do {
+            let placemarks = try await geocoder.geocodeAddressString(addressString)
+            if let coordinate = placemarks.first?.location?.coordinate {
+                region = MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                )
+            }
+        } catch {
+            // Silently fail and keep default or current region
+            print("Failed to geocode \(addressString): \(error.localizedDescription)")
+        }
     }
     
     func centerOnUser(_ user: User) {
