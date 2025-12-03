@@ -272,11 +272,54 @@ struct SignUpView: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            TextField("State", text: $state)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            // State Picker
+            VStack(alignment: .leading, spacing: 8) {
+                Text("State")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Picker("Select State", selection: $state) {
+                    Text("Select State").tag("")
+                    ForEach(LocationData.states, id: \.self) { stateName in
+                        Text(stateName).tag(stateName)
+                    }
+                }
+                .pickerStyle(.menu)
+                .padding(12)
+                .background(Color.darkSecondary)
+                .cornerRadius(8)
+                .onChange(of: state) { oldValue, newValue in
+                    // Reset city when state changes
+                    if oldValue != newValue {
+                        city = ""
+                    }
+                }
+            }
             
-            TextField("City", text: $city)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            // City Picker
+            VStack(alignment: .leading, spacing: 8) {
+                Text("City")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Picker("Select City", selection: $city) {
+                    Text("Select City").tag("")
+                    ForEach(LocationData.cities(for: state), id: \.self) { cityName in
+                        Text(cityName).tag(cityName)
+                    }
+                }
+                .pickerStyle(.menu)
+                .padding(12)
+                .background(Color.darkSecondary)
+                .cornerRadius(8)
+                .disabled(state.isEmpty)
+            }
+            
+            if state.isEmpty {
+                Text("Please select a state first")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
             
             TextField("Address (Optional)", text: $address)
                 .textFieldStyle(RoundedBorderTextFieldStyle())

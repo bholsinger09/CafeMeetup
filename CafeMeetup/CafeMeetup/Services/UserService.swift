@@ -19,7 +19,21 @@ class UserService: UserServiceProtocol {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 500_000_000)
         
-        return users.filter { $0.city.lowercased() == city.lowercased() && $0.state.lowercased() == state.lowercased() }
+        // Trim whitespace and compare case-insensitively
+        let cleanCity = city.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let cleanState = state.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        
+        let filtered = users.filter { 
+            $0.city.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == cleanCity && 
+            $0.state.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == cleanState
+        }
+        
+        print("[UserService] fetchUsers in '\(city)', '\(state)' - Found \(filtered.count) users")
+        for user in filtered {
+            print("[UserService]   - \(user.fullName) (city: '\(user.city)', state: '\(user.state)')")
+        }
+        
+        return filtered
     }
     
     func fetchUser(id: String) async throws -> User {

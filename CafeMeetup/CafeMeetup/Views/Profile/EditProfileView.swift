@@ -22,8 +22,27 @@ struct EditProfileView: View {
                 }
                 
                 Section("Location") {
-                    TextField("State", text: $state)
-                    TextField("City", text: $city)
+                    Picker("State", selection: $state) {
+                        Text("Select State").tag("")
+                        ForEach(LocationData.states, id: \.self) { stateName in
+                            Text(stateName).tag(stateName)
+                        }
+                    }
+                    .onChange(of: state) { oldValue, newValue in
+                        // Reset city when state changes
+                        if oldValue != newValue && !LocationData.cities(for: newValue).contains(city) {
+                            city = ""
+                        }
+                    }
+                    
+                    Picker("City", selection: $city) {
+                        Text("Select City").tag("")
+                        ForEach(LocationData.cities(for: state), id: \.self) { cityName in
+                            Text(cityName).tag(cityName)
+                        }
+                    }
+                    .disabled(state.isEmpty)
+                    
                     TextField("Address (Optional)", text: $address)
                 }
                 

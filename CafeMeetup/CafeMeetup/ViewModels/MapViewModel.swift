@@ -63,10 +63,14 @@ class MapViewModel: ObservableObject {
             // Fetch all users in the city/state
             var allUsers = try await userService.fetchUsers(inCity: city, state: state)
             print("[MapViewModel] Found \(allUsers.count) users in \(city), \(state)")
+            print("[MapViewModel] Current user ID to filter: '\(currentUserId)'")
+            for user in allUsers {
+                print("[MapViewModel]   - User: \(user.fullName) (ID: '\(user.id)')")
+            }
             
             // Filter out current user
             allUsers = allUsers.filter { $0.id != currentUserId }
-            print("[MapViewModel] After filtering current user: \(allUsers.count) users")
+            print("[MapViewModel] After filtering current user (\(currentUserId)): \(allUsers.count) users")
             
             // Filter by recently active (within last 30 minutes)
             let recentlyActiveUsers = allUsers.filter { $0.isRecentlyActive }
