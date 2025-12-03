@@ -12,6 +12,8 @@ struct EditProfileView: View {
     @State private var favoriteCoffee: String = ""
     @State private var favoriteCoffeeShop: String = ""
     @State private var bio: String = ""
+    @State private var gender: String = ""
+    @State private var relationshipStatus: String = ""
     
     var body: some View {
         NavigationStack {
@@ -19,6 +21,22 @@ struct EditProfileView: View {
                 Section("Personal Information") {
                     TextField("Full Name", text: $fullName)
                     TextField("College/University", text: $college)
+                }
+                
+                Section("Personal Details") {
+                    Picker("Gender", selection: $gender) {
+                        Text("Prefer not to say").tag("")
+                        Text("Male").tag("Male")
+                        Text("Female").tag("Female")
+                    }
+                    
+                    Picker("Relationship Status", selection: $relationshipStatus) {
+                        Text("Prefer not to say").tag("")
+                        Text("Single").tag("Single")
+                        Text("In a Relationship").tag("In a Relationship")
+                        Text("Married").tag("Married")
+                        Text("It's Complicated").tag("It's Complicated")
+                    }
                 }
                 
                 Section("Location") {
@@ -88,7 +106,9 @@ struct EditProfileView: View {
                                 address: address.isEmpty ? nil : address,
                                 favoriteCoffee: favoriteCoffee,
                                 favoriteCoffeeShop: favoriteCoffeeShop,
-                                bio: bio.isEmpty ? nil : bio
+                                bio: bio.isEmpty ? nil : bio,
+                                gender: gender.isEmpty ? nil : gender,
+                                relationshipStatus: relationshipStatus.isEmpty ? nil : relationshipStatus
                             )
                             dismiss()
                         }
@@ -116,6 +136,8 @@ struct EditProfileView: View {
         favoriteCoffee = user.favoriteCoffee
         favoriteCoffeeShop = user.favoriteCoffeeShop
         bio = user.bio ?? ""
+        gender = user.gender ?? ""
+        relationshipStatus = user.relationshipStatus ?? ""
     }
     
     private var isValid: Bool {

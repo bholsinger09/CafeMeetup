@@ -12,6 +12,8 @@ struct User: Identifiable, Codable, Equatable {
     var favoriteCoffee: String
     var favoriteCoffeeShop: String
     var bio: String?
+    var gender: String?
+    var relationshipStatus: String?
     var location: Location?
     var profileImageURL: String?
     var lastActiveAt: Date?
@@ -29,6 +31,8 @@ struct User: Identifiable, Codable, Equatable {
         favoriteCoffee: String,
         favoriteCoffeeShop: String,
         bio: String? = nil,
+        gender: String? = nil,
+        relationshipStatus: String? = nil,
         location: Location? = nil,
         profileImageURL: String? = nil,
         lastActiveAt: Date? = nil,
@@ -45,6 +49,8 @@ struct User: Identifiable, Codable, Equatable {
         self.favoriteCoffee = favoriteCoffee
         self.favoriteCoffeeShop = favoriteCoffeeShop
         self.bio = bio
+        self.gender = gender
+        self.relationshipStatus = relationshipStatus
         self.location = location
         self.profileImageURL = profileImageURL
         self.lastActiveAt = lastActiveAt
