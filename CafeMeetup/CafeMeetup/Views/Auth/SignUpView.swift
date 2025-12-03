@@ -40,8 +40,9 @@ struct SignUpView: View {
                 HStack(spacing: 8) {
                     ForEach(1...4, id: \.self) { step in
                         Circle()
-                            .fill(step <= currentStep ? Color.brown : Color.gray.opacity(0.3))
+                            .fill(step <= currentStep ? Color.primaryPink : Color.gray.opacity(0.3))
                             .frame(width: 10, height: 10)
+                            .shadow(color: step <= currentStep ? Color.primaryPink.opacity(0.4) : Color.clear, radius: 4)
                     }
                 }
                 .padding(.top)
@@ -103,9 +104,17 @@ struct SignUpView: View {
                     .disabled(!isCurrentStepValid)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(isCurrentStepValid ? Color.brown : Color.gray.opacity(0.3))
+                    .background(
+                        isCurrentStepValid ? 
+                        LinearGradient(
+                            colors: [Color(red: 0.75, green: 0.45, blue: 0.65), Color(red: 0.65, green: 0.35, blue: 0.60)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ) : LinearGradient(colors: [Color.gray.opacity(0.3)], startPoint: .leading, endPoint: .trailing)
+                    )
                     .foregroundColor(.white)
-                    .cornerRadius(12)
+                    .cornerRadius(16)
+                    .shadow(color: isCurrentStepValid ? Color(red: 0.75, green: 0.45, blue: 0.65).opacity(0.3) : Color.clear, radius: 8, y: 4)
                 }
                 .padding(.horizontal)
             }

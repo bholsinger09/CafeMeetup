@@ -33,10 +33,11 @@ struct BlogFeedView: View {
                         showCreatePost = true
                     } label: {
                         Image(systemName: "plus.circle.fill")
-                            .foregroundColor(.brown)
+                            .foregroundStyle(Color.primaryGradient)
                     }
                 }
             }
+            .preferredColorScheme(.dark)
             .sheet(isPresented: $showCreatePost) {
                 CreatePostView()
             }
@@ -52,22 +53,26 @@ struct BlogFeedView: View {
         VStack(spacing: 16) {
             Image(systemName: "newspaper")
                 .font(.system(size: 60))
-                .foregroundColor(.gray)
+                .foregroundStyle(Color.primaryGradient)
             
             Text("No Posts Yet")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .foregroundColor(.lightText)
             
             Text("Be the first to share a meetup or coffee chat!")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(.secondaryText)
                 .multilineTextAlignment(.center)
             
             Button("Create Post") {
                 showCreatePost = true
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.brown)
+            .padding()
+            .background(Color.accentGradient)
+            .foregroundColor(.white)
+            .cornerRadius(12)
+            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
         }
         .padding()
     }
@@ -84,13 +89,14 @@ struct BlogPostCard: View {
             // Author info
             HStack {
                 Circle()
-                    .fill(Color.brown.opacity(0.3))
+                    .fill(Color.primaryGradient)
                     .frame(width: 40, height: 40)
                     .overlay(
                         Text(post.authorName.prefix(1))
                             .font(.headline)
-                            .foregroundColor(.brown)
+                            .foregroundColor(.white)
                     )
+                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(post.authorName)
@@ -113,14 +119,13 @@ struct BlogPostCard: View {
                 Text(post.content)
                     .font(.body)
                     .lineLimit(3)
-                
                 if let coffeeShopName = post.coffeeShopName {
                     HStack {
                         Image(systemName: "location.fill")
                         Text(coffeeShopName)
                     }
                     .font(.subheadline)
-                    .foregroundColor(.brown)
+                    .foregroundColor(.primaryPink)
                 }
                 
                 if let meetupDate = post.meetupDate {
@@ -142,9 +147,13 @@ struct BlogPostCard: View {
                                 .font(.caption)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color.brown.opacity(0.1))
-                                .foregroundColor(.brown)
+                                .background(Color.darkSecondary)
+                                .foregroundColor(.primaryPink)
                                 .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.primaryPink.opacity(0.3), lineWidth: 1)
+                                )
                         }
                     }
                 }
@@ -178,14 +187,16 @@ struct BlogPostCard: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
-                Spacer()
             }
         }
         .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .background(Color.darkSecondary)
+        .cornerRadius(16)
+        .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+        )
     }
 }
 

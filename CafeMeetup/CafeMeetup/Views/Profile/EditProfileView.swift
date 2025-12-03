@@ -44,8 +44,11 @@ struct EditProfileView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundGradient)
             .navigationTitle("Edit Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -54,7 +57,7 @@ struct EditProfileView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button {
                         Task {
                             await authViewModel.updateProfile(
                                 fullName: fullName,
@@ -67,6 +70,10 @@ struct EditProfileView: View {
                             )
                             dismiss()
                         }
+                    } label: {
+                        Text("Save")
+                            .foregroundColor(isValid ? Color.primaryPink : .gray)
+                            .fontWeight(.semibold)
                     }
                     .disabled(!isValid)
                 }

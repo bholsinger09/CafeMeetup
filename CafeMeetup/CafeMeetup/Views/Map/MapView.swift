@@ -35,9 +35,9 @@ struct MapView: View {
                                     .font(.title3)
                                     .foregroundColor(.white)
                                     .frame(width: 50, height: 50)
-                                    .background(Color.brown)
+                                    .background(Color.accentGradient)
                                     .clipShape(Circle())
-                                    .shadow(radius: 4)
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                             }
                             
                             Button {
@@ -51,9 +51,9 @@ struct MapView: View {
                                     .font(.title3)
                                     .foregroundColor(.white)
                                     .frame(width: 50, height: 50)
-                                    .background(Color.brown)
+                                    .background(Color.accentGradient)
                                     .clipShape(Circle())
-                                    .shadow(radius: 4)
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                             }
                         }
                         .padding()
@@ -62,6 +62,7 @@ struct MapView: View {
             }
             .navigationTitle("Nearby Students")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
             .sheet(item: $selectedUser) { user in
                 UserDetailSheet(user: user)
             }
@@ -90,7 +91,7 @@ struct UserMapMarker: View {
     var body: some View {
         VStack(spacing: 0) {
             Circle()
-                .fill(Color.brown)
+                .fill(Color.primaryGradient)
                 .frame(width: 40, height: 40)
                 .overlay(
                     Text(user.fullName.prefix(1))
@@ -101,10 +102,11 @@ struct UserMapMarker: View {
                     Circle()
                         .stroke(Color.white, lineWidth: 3)
                 )
+                .shadow(color: Color.primaryPink.opacity(0.3), radius: 6)
             
             Image(systemName: "arrowtriangle.down.fill")
                 .font(.caption)
-                .foregroundColor(.brown)
+                .foregroundColor(.primaryPink)
                 .offset(y: -5)
         }
     }
@@ -120,13 +122,14 @@ struct UserDetailSheet: View {
                 VStack(spacing: 20) {
                     // Profile Image
                     Circle()
-                        .fill(Color.brown.opacity(0.3))
+                        .fill(Color.primaryGradient)
                         .frame(width: 100, height: 100)
                         .overlay(
                             Text(user.fullName.prefix(1))
                                 .font(.system(size: 40, weight: .semibold))
-                                .foregroundColor(.brown)
+                                .foregroundColor(.white)
                         )
+                        .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
                     
                     // Name and College
                     VStack(spacing: 4) {
@@ -153,7 +156,7 @@ struct UserDetailSheet: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
                                     Image(systemName: "text.alignleft")
-                                        .foregroundColor(.brown)
+                                        .foregroundColor(.primaryPink)
                                     Text("About")
                                         .font(.headline)
                                 }
@@ -165,8 +168,13 @@ struct UserDetailSheet: View {
                         }
                     }
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color.darkSecondary)
                     .cornerRadius(12)
+                    .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                    )
                     
                     // Action Button
                     Button {
@@ -177,14 +185,17 @@ struct UserDetailSheet: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.brown)
+                            .background(Color.accentGradient)
                             .cornerRadius(12)
+                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                     }
                 }
                 .padding()
             }
+            .background(Color.backgroundGradient)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
@@ -204,7 +215,7 @@ struct DetailRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(.brown)
+                .foregroundColor(.primaryPink)
                 .frame(width: 24)
             
             VStack(alignment: .leading, spacing: 2) {

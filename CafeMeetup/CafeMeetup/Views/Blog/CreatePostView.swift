@@ -18,6 +18,7 @@ struct CreatePostView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Form sections here
                 Section("Post Details") {
                     TextField("Title", text: $title)
                     
@@ -93,16 +94,23 @@ struct CreatePostView: View {
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color.brown.opacity(0.2))
-                                .foregroundColor(.brown)
+                                .background(Color.darkSecondary)
+                                .foregroundColor(.primaryPink)
                                 .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.primaryPink.opacity(0.3), lineWidth: 1)
+                                )
                             }
                         }
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundGradient)
             .navigationTitle("Create Post")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -111,7 +119,7 @@ struct CreatePostView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Post") {
+                    Button {
                         Task {
                             guard let currentUser = authViewModel.currentUser else { return }
                             
@@ -127,6 +135,10 @@ struct CreatePostView: View {
                             
                             dismiss()
                         }
+                    } label: {
+                        Text("Post")
+                            .foregroundColor(isValid ? Color.primaryPink : .gray)
+                            .fontWeight(.semibold)
                     }
                     .disabled(!isValid)
                 }
@@ -150,10 +162,14 @@ struct TagButton: View {
                 .font(.caption)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isSelected ? Color.brown : Color.gray.opacity(0.2))
-                .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(12)
         }
+        .background(isSelected ? AnyShapeStyle(Color.accentGradient) : AnyShapeStyle(Color.darkSecondary))
+        .foregroundColor(isSelected ? .white : .secondaryText)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isSelected ? Color.clear : Color.primaryPink.opacity(0.2), lineWidth: 1)
+        )
     }
 }
 

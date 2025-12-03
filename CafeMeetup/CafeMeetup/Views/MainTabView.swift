@@ -24,7 +24,8 @@ struct MainTabView: View {
                     Label("Profile", systemImage: "person.fill")
                 }
         }
-        .accentColor(.brown)
+        .accentColor(Color(red: 0.85, green: 0.65, blue: 0.75))
+        .preferredColorScheme(.dark)
     }
 }
 
