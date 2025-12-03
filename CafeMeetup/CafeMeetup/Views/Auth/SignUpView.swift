@@ -16,7 +16,9 @@ struct SignUpView: View {
     @State private var favoriteCoffeeShop = ""
     
     @State private var showError = false
+    @State private var errorMessage = ""
     @State private var currentStep = 1
+    @State private var isUsingAppleSignIn = false
     
     private var isStep1Valid: Bool {
         !email.isEmpty && !password.isEmpty && password.count >= 6 && password == confirmPassword
@@ -124,9 +126,11 @@ struct SignUpView: View {
         .navigationTitle("Sign Up")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Error", isPresented: $showError) {
-            Button("OK") { }
+            Button("OK") { 
+                errorMessage = ""
+            }
         } message: {
-            Text(authViewModel.errorMessage ?? "An error occurred")
+            Text(!errorMessage.isEmpty ? errorMessage : (authViewModel.errorMessage ?? "An error occurred"))
         }
         .overlay {
             if authViewModel.isLoading {
@@ -198,8 +202,11 @@ struct SignUpView: View {
                     case .success(let authorization):
                         handleAppleSignUp(authorization: authorization)
                     case .failure(let error):
-                        print("Sign up with Apple failed: \(error.localizedDescription)")
-                        showError = true
+                        // Only show error if it's not a user cancellation
+                        if (error as NSError).code != 1001 {
+                            errorMessage = "Sign in with Apple is not available in the simulator. Please test on a real device or use email/password sign up."
+                            showError = true
+                        }
                     }
                 }
             )
@@ -265,6 +272,7 @@ struct SignUpView: View {
             return
         }
         
+        isUsingAppleSignIn = true
         let userID = appleIDCredential.user
         let appleEmail = appleIDCredential.email ?? "\(userID)@privaterelay.appleid.com"
         let givenName = appleIDCredential.fullName?.givenName ?? ""

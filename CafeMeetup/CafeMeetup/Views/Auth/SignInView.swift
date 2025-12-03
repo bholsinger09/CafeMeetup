@@ -8,6 +8,7 @@ struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showError = false
+    @State private var errorMessage = ""
     
     var body: some View {
         ZStack {
@@ -108,8 +109,11 @@ struct SignInView: View {
                                     await handleAppleSignIn(authorization: authorization)
                                 }
                             case .failure(let error):
-                                print("Sign in with Apple failed: \(error.localizedDescription)")
-                                showError = true
+                                // Only show error if it's not a user cancellation
+                                if (error as NSError).code != 1001 {
+                                    errorMessage = "Sign in with Apple is not available in the simulator. Please test on a real device or use email/password sign in."
+                                    showError = true
+                                }
                             }
                         }
                     )
@@ -127,9 +131,11 @@ struct SignInView: View {
         .navigationBarTitleDisplayMode(.inline)
         .preferredColorScheme(.dark)
         .alert("Error", isPresented: $showError) {
-            Button("OK") { }
+            Button("OK") { 
+                errorMessage = ""
+            }
         } message: {
-            Text(authViewModel.errorMessage ?? "An error occurred")
+            Text(!errorMessage.isEmpty ? errorMessage : (authViewModel.errorMessage ?? "An error occurred"))
         }
         .overlay {
             if authViewModel.isLoading {
