@@ -63,12 +63,12 @@ struct DiscoveryView: View {
                         }
                         .frame(
                             width: geometry.size.width - 32,
-                            height: geometry.size.height * 0.80
+                            height: geometry.size.height * 0.85
                         )
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 5)
+                        .padding(.top, 0)
                         
-                        Spacer(minLength: 5)
+                        Spacer(minLength: 0)
                         
                         // Action Buttons
                         HStack(spacing: 50) {
@@ -170,11 +170,14 @@ struct DiscoveryView: View {
             print("🔍 [DiscoveryView] ViewModel instance: \(ObjectIdentifier(discoveryViewModel))")
             print(String(repeating: "=", count: 60) + "\n")
             
-            // Reset state when view appears
+            // Force complete state reset when view appears (especially after sign-out/sign-in)
             offset = .zero
             color = .white
             cardId = UUID()
             viewId = UUID()
+            
+            // Reset ViewModel state to ensure clean slate
+            discoveryViewModel.resetState()
             
             print("✅ [DiscoveryView] State reset complete\n")
         }
@@ -340,10 +343,10 @@ struct ProfileCard: View {
             .frame(maxHeight: .infinity)
             
             // User Info
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(user.fullName)
-                        .font(.title)
+                        .font(.title2)
                         .fontWeight(.bold)
                     
                     Spacer()
@@ -381,7 +384,8 @@ struct ProfileCard: View {
                         .padding(.top, 4)
                 }
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.darkSecondary)
         }
