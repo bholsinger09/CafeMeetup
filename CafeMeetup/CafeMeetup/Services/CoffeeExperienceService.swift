@@ -1,6 +1,7 @@
 import Foundation
 
 /// Service to manage unique LatteLink features: study sessions, check-ins, and rewards
+@MainActor
 class CoffeeExperienceService: ObservableObject {
     static let shared = CoffeeExperienceService()
     

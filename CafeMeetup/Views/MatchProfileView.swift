@@ -1,15 +1,12 @@
 import SwiftUI
 import CoreLocation
 
-/// Detailed Match Profile View - Shows profile, actions, and new LatteLink features
+/// Detailed Match Profile View - Shows profile and actions
 struct MatchProfileView: View {
     let user: User
     let match: Match
-    @StateObject private var experienceService = CoffeeExperienceService.shared
     @Environment(\.dismiss) var dismiss
     @State private var showChat = false
-    @State private var showCreateStudySession = false
-    @State private var showCheckInSheet = false
     @State private var selectedTab = 0
     
     var body: some View {
@@ -21,9 +18,7 @@ struct MatchProfileView: View {
                     
                     // Action Buttons
                     ActionButtonsSection(
-                        showChat: $showChat,
-                        showCreateStudySession: $showCreateStudySession,
-                        showCheckInSheet: $showCheckInSheet
+                        showChat: $showChat
                     )
                     .padding()
                     
@@ -39,14 +34,14 @@ struct MatchProfileView: View {
                     
                     // Content based on selected tab
                     if selectedTab == 0 {
+                    // Content based on selected tab
+                    if selectedTab == 0 {
                         ProfileDetailsSection(user: user)
                     } else if selectedTab == 1 {
-                        ActivitySection(matchId: match.id)
+                        PlaceholderActivitySection()
                     } else {
-                        StudyTogetherSection(userId: user.id)
+                        PlaceholderStudySection()
                     }
-                }
-            }
             .background(Color(.systemGroupedBackground))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -58,12 +53,6 @@ struct MatchProfileView: View {
             }
             .sheet(isPresented: $showChat) {
                 ChatView(otherUser: user)
-            }
-            .sheet(isPresented: $showCreateStudySession) {
-                CreateStudySessionView()
-            }
-            .sheet(isPresented: $showCheckInSheet) {
-                CheckInView(matchId: match.id, matchName: user.fullName)
             }
         }
     }
@@ -147,6 +136,10 @@ struct ActionButtonsSection: View {
     @Binding var showCheckInSheet: Bool
     
     var body: some View {
+struct ActionButtonsSection: View {
+    @Binding var showChat: Bool
+    
+    var body: some View {
         HStack(spacing: 12) {
             // Message Button
             Button(action: { showChat = true }) {
@@ -163,8 +156,8 @@ struct ActionButtonsSection: View {
                 .cornerRadius(12)
             }
             
-            // Study Session Button (NEW FEATURE)
-            Button(action: { showCreateStudySession = true }) {
+            // Study Session Button (Coming Soon)
+            Button(action: {}) {
                 VStack(spacing: 4) {
                     Image(systemName: "book.fill")
                         .font(.title2)
@@ -173,13 +166,14 @@ struct ActionButtonsSection: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.purple)
+                .background(Color.purple.opacity(0.5))
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }
+            .disabled(true)
             
-            // Check-In Button (NEW FEATURE)
-            Button(action: { showCheckInSheet = true }) {
+            // Check-In Button (Coming Soon)
+            Button(action: {}) {
                 VStack(spacing: 4) {
                     Image(systemName: "location.fill")
                         .font(.title2)
@@ -188,19 +182,14 @@ struct ActionButtonsSection: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.green)
+                .background(Color.green.opacity(0.5))
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }
+            .disabled(true)
         }
     }
-}
-
-// MARK: - Profile Details Section
-
-struct ProfileDetailsSection: View {
-    let user: User
-    
+}   
     var body: some View {
         VStack(spacing: 16) {
             // Bio
@@ -274,47 +263,40 @@ struct ActivitySection: View {
     let matchId: String
     @StateObject private var experienceService = CoffeeExperienceService.shared
     
+// MARK: - Activity Section Placeholder
+
+struct PlaceholderActivitySection: View {
     var body: some View {
         VStack(spacing: 16) {
-            // Check-In History
-            let checkIns = experienceService.getCheckInsWithMatch(matchId)
+            EmptyStateView(
+                icon: "location.circle",
+                title: "Activity Feature Coming Soon!",
+                message: "Track your café check-ins, earned rewards, and achievements together."
+            )
+            .padding()
             
-            if checkIns.isEmpty {
-                EmptyStateView(
-                    icon: "location.circle",
-                    title: "No Check-Ins Yet",
-                    message: "Start your coffee date journey! Check in together at a café to earn rewards."
-                )
-                .padding()
-            } else {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("📍 Check-In History")
-                        .font(.headline)
-                        .padding(.horizontal)
-                    
-                    ForEach(checkIns) { checkIn in
-                        CheckInHistoryCard(checkIn: checkIn)
+            InfoCard(title: "🏆 Planned Features") {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "location.fill")
+                        Text("Check-in at cafés together")
+                    }
+                    HStack {
+                        Image(systemName: "star.fill")
+                        Text("Earn points and badges")
+                    }
+                    HStack {
+                        Image(systemName: "chart.bar.fill")
+                        Text("Track your coffee date history")
                     }
                 }
-                .padding()
-            }
-            
-            // Earned Badges Together
-            InfoCard(title: "🏆 Achievements Together") {
-                Text("Check in at 3 cafés together to unlock the 'Coffee Date Pro' badge!")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             }
             .padding(.horizontal)
         }
     }
-}
-
-struct CheckInHistoryCard: View {
-    let checkIn: CafeCheckIn
-    
-    var body: some View {
-        HStack(spacing: 12) {
+}       HStack(spacing: 12) {
             Image(systemName: "cup.and.saucer.fill")
                 .foregroundColor(.brown)
                 .font(.title2)
@@ -376,33 +358,18 @@ struct StudyTogetherSection: View {
             
             if upcomingSessions.isEmpty {
                 VStack(spacing: 20) {
-                    EmptyStateView(
-                        icon: "book.circle",
-                        title: "No Study Sessions",
-                        message: "Create a study session together to combine academics with romance!"
-                    )
-                    
-                    Text("💡 Study sessions are a great way to spend time together while being productive!")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                }
-                .padding()
-            } else {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("📚 Upcoming Study Sessions")
-                        .font(.headline)
-                        .padding(.horizontal)
-                    
-                    ForEach(upcomingSessions) { session in
-                        StudySessionCard(session: session)
-                    }
-                }
-                .padding()
-            }
+// MARK: - Study Together Section Placeholder
+
+struct PlaceholderStudySection: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            EmptyStateView(
+                icon: "book.circle",
+                title: "Study Sessions Coming Soon!",
+                message: "Create study sessions together to combine academics with romance!"
+            )
+            .padding()
             
-            // Study Tips
             InfoCard(title: "💡 Study Date Ideas") {
                 VStack(alignment: .leading, spacing: 8) {
                     StudyTip(icon: "☕️", text: "Start with coffee, review notes together")
@@ -416,97 +383,7 @@ struct StudyTogetherSection: View {
     }
 }
 
-struct StudyTip: View {
-    let icon: String
-    let text: String
-    
-    var body: some View {
-        HStack {
-            Text(icon)
-            Text(text)
-                .font(.subheadline)
-        }
-    }
-}
 
-// MARK: - Check-In View (NEW FEATURE)
-
-struct CheckInView: View {
-    let matchId: String
-    let matchName: String
-    @Environment(\.dismiss) var dismiss
-    @StateObject private var experienceService = CoffeeExperienceService.shared
-    @State private var selectedCafe = "The Human Bean"
-    @State private var coffeeOrdered = ""
-    @State private var rating = 5
-    @State private var notes = ""
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section("Location") {
-                    TextField("Coffee Shop", text: $selectedCafe)
-                }
-                
-                Section("Your Order") {
-                    TextField("What did you get?", text: $coffeeOrdered)
-                        .placeholder("e.g., Vanilla Latte")
-                }
-                
-                Section("How was it?") {
-                    HStack {
-                        Text("Rating")
-                        Spacer()
-                        HStack(spacing: 8) {
-                            ForEach(1...5, id: \.self) { star in
-                                Button(action: { rating = star }) {
-                                    Image(systemName: star <= rating ? "star.fill" : "star")
-                                        .foregroundColor(star <= rating ? .yellow : .gray)
-                                }
-                            }
-                        }
-                    }
-                    
-                    TextField("Notes (optional)", text: $notes, axis: .vertical)
-                        .lineLimit(3...6)
-                }
-                
-                Section {
-                    Text("🎉 You'll earn 30 points for checking in with \(matchName)!")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .navigationTitle("Check In")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Check In") {
-                        checkIn()
-                    }
-                    .disabled(selectedCafe.isEmpty)
-                }
-            }
-        }
-    }
-    
-    private func checkIn() {
-        Task {
-            try? await experienceService.checkIn(
-                userId: "current_user",
-                cafeId: "cafe1",
-                cafeName: selectedCafe,
-                location: CLLocationCoordinate2D(latitude: 43.6150, longitude: -116.2023),
-                matchId: matchId,
-                coffeeOrdered: coffeeOrdered.isEmpty ? nil : coffeeOrdered
-            )
-            dismiss()
-        }
-    }
-}
 
 // MARK: - Helper Views
 
@@ -533,17 +410,7 @@ struct InfoCard<Content: View>: View {
     }
 }
 
-extension View {
-    func placeholder(_ text: String) -> some View {
-        self.overlay(alignment: .leading) {
-            if let textField = self as? TextField<Text> {
-                Text(text)
-                    .foregroundColor(.gray)
-                    .allowsHitTesting(false)
-            }
-        }
-    }
-}
+
 
 #Preview {
     MatchProfileView(
