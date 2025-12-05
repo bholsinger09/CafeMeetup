@@ -25,11 +25,12 @@ struct DiscoveryView: View {
                                 
                                 if index == 0 {
                                     ProfileCard(user: user, offset: offset, color: color)
+                                        .rotationEffect(.degrees(Double(offset.width / 20)))
                                         .gesture(
                                             DragGesture()
                                                 .onChanged { gesture in
                                                     offset = gesture.translation
-                                                    withAnimation {
+                                                    withAnimation(.spring(response: 0.3)) {
                                                         if offset.width > 0 {
                                                             color = .green
                                                         } else {
@@ -38,7 +39,7 @@ struct DiscoveryView: View {
                                                     }
                                                 }
                                                 .onEnded { _ in
-                                                    withAnimation {
+                                                    withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                                                         swipeCard()
                                                     }
                                                 }
@@ -54,14 +55,19 @@ struct DiscoveryView: View {
                         
                         // Action Buttons
                         HStack(spacing: 50) {
-                            // Pass Button
+                            // Pass Button (X)
                             Button {
-                                withAnimation {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                                    offset = CGSize(width: -500, height: 0)
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     passUser()
+                                    offset = .zero
+                                    color = .white
                                 }
                             } label: {
                                 Image(systemName: "xmark")
-                                    .font(.system(size: 30))
+                                    .font(.system(size: 30, weight: .bold))
                                     .foregroundColor(.white)
                                     .frame(width: 70, height: 70)
                                     .background(
@@ -72,23 +78,30 @@ struct DiscoveryView: View {
                                         )
                                     )
                                     .clipShape(Circle())
-                                    .shadow(color: Color.red.opacity(0.3), radius: 8)
+                                    .shadow(color: Color.red.opacity(0.4), radius: 10, x: 0, y: 4)
                             }
+                            .scaleEffect(offset.width < -50 ? 1.1 : 1.0)
                             
-                            // Like Button
+                            // Like Button (Heart)
                             Button {
-                                withAnimation {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                                    offset = CGSize(width: 500, height: 0)
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     likeUser()
+                                    offset = .zero
+                                    color = .white
                                 }
                             } label: {
                                 Image(systemName: "heart.fill")
-                                    .font(.system(size: 30))
+                                    .font(.system(size: 30, weight: .bold))
                                     .foregroundColor(.white)
                                     .frame(width: 70, height: 70)
                                     .background(Color.accentGradient)
                                     .clipShape(Circle())
-                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                                    .shadow(color: Color.primaryPink.opacity(0.4), radius: 10, x: 0, y: 4)
                             }
+                            .scaleEffect(offset.width > 50 ? 1.1 : 1.0)
                         }
                         .padding(.bottom, 30)
                     } else {
@@ -138,15 +151,32 @@ struct DiscoveryView: View {
     }
     
     private func swipeCard() {
-        if abs(offset.width) > 100 {
-            if offset.width > 0 {
-                likeUser()
-            } else {
-                passUser()
+        let swipeThreshold: CGFloat = 100
+        
+        if abs(offset.width) > swipeThreshold {
+            // Animate card off screen
+            let direction: CGFloat = offset.width > 0 ? 1 : -1
+            withAnimation(.easeOut(duration: 0.3)) {
+                offset = CGSize(width: direction * 500, height: 0)
             }
+            
+            // Perform action and reset after animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if direction > 0 {
+                    likeUser()
+                } else {
+                    passUser()
+                }
+                
+                // Reset for next card
+                offset = .zero
+                color = .white
+            }
+        } else {
+            // Snap back if didn't swipe far enough
+            offset = .zero
+            color = .white
         }
-        offset = .zero
-        color = .white
     }
     
     private func likeUser() {
@@ -207,6 +237,50 @@ struct ProfileCard: View {
                             .foregroundColor(.white.opacity(0.5))
                     }
                 }
+                
+                // Like indicator (right swipe)
+                if offset.width > 50 {
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Text("LIKE")
+                                .font(.system(size: 50, weight: .black))
+                                .foregroundColor(.green)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.green, lineWidth: 5)
+                                        .padding(8)
+                                )
+                                .rotationEffect(.degrees(-20))
+                                .padding()
+                        }
+                        Spacer()
+                    }
+                    .opacity(min(Double(offset.width / 100), 1.0))
+                }
+                
+                // Pass indicator (left swipe)
+                if offset.width < -50 {
+                    VStack {
+                        HStack {
+                            Text("NOPE")
+                                .font(.system(size: 50, weight: .black))
+                                .foregroundColor(.red)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.red, lineWidth: 5)
+                                        .padding(8)
+                                )
+                                .rotationEffect(.degrees(20))
+                                .padding()
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                    .opacity(min(Double(-offset.width / 100), 1.0))
+                }
             }
             .frame(height: 450)
             
@@ -263,7 +337,6 @@ struct ProfileCard: View {
                 .stroke(color.opacity(0.5), lineWidth: 3)
         )
         .offset(offset)
-        .rotationEffect(.degrees(Double(offset.width / 20)))
     }
 }
 
