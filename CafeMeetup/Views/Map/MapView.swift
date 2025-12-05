@@ -113,6 +113,7 @@ struct UserMapMarker: View {
 struct UserDetailSheet: View {
     let user: User
     @Environment(\.dismiss) var dismiss
+    @State private var showingConnectionConfirmation = false
     
     var body: some View {
         NavigationStack {
@@ -170,7 +171,7 @@ struct UserDetailSheet: View {
                     
                     // Action Button
                     Button {
-                        // TODO: Start a conversation or send connection request
+                        showingConnectionConfirmation = true
                     } label: {
                         Text("Connect")
                             .font(.headline)
@@ -191,6 +192,15 @@ struct UserDetailSheet: View {
                         dismiss()
                     }
                 }
+            }
+            .alert("Send Connection Request?", isPresented: $showingConnectionConfirmation) {
+                Button("Cancel", role: .cancel) { }
+                Button("Send Request") {
+                    // Connection request sent - would integrate with backend
+                    dismiss()
+                }
+            } message: {
+                Text("Send a connection request to \(user.fullName)? You'll be able to chat and plan coffee dates if they accept.")
             }
         }
     }

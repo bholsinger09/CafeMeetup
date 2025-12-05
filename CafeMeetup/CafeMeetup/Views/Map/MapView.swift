@@ -226,6 +226,7 @@ struct UserMapMarker: View {
 struct UserDetailSheet: View {
     let user: User
     @Environment(\.dismiss) var dismiss
+    @State private var showingConnectionConfirmation = false
     
     var body: some View {
         NavigationStack {
@@ -289,7 +290,7 @@ struct UserDetailSheet: View {
                     
                     // Action Button
                     Button {
-                        // TODO: Start a conversation or send connection request
+                        showingConnectionConfirmation = true
                     } label: {
                         Text("Connect")
                             .font(.headline)

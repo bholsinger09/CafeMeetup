@@ -51,9 +51,20 @@ struct MainTabView: View {
 
 // MARK: - Study Sessions Tab
 
+// MARK: - Study Session Model
+struct StudySessionItem: Identifiable {
+    let id = UUID()
+    let subject: String
+    let topic: String
+    let date: Date
+    let duration: Int
+    let createdAt: Date
+}
+
 struct StudySessionsTab: View {
     @State private var showCreateSession = false
     @State private var selectedSubject: String?
+    @State private var sessions: [StudySessionItem] = []
     
     let subjects = ["Computer Science", "Mathematics", "Biology", "Chemistry", "Physics", 
                    "Engineering", "Business", "Psychology", "English", "History", 
@@ -118,6 +129,22 @@ struct StudySessionsTab: View {
                         .padding(.horizontal)
                     }
                     
+                    // Study Sessions List
+                    if !filteredSessions.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Your Study Sessions")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.horizontal)
+                            
+                            ForEach(filteredSessions) { session in
+                                StudySessionCard(session: session)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        .padding(.vertical)
+                    }
+                    
                     // Info Section
                     VStack(spacing: 16) {
                         InfoBox(
@@ -146,9 +173,70 @@ struct StudySessionsTab: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showCreateSession) {
-                CreateSessionSheet(subjects: subjects)
+                CreateSessionSheet(subjects: subjects) { newSession in
+                    sessions.append(newSession)
+                }
             }
         }
+    }
+    
+    var filteredSessions: [StudySessionItem] {
+        if let subject = selectedSubject {
+            return sessions.filter { $0.subject == subject }
+        }
+        return sessions
+    }
+}
+
+struct StudySessionCard: View {
+    let session: StudySessionItem
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(session.subject)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(.blue)
+                    
+                    Text(session.topic.isEmpty ? "Study Session" : session.topic)
+                        .font(.headline)
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Image(systemName: "clock.fill")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text("\(session.duration) min")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            HStack {
+                Image(systemName: "calendar")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text(session.date, style: .date)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Image(systemName: "clock")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text(session.date, style: .time)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
     }
 }
 
@@ -181,6 +269,8 @@ struct InfoBox: View {
 
 struct CreateSessionSheet: View {
     let subjects: [String]
+    let onCreate: (StudySessionItem) -> Void
+    
     @Environment(\.dismiss) var dismiss
     @State private var selectedSubject = "Computer Science"
     @State private var topic = ""
@@ -214,7 +304,14 @@ struct CreateSessionSheet: View {
                 
                 Section {
                     Button("Create Study Session") {
-                        // TODO: Save to CoffeeExperienceService when integrated
+                        let newSession = StudySessionItem(
+                            subject: selectedSubject,
+                            topic: topic,
+                            date: selectedDate,
+                            duration: duration,
+                            createdAt: Date()
+                        )
+                        onCreate(newSession)
                         dismiss()
                     }
                     .frame(maxWidth: .infinity)

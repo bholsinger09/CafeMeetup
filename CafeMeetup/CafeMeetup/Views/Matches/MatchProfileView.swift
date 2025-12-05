@@ -10,6 +10,8 @@ struct MatchProfileView: View {
     @State private var showCreateStudySession = false
     @State private var showCheckInSheet = false
     @State private var selectedTab = 0
+    @State private var showSuccessAlert = false
+    @State private var successMessage = ""
     
     var body: some View {
         NavigationView {
@@ -59,10 +61,21 @@ struct MatchProfileView: View {
                 ChatView(otherUser: user)
             }
             .sheet(isPresented: $showCreateStudySession) {
-                CreateStudySessionSheet(match: match, userId: user.id)
+                CreateStudySessionSheet(match: match, userId: user.id) { subject, topic in
+                    successMessage = "Study session created! You'll earn 25 points when you complete it."
+                    showSuccessAlert = true
+                }
             }
             .sheet(isPresented: $showCheckInSheet) {
-                CheckInSheet(match: match, userId: user.id)
+                CheckInSheet(match: match, userId: user.id) { cafeName in
+                    successMessage = "Checked in at \(cafeName)! You earned 30 points ☕️"
+                    showSuccessAlert = true
+                }
+            }
+            .alert("Success!", isPresented: $showSuccessAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(successMessage)
             }
         }
     }
@@ -339,6 +352,8 @@ struct StudyTip: View {
 struct CreateStudySessionSheet: View {
     let match: Match
     let userId: String
+    let onSuccess: (String, String) -> Void
+    
     @Environment(\.dismiss) var dismiss
     @State private var subject = "Computer Science"
     @State private var topic = ""
@@ -373,7 +388,8 @@ struct CreateStudySessionSheet: View {
                 
                 Section {
                     Button("Create Study Session") {
-                        // TODO: Save study session
+                        // Save study session and notify parent
+                        onSuccess(subject, topic)
                         dismiss()
                     }
                     .frame(maxWidth: .infinity)
@@ -398,6 +414,8 @@ struct CreateStudySessionSheet: View {
 struct CheckInSheet: View {
     let match: Match
     let userId: String
+    let onSuccess: (String) -> Void
+    
     @Environment(\.dismiss) var dismiss
     @State private var cafeName = ""
     @State private var coffeeOrdered = ""
@@ -433,7 +451,9 @@ struct CheckInSheet: View {
                             .foregroundColor(.green)
                         
                         Button("Check In Together") {
-                            // TODO: Save check-in
+                            // Save check-in and notify parent
+                            let finalCafeName = cafeName.isEmpty ? "this café" : cafeName
+                            onSuccess(finalCafeName)
                             dismiss()
                         }
                         .frame(maxWidth: .infinity)
