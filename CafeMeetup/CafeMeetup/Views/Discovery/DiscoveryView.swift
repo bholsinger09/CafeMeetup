@@ -159,6 +159,16 @@ struct DiscoveryView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(.container, edges: .top)
+        .overlay {
+            // Match Popup - must be outside GeometryReader to display on top
+            if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
+                let _ = print("🎉 [DiscoveryView] Rendering MatchPopupView for \(matchedUser.fullName)")
+                MatchPopupView(matchedUser: matchedUser) {
+                    print("🔴 [DiscoveryView] Match popup dismissed")
+                    discoveryViewModel.showMatchPopup = false
+                }
+            }
+        }
         .preferredColorScheme(.dark)
         .task {
             await loadUsers()
@@ -187,13 +197,6 @@ struct DiscoveryView: View {
         }
         .onDisappear {
             print("\n👋 [DiscoveryView] onDisappear called - ViewID: \(viewId)\n")
-        }
-        .overlay {
-            if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
-                MatchPopupView(matchedUser: matchedUser) {
-                    discoveryViewModel.showMatchPopup = false
-                }
-            }
         }
     }
     
@@ -352,8 +355,10 @@ struct ProfileCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(user.fullName)
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.bold)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                     
                     Spacer()
                     
