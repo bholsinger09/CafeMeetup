@@ -20,14 +20,15 @@ struct DiscoveryView: View {
                     } else if let currentUser = discoveryViewModel.currentUser {
                         // Card Stack
                         ZStack {
-                            // Show next 2 cards in background for depth
-                            ForEach(0..<min(3, discoveryViewModel.potentialMatches.count - discoveryViewModel.currentUserIndex), id: \.self) { index in
+                            // Show next 2 cards in background for depth (reverse order so top card is on top)
+                            ForEach((0..<min(3, discoveryViewModel.potentialMatches.count - discoveryViewModel.currentUserIndex)).reversed(), id: \.self) { index in
                                 let user = discoveryViewModel.potentialMatches[discoveryViewModel.currentUserIndex + index]
                                 
                                 if index == 0 {
                                     ProfileCard(user: user, offset: offset, color: color)
                                         .rotationEffect(.degrees(Double(offset.width / 20)))
                                         .id(cardId)
+                                        .zIndex(1)
                                         .gesture(
                                             DragGesture()
                                                 .onChanged { gesture in
@@ -50,6 +51,7 @@ struct DiscoveryView: View {
                                     ProfileCard(user: user, offset: .zero, color: .white)
                                         .scaleEffect(1 - CGFloat(index) * 0.05)
                                         .offset(y: CGFloat(index) * 10)
+                                        .zIndex(0)
                                 }
                             }
                         }
