@@ -62,10 +62,10 @@ struct DiscoveryView: View {
                             }
                         }
                         .frame(
-                            maxWidth: .infinity,
-                            maxHeight: geometry.size.height * 0.72
+                            width: geometry.size.width - 32,
+                            height: geometry.size.height * 0.72
                         )
-                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity)
                         .padding(.top, 10)
                         
                         Spacer(minLength: 10)
