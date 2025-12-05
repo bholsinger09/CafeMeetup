@@ -13,7 +13,7 @@ struct DiscoveryView: View {
                 Color.backgroundGradient
                     .ignoresSafeArea()
                 
-                VStack {
+                VStack(spacing: 0) {
                     if discoveryViewModel.isLoading {
                         ProgressView()
                             .scaleEffect(1.5)
@@ -55,7 +55,11 @@ struct DiscoveryView: View {
                                 }
                             }
                         }
-                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: 600)
+                        .padding(.horizontal)
+                        .padding(.top, 20)
+                        
+                        Spacer()
                         
                         // Action Buttons
                         HStack(spacing: 50) {
@@ -229,7 +233,7 @@ struct ProfileCard: View {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 450)
+                        .frame(maxHeight: .infinity)
                         .clipped()
                 } else {
                     Rectangle()
@@ -295,7 +299,7 @@ struct ProfileCard: View {
                     .opacity(min(Double(-offset.width / 100), 1.0))
                 }
             }
-            .frame(height: 450)
+            .frame(maxHeight: .infinity)
             
             // User Info
             VStack(alignment: .leading, spacing: 12) {
