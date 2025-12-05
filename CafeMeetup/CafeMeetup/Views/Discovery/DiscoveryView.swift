@@ -5,6 +5,7 @@ struct DiscoveryView: View {
     @StateObject private var discoveryViewModel = DiscoveryViewModel()
     @State private var offset = CGSize.zero
     @State private var color: Color = .white
+    @State private var cardId = UUID()
     
     var body: some View {
         NavigationStack {
@@ -26,6 +27,7 @@ struct DiscoveryView: View {
                                 if index == 0 {
                                     ProfileCard(user: user, offset: offset, color: color)
                                         .rotationEffect(.degrees(Double(offset.width / 20)))
+                                        .id(cardId)
                                         .gesture(
                                             DragGesture()
                                                 .onChanged { gesture in
@@ -64,6 +66,7 @@ struct DiscoveryView: View {
                                     passUser()
                                     offset = .zero
                                     color = .white
+                                    cardId = UUID()
                                 }
                             } label: {
                                 Image(systemName: "xmark")
@@ -91,6 +94,7 @@ struct DiscoveryView: View {
                                     likeUser()
                                     offset = .zero
                                     color = .white
+                                    cardId = UUID()
                                 }
                             } label: {
                                 Image(systemName: "heart.fill")
@@ -140,6 +144,12 @@ struct DiscoveryView: View {
             .task {
                 await loadUsers()
             }
+            .onAppear {
+                // Reset state when view appears
+                offset = .zero
+                color = .white
+                cardId = UUID()
+            }
             .overlay {
                 if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
                     MatchPopupView(matchedUser: matchedUser) {
@@ -171,6 +181,7 @@ struct DiscoveryView: View {
                 // Reset for next card
                 offset = .zero
                 color = .white
+                cardId = UUID()
             }
         } else {
             // Snap back if didn't swipe far enough
