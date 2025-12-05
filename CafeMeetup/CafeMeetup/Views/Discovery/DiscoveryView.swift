@@ -12,11 +12,11 @@ struct DiscoveryView: View {
         let _ = print("🎨 [DiscoveryView] body being rendered")
         let _ = print("🎨 [DiscoveryView] User: \(authViewModel.currentUser?.email ?? "none")")
         
-        return GeometryReader { outerGeometry in
-            ZStack {
-                Color.backgroundGradient
-                    .ignoresSafeArea(.all)
-                
+        return ZStack {
+            Color.backgroundGradient
+                .ignoresSafeArea(.all)
+            
+            GeometryReader { outerGeometry in
                 VStack(spacing: 0) {
                     let _ = print("📐 [DiscoveryView] Available space - width: \(outerGeometry.size.width), height: \(outerGeometry.size.height)")
                     let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.90)")
@@ -158,7 +158,7 @@ struct DiscoveryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .ignoresSafeArea(.container, edges: .top)
+        .edgesIgnoringSafeArea(.all)
         .overlay {
             // Match Popup - must be outside GeometryReader to display on top
             if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
