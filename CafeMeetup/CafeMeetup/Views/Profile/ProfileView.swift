@@ -112,6 +112,10 @@ struct ProfileView: View {
                         .padding(.horizontal)
                     }
                     
+                    // Rewards & Achievements Section
+                    RewardsPreviewCard()
+                        .padding(.horizontal)
+                    
                     // Account Actions Section
                     VStack(spacing: 12) {
                         // Account Settings Button
@@ -206,6 +210,352 @@ struct ProfileDetailRow: View {
             Spacer()
         }
         .padding()
+    }
+}
+
+// MARK: - Rewards Preview Card
+
+struct RewardsPreviewCard: View {
+    @State private var rewards = CoffeeRewards(
+        points: 150,
+        level: 3,
+        streak: 5,
+        totalCheckIns: 8,
+        totalStudySessions: 2,
+        uniqueCafesVisited: ["cafe1", "cafe2", "cafe3"],
+        unlockedBadges: ["first_latte", "social_butterfly", "morning_person"]
+    )
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("🏆 Rewards & Achievements")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                Spacer()
+                NavigationLink {
+                    FullRewardsView()
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("View All")
+                            .font(.subheadline)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.primaryPink)
+                }
+            }
+            
+            // Level Display
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Level \(rewards.level)")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.orange, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                    Text(rewards.currentLevelName)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(rewards.points) pts")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Text("\(rewards.pointsToNextLevel) to next")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            // Progress Bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.gray.opacity(0.3))
+                    
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [.orange, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * progressPercentage)
+                }
+            }
+            .frame(height: 8)
+            
+            // Quick Stats
+            HStack(spacing: 20) {
+                QuickStat(icon: "flame.fill", value: "\(rewards.streak)", label: "Streak", color: .orange)
+                QuickStat(icon: "star.fill", value: "\(rewards.unlockedBadges.count)", label: "Badges", color: .yellow)
+                QuickStat(icon: "location.fill", value: "\(rewards.uniqueCafesVisited.count)", label: "Cafés", color: .green)
+            }
+        }
+        .padding()
+        .background(Color.darkSecondary)
+        .cornerRadius(12)
+        .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+        )
+    }
+    
+    private var progressPercentage: Double {
+        let levelPoints = rewards.points % 100
+        return Double(levelPoints) / 100.0
+    }
+}
+
+struct QuickStat: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+            Text(value)
+                .font(.headline)
+                .foregroundColor(.white)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Full Rewards View
+
+struct FullRewardsView: View {
+    @State private var rewards = CoffeeRewards(
+        points: 150,
+        level: 3,
+        streak: 5,
+        totalCheckIns: 8,
+        totalStudySessions: 2,
+        uniqueCafesVisited: ["cafe1", "cafe2", "cafe3"],
+        unlockedBadges: ["first_latte", "social_butterfly", "morning_person"]
+    )
+    @State private var selectedTab = 0
+    @State private var allBadges = CoffeeBadgeSystem.allBadges
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Rewards Summary
+                VStack(spacing: 16) {
+                    Text("Level \(rewards.level)")
+                        .font(.system(size: 40, weight: .bold))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.orange, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                    
+                    Text(rewards.currentLevelName)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    
+                    // Progress
+                    VStack(spacing: 4) {
+                        HStack {
+                            Text("\(rewards.points) points")
+                                .font(.caption)
+                            Spacer()
+                            Text("\(rewards.pointsToNextLevel) to next level")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.secondary)
+                        
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(Color.gray.opacity(0.3))
+                                
+                                Capsule()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [.orange, .pink],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .frame(width: geometry.size.width * progressPercentage)
+                            }
+                        }
+                        .frame(height: 8)
+                    }
+                    .padding(.horizontal)
+                    
+                    // Stats Grid
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                        StatCard(icon: "flame.fill", value: "\(rewards.streak)", label: "Day Streak", color: .orange)
+                        StatCard(icon: "checkmark.circle.fill", value: "\(rewards.totalCheckIns)", label: "Check-ins", color: .green)
+                        StatCard(icon: "star.fill", value: "\(rewards.unlockedBadges.count)", label: "Badges", color: .yellow)
+                        StatCard(icon: "book.fill", value: "\(rewards.totalStudySessions)", label: "Study Sessions", color: .purple)
+                        StatCard(icon: "cup.and.saucer.fill", value: "\(rewards.uniqueCafesVisited.count)", label: "Unique Cafés", color: .brown)
+                        StatCard(icon: "heart.fill", value: "\(rewards.points)", label: "Total Points", color: .pink)
+                    }
+                    .padding(.horizontal)
+                }
+                .padding()
+                .background(Color.darkSecondary)
+                .cornerRadius(16)
+                .padding(.horizontal)
+                
+                // Tabs
+                Picker("View", selection: $selectedTab) {
+                    Text("Unlocked (\(unlockedBadges.count))").tag(0)
+                    Text("Locked (\(lockedBadges.count))").tag(1)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                
+                // Badges
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
+                    ForEach(selectedTab == 0 ? unlockedBadges : lockedBadges) { badge in
+                        BadgeCardView(badge: badge)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+        .background(Color.darkBackground)
+        .navigationTitle("Rewards & Badges")
+        .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.dark)
+    }
+    
+    private var progressPercentage: Double {
+        let levelPoints = rewards.points % 100
+        return Double(levelPoints) / 100.0
+    }
+    
+    private var unlockedBadges: [CoffeeBadge] {
+        allBadges.filter { rewards.unlockedBadges.contains($0.id) }
+            .map { badge in
+                var unlocked = badge
+                unlocked.isUnlocked = true
+                return unlocked
+            }
+    }
+    
+    private var lockedBadges: [CoffeeBadge] {
+        allBadges.filter { !rewards.unlockedBadges.contains($0.id) }
+    }
+}
+
+struct StatCard: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(color)
+            
+            Text(value)
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+            
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.darkSecondary.opacity(0.5))
+        .cornerRadius(12)
+    }
+}
+
+struct BadgeCardView: View {
+    let badge: CoffeeBadge
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            // Badge Icon
+            ZStack {
+                Circle()
+                    .fill(badge.isUnlocked ? rarityColor : Color.gray.opacity(0.3))
+                    .frame(width: 70, height: 70)
+                
+                Text(badge.emoji)
+                    .font(.system(size: 35))
+                    .grayscale(badge.isUnlocked ? 0 : 1)
+                    .opacity(badge.isUnlocked ? 1 : 0.5)
+            }
+            
+            VStack(spacing: 4) {
+                Text(badge.name)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                
+                Text(badge.rarity.rawValue)
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(rarityColor)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(rarityColor.opacity(0.2))
+                    .cornerRadius(4)
+                
+                Text(badge.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(.top, 2)
+                
+                if !badge.isUnlocked {
+                    Text("🔒 \(badge.unlockCriteria)")
+                        .font(.caption2)
+                        .foregroundColor(.blue)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(3)
+                        .padding(.top, 4)
+                }
+            }
+        }
+        .padding()
+        .background(Color.darkSecondary)
+        .cornerRadius(12)
+    }
+    
+    private var rarityColor: Color {
+        switch badge.rarity {
+        case .common: return .gray
+        case .rare: return .blue
+        case .epic: return .purple
+        case .legendary: return .orange
+        }
     }
 }
 

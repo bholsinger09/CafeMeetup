@@ -1,4 +1,6 @@
 import Foundation
+import Combine
+import CoreLocation
 
 /// Service to manage unique LatteLink features: study sessions, check-ins, and rewards
 @MainActor
