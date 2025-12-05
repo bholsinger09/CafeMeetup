@@ -150,11 +150,15 @@ struct DiscoveryView: View {
             await loadUsers()
         }
         .onAppear {
+            print("\n" + String(repeating: "=", count: 60))
             print("🔍 [DiscoveryView] onAppear called")
+            print("🔍 [DiscoveryView] ViewID: \(viewId)")
             print("🔍 [DiscoveryView] Auth state: \(authViewModel.isAuthenticated)")
             print("🔍 [DiscoveryView] Current user: \(authViewModel.currentUser?.fullName ?? "nil")")
             print("🔍 [DiscoveryView] Potential matches count: \(discoveryViewModel.potentialMatches.count)")
             print("🔍 [DiscoveryView] Current index: \(discoveryViewModel.currentUserIndex)")
+            print("🔍 [DiscoveryView] ViewModel instance: \(ObjectIdentifier(discoveryViewModel))")
+            print(String(repeating: "=", count: 60) + "\n")
             
             // Reset state when view appears
             offset = .zero
@@ -162,7 +166,10 @@ struct DiscoveryView: View {
             cardId = UUID()
             viewId = UUID()
             
-            print("🔍 [DiscoveryView] State reset complete")
+            print("✅ [DiscoveryView] State reset complete\n")
+        }
+        .onDisappear {
+            print("\n👋 [DiscoveryView] onDisappear called - ViewID: \(viewId)\n")
         }
         .overlay {
             if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {

@@ -8,6 +8,7 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             DiscoveryView()
+                .id(authViewModel.isAuthenticated ? "discovery-auth" : "discovery-unauth")
                 .tabItem {
                     Label("Discover", systemImage: "heart.circle.fill")
                 }
