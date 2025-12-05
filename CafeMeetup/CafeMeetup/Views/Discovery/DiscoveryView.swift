@@ -395,11 +395,12 @@ struct ProfileCard: View {
                         .padding(.top, 4)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 24)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.darkSecondary)
         }
+        .background(Color.darkSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .shadow(color: Color.black.opacity(0.2), radius: 10)
         .overlay(
