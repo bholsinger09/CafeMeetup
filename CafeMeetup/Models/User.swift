@@ -6,6 +6,8 @@ struct User: Identifiable, Codable, Equatable {
     var email: String
     var fullName: String
     var college: String
+    var major: String? // Academic major for study matching
+    var graduationYear: Int? // For age/stage matching
     var state: String
     var city: String
     var favoriteCoffee: String
@@ -15,12 +17,15 @@ struct User: Identifiable, Codable, Equatable {
     var profileImageURL: String?
     var createdAt: Date
     var updatedAt: Date
+    var studyPreferences: [String]? // Subjects interested in studying
     
     init(
         id: String = UUID().uuidString,
         email: String,
         fullName: String,
         college: String,
+        major: String? = nil,
+        graduationYear: Int? = nil,
         state: String,
         city: String,
         favoriteCoffee: String,
@@ -29,12 +34,15 @@ struct User: Identifiable, Codable, Equatable {
         location: Location? = nil,
         profileImageURL: String? = nil,
         createdAt: Date = Date(),
-        updatedAt: Date = Date()
+        updatedAt: Date = Date(),
+        studyPreferences: [String]? = nil
     ) {
         self.id = id
         self.email = email
         self.fullName = fullName
         self.college = college
+        self.major = major
+        self.graduationYear = graduationYear
         self.state = state
         self.city = city
         self.favoriteCoffee = favoriteCoffee
@@ -44,6 +52,7 @@ struct User: Identifiable, Codable, Equatable {
         self.profileImageURL = profileImageURL
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.studyPreferences = studyPreferences
     }
 }
 

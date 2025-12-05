@@ -11,38 +11,52 @@ Find your perfect match over coffee! LatteLink connects college students who sha
 
 ## Description (4000 characters max)
 
-**☕ Where Coffee Meets Connection**
+**☕ Where Coffee, Study & Romance Meet**
 
-LatteLink is the dating app designed exclusively for college students who believe the best conversations happen over a great cup of coffee. Whether you're a latte lover, espresso enthusiast, or cold brew connoisseur, find someone who shares your passion for coffee and connection.
+LatteLink isn't just another dating app—it's the ONLY app that combines dating, study sessions, and coffee culture into one unique college experience. Designed exclusively for students who know that the best connections happen over great coffee and shared goals.
+
+**🎓 WHAT MAKES US UNIQUE**
+
+**Study Session Matching** - Create or join study groups at local cafés. Turn study dates into coffee dates! Match with people in your major, find study partners for tough classes, and build connections through academic collaboration.
+
+**Coffee Badge System** - Earn exclusive badges and level up! From "First Latte" to "Latte Legend," unlock achievements for café check-ins, study sessions, and real dates. Show off your Coffee Connoisseur status!
+
+**Café Check-In Rewards** - Get points for actually meeting up! Check in at cafés with your matches, track your favorite spots, and earn rewards for being social. Build your streak and unlock legendary badges.
+
+**Academic Profiles** - Match based on major, graduation year, and study interests. Find someone who shares your passion for both coffee AND computer science!
 
 **💕 HOW IT WORKS**
 
-• Create your profile with your favorite coffee order and go-to café
+• Create your profile with major, coffee preferences, and study interests
 • Swipe through fellow students at your college
-• Match with people who share your coffee preferences
-• Start chatting and plan your coffee date
-• Discover local coffee shops on our interactive map
+• Match based on shared academic interests and coffee tastes
+• Start chatting with icebreakers or create a study session together
+• Check in at cafés to earn rewards and track your dating journey
+• Discover local coffee shops perfect for studying or dates
 
 **✨ PREMIUM FEATURES**
 
-Make your conversations more memorable with premium messaging features:
-
-• **Send Virtual Gifts** - Coffee cups, hearts, roses, cakes, stars, and sparkles to show you care
-• **Icebreaker Questions** - Break the ice with fun, coffee-themed conversation starters
-• **Priority Messages** - Make your message stand out in their inbox
-• **Read Receipts** - Know when they've seen your message
+• **Virtual Gifts** - Coffee cups, hearts, roses, cakes, stars, and sparkles
+• **Icebreaker Questions** - Coffee-themed conversation starters
+• **Priority Messages** - Stand out in their inbox
+• **Read Receipts** - See when messages are read
+• **Exclusive Badges** - Unlock rare and legendary achievements
 
 **🎯 WHY LATTELINK?**
 
-**College-Focused** - Only verified college students, ensuring authentic connections with people in your community
+**Study-to-Date Pipeline** - The ONLY app where study sessions lead to relationships. Meet through shared academic goals, not just superficial swipes.
 
-**Coffee Culture** - Bond over shared coffee preferences and discover new cafés together
+**Gamified Experience** - Earn badges, level up, maintain streaks, and compete on leaderboards. Dating meets achievement system!
 
-**Location-Based** - Find matches nearby on campus and see where other coffee lovers hang out
+**Verified Check-Ins** - Proof of real dates! Check in together at cafés for rewards. No catfishing, just authentic coffee dates.
 
-**Safe & Respectful** - Easy account management with the ability to unmatch and control your experience
+**Academic Matching** - Match by major, classes, and study needs. Find your perfect study partner who might become more.
 
-**Real Connections** - Skip the small talk with icebreaker questions designed to spark meaningful conversations
+**College-Focused** - Only verified college students on your campus
+
+**Coffee Culture** - Bond over shared coffee preferences and café discoveries
+
+**Real-World Rewards** - Earn points and badges for actually meeting up, not just messaging
 
 **🗺️ DISCOVER COFFEE SHOPS**
 
@@ -54,14 +68,16 @@ Our built-in map helps you:
 
 **📱 FEATURES AT A GLANCE**
 
-✓ Smart matching algorithm based on location and preferences
-✓ Real-time messaging with your matches
-✓ Photo profiles to showcase your personality
-✓ Dark mode support for late-night coffee planning
-✓ Privacy controls and easy account deletion
-✓ Coffee preference matching
-✓ Campus location filtering
-✓ Interactive café map
+✓ **Study Session Matching** - Create/join study groups at cafés
+✓ **Badge & Achievement System** - 15+ unique badges to unlock
+✓ **Café Check-In Rewards** - Earn points for real meetups
+✓ **Academic Profile Matching** - Match by major and classes
+✓ **Level Up System** - Progress from Coffee Newbie to Legend
+✓ **Streak Tracking** - Maintain daily activity for bonus points
+✓ Real-time messaging with virtual gifts
+✓ Interactive café map with study spots
+✓ Dark mode support
+✓ Privacy controls and account deletion
 
 **💬 WHAT USERS ARE SAYING**
 
