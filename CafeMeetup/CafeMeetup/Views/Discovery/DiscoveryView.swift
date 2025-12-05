@@ -282,8 +282,8 @@ struct ProfileCard: View {
                    let uiImage = UIImage.fromBase64String(profileImageURL) {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFill()
-                        .frame(maxHeight: .infinity)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
                 } else {
                     Rectangle()
