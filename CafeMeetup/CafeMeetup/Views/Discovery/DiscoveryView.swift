@@ -19,7 +19,7 @@ struct DiscoveryView: View {
                 
                 VStack(spacing: 0) {
                     let _ = print("📐 [DiscoveryView] Available space - width: \(outerGeometry.size.width), height: \(outerGeometry.size.height)")
-                    let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.85)")
+                    let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.90)")
                     
                     if discoveryViewModel.isLoading {
                         ProgressView()
@@ -67,14 +67,11 @@ struct DiscoveryView: View {
                         }
                         .frame(
                             width: outerGeometry.size.width - 32,
-                            height: outerGeometry.size.height * 0.85
+                            height: outerGeometry.size.height * 0.90
                         )
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 0)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         
-                        Spacer(minLength: 0)
-                        
-                        // Action Buttons
+                        // Action Buttons (positioned at bottom)
                         HStack(spacing: 50) {
                             // Pass Button (X)
                             Button {
