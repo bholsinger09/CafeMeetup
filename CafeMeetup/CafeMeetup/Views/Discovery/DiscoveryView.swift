@@ -8,10 +8,18 @@ struct DiscoveryView: View {
     @State private var cardId = UUID()
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.backgroundGradient
-                    .ignoresSafeArea()
+        ZStack {
+            Color.backgroundGradient
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Title
+                Text("Discover")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, 10)
                 
                 VStack(spacing: 0) {
                     if discoveryViewModel.isLoading {
@@ -145,22 +153,21 @@ struct DiscoveryView: View {
                     }
                 }
             }
-            .navigationTitle("Discover")
-            .preferredColorScheme(.dark)
-            .task {
-                await loadUsers()
-            }
-            .onAppear {
-                // Reset state when view appears
-                offset = .zero
-                color = .white
-                cardId = UUID()
-            }
-            .overlay {
-                if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
-                    MatchPopupView(matchedUser: matchedUser) {
-                        discoveryViewModel.showMatchPopup = false
-                    }
+        }
+        .preferredColorScheme(.dark)
+        .task {
+            await loadUsers()
+        }
+        .onAppear {
+            // Reset state when view appears
+            offset = .zero
+            color = .white
+            cardId = UUID()
+        }
+        .overlay {
+            if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
+                MatchPopupView(matchedUser: matchedUser) {
+                    discoveryViewModel.showMatchPopup = false
                 }
             }
         }
