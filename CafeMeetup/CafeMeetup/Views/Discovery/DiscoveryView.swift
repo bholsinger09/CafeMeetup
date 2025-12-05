@@ -158,7 +158,6 @@ struct DiscoveryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .edgesIgnoringSafeArea(.all)
         .overlay {
             // Match Popup - must be outside GeometryReader to display on top
             if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
