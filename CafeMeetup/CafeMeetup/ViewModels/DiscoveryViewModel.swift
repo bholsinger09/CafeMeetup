@@ -22,36 +22,45 @@ class DiscoveryViewModel: ObservableObject {
     }
     
     init(matchService: MatchServiceProtocol = MatchService.shared, userService: UserServiceProtocol = UserService.shared) {
+        print("🏗️ [DiscoveryViewModel] init() called")
         self.matchService = matchService
         self.userService = userService
         
         // Listen for sign-out events
         NotificationCenter.default.publisher(for: .userDidSignOut)
             .sink { [weak self] _ in
+                print("📢 [DiscoveryViewModel] Received userDidSignOut notification")
                 Task { @MainActor in
                     self?.resetState()
                 }
             }
             .store(in: &cancellables)
+        
+        print("✅ [DiscoveryViewModel] init() complete, notification listener registered")
     }
     
     func loadPotentialMatches(currentUserId: String, currentUserCity: String, currentUserState: String) async {
+        print("📥 [DiscoveryViewModel] loadPotentialMatches() called")
+        print("📥 [DiscoveryViewModel] UserId: \(currentUserId), City: \(currentUserCity), State: \(currentUserState)")
+        
         isLoading = true
         errorMessage = nil
         
         do {
             // Get users from same city/state
             var users = try await userService.fetchUsers(inCity: currentUserCity, state: currentUserState)
+            print("📥 [DiscoveryViewModel] Fetched \(users.count) users from service")
             
             // Filter out current user and already liked users
             users = users.filter { $0.id != currentUserId }
+            print("📥 [DiscoveryViewModel] After filtering: \(users.count) users")
             
             // Shuffle for variety
             potentialMatches = users.shuffled()
             currentUserIndex = 0
             hasLoadedOnce = true
             
-            print("[DiscoveryViewModel] Loaded \(potentialMatches.count) potential matches")
+            print("✅ [DiscoveryViewModel] Loaded \(potentialMatches.count) potential matches")
         } catch {
             errorMessage = error.localizedDescription
             print("[DiscoveryViewModel] Error loading matches: \(error)")
@@ -61,6 +70,9 @@ class DiscoveryViewModel: ObservableObject {
     }
     
     func resetState() {
+        print("🔄 [DiscoveryViewModel] resetState() called")
+        print("🔄 [DiscoveryViewModel] Before reset - matches: \(potentialMatches.count), index: \(currentUserIndex)")
+        
         potentialMatches = []
         currentUserIndex = 0
         showMatchPopup = false
@@ -68,7 +80,9 @@ class DiscoveryViewModel: ObservableObject {
         isLoading = false
         errorMessage = nil
         hasLoadedOnce = false
-        print("[DiscoveryViewModel] State reset")
+        
+        print("🔄 [DiscoveryViewModel] After reset - matches: \(potentialMatches.count), index: \(currentUserIndex)")
+        print("✅ [DiscoveryViewModel] State reset complete")
     }
     
     func likeUser(currentUserId: String, likedUser: User) async {

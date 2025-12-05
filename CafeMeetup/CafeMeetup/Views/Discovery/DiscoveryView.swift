@@ -14,19 +14,10 @@ struct DiscoveryView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // Title
-                Text("Discover")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
-                    .padding(.top, 10)
-                
-                VStack(spacing: 0) {
-                    if discoveryViewModel.isLoading {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                    } else if let currentUser = discoveryViewModel.currentUser {
+                if discoveryViewModel.isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                } else if let currentUser = discoveryViewModel.currentUser {
                         // Card Stack
                         ZStack {
                             // Show next 2 cards in background for depth (reverse order so top card is on top)
@@ -154,17 +145,24 @@ struct DiscoveryView: View {
                     }
                 }
             }
-        }
         .preferredColorScheme(.dark)
         .task {
             await loadUsers()
         }
         .onAppear {
+            print("🔍 [DiscoveryView] onAppear called")
+            print("🔍 [DiscoveryView] Auth state: \(authViewModel.isAuthenticated)")
+            print("🔍 [DiscoveryView] Current user: \(authViewModel.currentUser?.fullName ?? "nil")")
+            print("🔍 [DiscoveryView] Potential matches count: \(discoveryViewModel.potentialMatches.count)")
+            print("🔍 [DiscoveryView] Current index: \(discoveryViewModel.currentUserIndex)")
+            
             // Reset state when view appears
             offset = .zero
             color = .white
             cardId = UUID()
             viewId = UUID()
+            
+            print("🔍 [DiscoveryView] State reset complete")
         }
         .overlay {
             if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {
