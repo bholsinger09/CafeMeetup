@@ -17,11 +17,13 @@ struct DiscoveryView: View {
                 .ignoresSafeArea()
             
             // Debug: Add border to identify view bounds
-            VStack(spacing: 0) {
-                if discoveryViewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                } else if let currentUser = discoveryViewModel.currentUser {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    if discoveryViewModel.isLoading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if let currentUser = discoveryViewModel.currentUser {
                         // Card Stack
                         ZStack {
                             // Show next 2 cards in background for depth (reverse order so top card is on top)
@@ -59,11 +61,14 @@ struct DiscoveryView: View {
                                 }
                             }
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 600)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: geometry.size.height * 0.72
+                        )
                         .padding(.horizontal)
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                         
-                        Spacer()
+                        Spacer(minLength: 10)
                         
                         // Action Buttons
                         HStack(spacing: 50) {
@@ -149,6 +154,7 @@ struct DiscoveryView: View {
                     }
                 }
             }
+        }
         .preferredColorScheme(.dark)
         .task {
             await loadUsers()
