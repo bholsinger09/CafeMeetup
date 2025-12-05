@@ -14,10 +14,13 @@ struct DiscoveryView: View {
         
         return ZStack {
             Color.backgroundGradient
-                .ignoresSafeArea()
+                .ignoresSafeArea(.all)
             
             // Debug: Add border to identify view bounds
             GeometryReader { geometry in
+                let _ = print("📐 [DiscoveryView] Geometry - width: \(geometry.size.width), height: \(geometry.size.height)")
+                let _ = print("📐 [DiscoveryView] Card will be - width: \(geometry.size.width - 32), height: \(geometry.size.height * 0.85)")
+                
                 VStack(spacing: 0) {
                     if discoveryViewModel.isLoading {
                         ProgressView()
@@ -39,6 +42,7 @@ struct DiscoveryView: View {
                                             DragGesture()
                                                 .onChanged { gesture in
                                                     offset = gesture.translation
+                                                    print("🖐️ [DiscoveryView] Dragging - offset: \(offset.width) (\(offset.width > 0 ? "RIGHT/LIKE" : "LEFT/PASS"))")
                                                     withAnimation(.spring(response: 0.3)) {
                                                         if offset.width > 0 {
                                                             color = .green
@@ -48,6 +52,7 @@ struct DiscoveryView: View {
                                                     }
                                                 }
                                                 .onEnded { _ in
+                                                    print("🖐️ [DiscoveryView] Drag ended - final offset: \(offset.width)")
                                                     withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                                                         swipeCard()
                                                     }
@@ -197,12 +202,14 @@ struct DiscoveryView: View {
         let swipeThreshold: CGFloat = 100
         
         print("👆 [DiscoveryView] swipeCard called - offset: \(offset.width)")
+        print("👆 [DiscoveryView] Note: Positive offset = RIGHT swipe (like), Negative offset = LEFT swipe (pass)")
         
         if abs(offset.width) > swipeThreshold {
             print("✅ [DiscoveryView] Swipe threshold exceeded (\(abs(offset.width)) > \(swipeThreshold))")
             // Animate card off screen
             let direction: CGFloat = offset.width > 0 ? 1 : -1
             print("➡️ [DiscoveryView] Swipe direction: \(direction > 0 ? "RIGHT (like)" : "LEFT (pass)")")
+            print("➡️ [DiscoveryView] Direction calculation: offset.width (\(offset.width)) > 0 = \(offset.width > 0)")
             
             withAnimation(.easeOut(duration: 0.3)) {
                 offset = CGSize(width: direction * 500, height: 0)
