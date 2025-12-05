@@ -6,6 +6,7 @@ struct DiscoveryView: View {
     @State private var offset = CGSize.zero
     @State private var color: Color = .white
     @State private var cardId = UUID()
+    @State private var viewId = UUID()
     
     var body: some View {
         ZStack {
@@ -163,6 +164,7 @@ struct DiscoveryView: View {
             offset = .zero
             color = .white
             cardId = UUID()
+            viewId = UUID()
         }
         .overlay {
             if discoveryViewModel.showMatchPopup, let matchedUser = discoveryViewModel.matchedUser {

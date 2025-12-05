@@ -14,6 +14,15 @@ class MatchViewModel: ObservableObject {
     init(matchService: MatchServiceProtocol = MatchService.shared, userService: UserServiceProtocol = UserService.shared) {
         self.matchService = matchService
         self.userService = userService
+        
+        // Listen for sign-out events
+        NotificationCenter.default.publisher(for: .userDidSignOut)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    self?.resetState()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func fetchMatches(forUserId userId: String) async {
@@ -29,6 +38,13 @@ class MatchViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func resetState() {
+        matches = []
+        isLoading = false
+        errorMessage = nil
+        print("[MatchViewModel] State reset")
     }
     
     func unmatch(matchId: String) async {

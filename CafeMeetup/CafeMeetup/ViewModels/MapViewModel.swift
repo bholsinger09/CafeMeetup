@@ -21,6 +21,28 @@ class MapViewModel: ObservableObject {
     init(userService: UserServiceProtocol = UserService.shared, locationService: LocationServiceProtocol = LocationService.shared) {
         self.userService = userService
         self.locationService = locationService
+        
+        // Listen for sign-out events
+        NotificationCenter.default.publisher(for: .userDidSignOut)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    self?.resetState()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func resetState() {
+        users = []
+        currentUserLocation = nil
+        isLoading = false
+        errorMessage = nil
+        // Reset to default region
+        region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        )
+        print("[MapViewModel] State reset")
     }
     
     func requestLocationPermission() {

@@ -10,6 +10,8 @@ class DiscoveryViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
+    private var hasLoadedOnce = false
+    
     private let matchService: MatchServiceProtocol
     private let userService: UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -22,6 +24,15 @@ class DiscoveryViewModel: ObservableObject {
     init(matchService: MatchServiceProtocol = MatchService.shared, userService: UserServiceProtocol = UserService.shared) {
         self.matchService = matchService
         self.userService = userService
+        
+        // Listen for sign-out events
+        NotificationCenter.default.publisher(for: .userDidSignOut)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    self?.resetState()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func loadPotentialMatches(currentUserId: String, currentUserCity: String, currentUserState: String) async {
@@ -38,6 +49,7 @@ class DiscoveryViewModel: ObservableObject {
             // Shuffle for variety
             potentialMatches = users.shuffled()
             currentUserIndex = 0
+            hasLoadedOnce = true
             
             print("[DiscoveryViewModel] Loaded \(potentialMatches.count) potential matches")
         } catch {
@@ -46,6 +58,17 @@ class DiscoveryViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func resetState() {
+        potentialMatches = []
+        currentUserIndex = 0
+        showMatchPopup = false
+        matchedUser = nil
+        isLoading = false
+        errorMessage = nil
+        hasLoadedOnce = false
+        print("[DiscoveryViewModel] State reset")
     }
     
     func likeUser(currentUserId: String, likedUser: User) async {

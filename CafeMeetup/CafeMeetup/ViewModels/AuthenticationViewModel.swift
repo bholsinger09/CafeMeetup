@@ -142,10 +142,18 @@ class AuthenticationViewModel: ObservableObject {
         
         do {
             try await authService.signOut()
+            
+            // Clear all state
             currentUser = nil
             isAuthenticated = false
+            
+            // Post notification to reset all view models
+            NotificationCenter.default.post(name: .userDidSignOut, object: nil)
+            
+            print("🔐 [AuthViewModel] User signed out successfully")
         } catch {
             errorMessage = error.localizedDescription
+            print("🔐 [AuthViewModel] Sign out error: \(error.localizedDescription)")
         }
         
         isLoading = false

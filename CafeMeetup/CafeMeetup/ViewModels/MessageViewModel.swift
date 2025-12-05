@@ -12,6 +12,22 @@ class MessageViewModel: ObservableObject {
     
     init(messageService: MessageServiceProtocol = MessageService.shared) {
         self.messageService = messageService
+        
+        // Listen for sign-out events
+        NotificationCenter.default.publisher(for: .userDidSignOut)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    self?.resetState()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func resetState() {
+        messages = []
+        isLoading = false
+        errorMessage = nil
+        print("[MessageViewModel] State reset")
     }
     
     func loadConversation(userId1: String, userId2: String) async {
