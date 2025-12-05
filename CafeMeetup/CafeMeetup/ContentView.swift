@@ -7,10 +7,15 @@ struct ContentView: View {
         Group {
             if authViewModel.isAuthenticated {
                 MainTabView()
+                    .id("authenticated-\(authViewModel.currentUser?.id ?? "unknown")")
+                    .transition(.opacity)
             } else {
                 WelcomeView()
+                    .id("welcome")
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: authViewModel.isAuthenticated)
     }
 }
 

@@ -6,47 +6,61 @@ struct MainTabView: View {
     @StateObject private var mapViewModel = MapViewModel()
     
     var body: some View {
-        TabView {
+        let _ = print("🏗️ [MainTabView] Rendering for user: \(authViewModel.currentUser?.email ?? "none")")
+        
+        return TabView {
             DiscoveryView()
-                .id(authViewModel.isAuthenticated ? "discovery-auth" : "discovery-unauth")
+                .id("discovery-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .tabItem {
                     Label("Discover", systemImage: "heart.circle.fill")
                 }
             
             MatchesView()
+                .id("matches-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .tabItem {
                     Label("Matches", systemImage: "message.fill")
                 }
             
             StudySessionsTab()
+                .id("study-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .tabItem {
                     Label("Study", systemImage: "book.fill")
                 }
             
             RewardsTab()
+                .id("rewards-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .tabItem {
                     Label("Rewards", systemImage: "star.fill")
                 }
             
             BlogFeedView()
+                .id("feed-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .environmentObject(blogViewModel)
                 .tabItem {
                     Label("Feed", systemImage: "newspaper.fill")
                 }
             
             MapView()
+                .id("map-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .environmentObject(mapViewModel)
                 .tabItem {
                     Label("Map", systemImage: "map.fill")
                 }
             
             ProfileView()
+                .id("profile-\(authViewModel.currentUser?.id ?? UUID().uuidString)")
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
         }
         .accentColor(Color(red: 0.85, green: 0.65, blue: 0.75))
         .preferredColorScheme(.dark)
+        .onAppear {
+            print("✅ [MainTabView] Appeared for user: \(authViewModel.currentUser?.fullName ?? "unknown")")
+        }
+        .onDisappear {
+            print("👋 [MainTabView] Disappeared - cleaning up")
+        }
     }
 }
 
