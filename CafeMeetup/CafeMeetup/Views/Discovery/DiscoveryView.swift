@@ -9,10 +9,14 @@ struct DiscoveryView: View {
     @State private var viewId = UUID()
     
     var body: some View {
-        ZStack {
+        let _ = print("🎨 [DiscoveryView] body being rendered")
+        let _ = print("🎨 [DiscoveryView] User: \(authViewModel.currentUser?.email ?? "none")")
+        
+        return ZStack {
             Color.backgroundGradient
                 .ignoresSafeArea()
             
+            // Debug: Add border to identify view bounds
             VStack(spacing: 0) {
                 if discoveryViewModel.isLoading {
                     ProgressView()
