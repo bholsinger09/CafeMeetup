@@ -17,12 +17,12 @@ struct MainTabView: View {
                     Label("Matches", systemImage: "message.fill")
                 }
             
-            StudySessionsPlaceholder()
+            StudySessionsTab()
                 .tabItem {
                     Label("Study", systemImage: "book.fill")
                 }
             
-            RewardsPlaceholder()
+            RewardsTab()
                 .tabItem {
                     Label("Rewards", systemImage: "star.fill")
                 }
@@ -49,129 +49,408 @@ struct MainTabView: View {
     }
 }
 
-// MARK: - Placeholder Views (until files are added to Xcode project)
+// MARK: - Study Sessions Tab
 
-struct StudySessionsPlaceholder: View {
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Image(systemName: "book.circle.fill")
-                    .font(.system(size: 80))
-                    .foregroundColor(.purple)
-                
-                Text("Study Sessions")
-                    .font(.title)
-                    .fontWeight(.bold)
-                
-                Text("Browse and create study sessions with your matches")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    FeatureItem(icon: "graduationcap.fill", text: "Choose your subject", color: .blue)
-                    FeatureItem(icon: "calendar", text: "Schedule study dates", color: .green)
-                    FeatureItem(icon: "person.2.fill", text: "Study together, earn points", color: .orange)
-                }
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(12)
-                .padding(.horizontal)
-            }
-            .navigationTitle("Study Sessions")
-        }
-    }
-}
-
-struct RewardsPlaceholder: View {
+struct StudySessionsTab: View {
+    @State private var showCreateSession = false
+    @State private var selectedSubject: String?
+    
+    let subjects = ["Computer Science", "Mathematics", "Biology", "Chemistry", "Physics", 
+                   "Engineering", "Business", "Psychology", "English", "History", 
+                   "Art", "Music", "Languages", "Economics", "Nursing", "Other"]
+    
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    Image(systemName: "star.circle.fill")
-                        .font(.system(size: 80))
-                        .foregroundColor(.yellow)
-                    
-                    Text("Rewards & Badges")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    Text("Track your progress and unlock achievements")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                    
-                    VStack(spacing: 16) {
-                        RewardFeatureCard(
-                            icon: "flame.fill",
-                            title: "Build Streaks",
-                            description: "Meet regularly to build your streak",
-                            color: .orange
-                        )
+                    // Header
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Study & Connect")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
                         
-                        RewardFeatureCard(
-                            icon: "trophy.fill",
-                            title: "Unlock Badges",
-                            description: "Earn 15+ unique coffee badges",
+                        Text("Find study partners and turn study sessions into coffee dates")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    
+                    // Create Session Button
+                    Button(action: { showCreateSession = true }) {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Create Study Session")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            LinearGradient(
+                                colors: [Color.blue, Color.purple],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                    }
+                    .padding(.horizontal)
+                    
+                    // Subject Filter
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(subjects, id: \.self) { subject in
+                                Button(action: {
+                                    selectedSubject = selectedSubject == subject ? nil : subject
+                                }) {
+                                    Text(subject)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(selectedSubject == subject ? Color.blue : Color.gray.opacity(0.2))
+                                        .foregroundColor(selectedSubject == subject ? .white : .primary)
+                                        .cornerRadius(20)
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // Info Section
+                    VStack(spacing: 16) {
+                        InfoBox(
+                            icon: "lightbulb.fill",
+                            title: "How It Works",
+                            description: "Create or join study sessions with your matches. Study together at your favorite café and earn 25 points per session!",
                             color: .yellow
                         )
                         
-                        RewardFeatureCard(
-                            icon: "chart.line.uptrend.xyaxis",
-                            title: "Level Up",
-                            description: "Gain XP and reach Coffee Legend status",
-                            color: .purple
+                        InfoBox(
+                            icon: "star.fill",
+                            title: "Earn Rewards",
+                            description: "Complete study sessions to unlock the Study Buddy badge and level up faster!",
+                            color: .orange
+                        )
+                        
+                        InfoBox(
+                            icon: "heart.fill",
+                            title: "Make Connections",
+                            description: "Turn study sessions into coffee dates. Academic success meets romance!",
+                            color: .pink
                         )
                     }
                     .padding(.horizontal)
                 }
-                .padding(.vertical)
             }
-            .navigationTitle("Rewards")
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showCreateSession) {
+                CreateSessionSheet(subjects: subjects)
+            }
         }
     }
 }
 
-struct FeatureItem: View {
-    let icon: String
-    let text: String
-    let color: Color
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .foregroundColor(color)
-                .frame(width: 30)
-            Text(text)
-                .font(.body)
-        }
-    }
-}
-
-struct RewardFeatureCard: View {
+struct InfoBox: View {
     let icon: String
     let title: String
     let description: String
     let color: Color
     
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(alignment: .top, spacing: 16) {
             Image(systemName: icon)
-                .font(.system(size: 40))
+                .font(.title)
                 .foregroundColor(color)
-                .frame(width: 60)
+                .frame(width: 40)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
                 Text(description)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
             }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+}
+
+struct CreateSessionSheet: View {
+    let subjects: [String]
+    @Environment(\.dismiss) var dismiss
+    @State private var selectedSubject = "Computer Science"
+    @State private var topic = ""
+    @State private var selectedDate = Date()
+    @State private var duration = 60
+    
+    let durations = [30, 60, 90, 120]
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Study Details") {
+                    Picker("Subject", selection: $selectedSubject) {
+                        ForEach(subjects, id: \.self) { subject in
+                            Text(subject).tag(subject)
+                        }
+                    }
+                    
+                    TextField("Topic (e.g., Midterm Review)", text: $topic)
+                }
+                
+                Section("When?") {
+                    DatePicker("Date & Time", selection: $selectedDate, in: Date()...)
+                    
+                    Picker("Duration", selection: $duration) {
+                        ForEach(durations, id: \.self) { minutes in
+                            Text("\(minutes) min").tag(minutes)
+                        }
+                    }
+                }
+                
+                Section {
+                    Button("Create Study Session") {
+                        // TODO: Save to CoffeeExperienceService when integrated
+                        dismiss()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.blue)
+                }
+            }
+            .navigationTitle("Plan Study Session")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Rewards Tab
+
+struct RewardsTab: View {
+    @State private var selectedTab = 0
+    @State private var rewards = MockRewards()
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Rewards Summary
+                    VStack(spacing: 16) {
+                        Text("Level \(rewards.level)")
+                            .font(.system(size: 40, weight: .bold))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.orange, .pink],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                        
+                        Text(rewards.levelName)
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        // Progress
+                        VStack(spacing: 4) {
+                            HStack {
+                                Text("\(rewards.points) points")
+                                    .font(.caption)
+                                Spacer()
+                                Text("\(rewards.pointsToNext) to next level")
+                                    .font(.caption)
+                            }
+                            .foregroundColor(.secondary)
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Capsule()
+                                        .fill(Color.gray.opacity(0.3))
+                                    
+                                    Capsule()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [.orange, .pink],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .frame(width: geometry.size.width * rewards.progress)
+                                }
+                            }
+                            .frame(height: 8)
+                        }
+                        .padding(.horizontal)
+                        
+                        // Stats Grid
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                            RewardStatCard(icon: "flame.fill", value: "\(rewards.streak)", label: "Day Streak", color: .orange)
+                            RewardStatCard(icon: "checkmark.circle.fill", value: "\(rewards.checkIns)", label: "Check-ins", color: .green)
+                            RewardStatCard(icon: "star.fill", value: "\(rewards.badgesUnlocked)", label: "Badges", color: .yellow)
+                            RewardStatCard(icon: "book.fill", value: "\(rewards.studySessions)", label: "Study Sessions", color: .purple)
+                            RewardStatCard(icon: "cup.and.saucer.fill", value: "\(rewards.uniqueCafes)", label: "Unique Cafés", color: .brown)
+                            RewardStatCard(icon: "heart.fill", value: "\(rewards.points)", label: "Total Points", color: .pink)
+                        }
+                        .padding(.horizontal)
+                    }
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(16)
+                    .padding(.horizontal)
+                    
+                    // Tabs
+                    Picker("View", selection: $selectedTab) {
+                        Text("Unlocked (\(rewards.unlockedBadges.count))").tag(0)
+                        Text("Locked (\(rewards.lockedBadges.count))").tag(1)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    
+                    // Badges
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
+                        ForEach(selectedTab == 0 ? rewards.unlockedBadges : rewards.lockedBadges) { badge in
+                            RewardBadgeCard(badge: badge)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            .navigationTitle("Rewards & Badges")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+struct MockRewards {
+    let level = 3
+    let levelName = "Café Regular"
+    let points = 150
+    let pointsToNext = 50
+    let progress = 0.75
+    let streak = 5
+    let checkIns = 8
+    let badgesUnlocked = 3
+    let studySessions = 2
+    let uniqueCafes = 3
+    
+    let unlockedBadges = [
+        Badge(id: "first_latte", name: "First Latte", emoji: "☕️", rarity: "Common", description: "Complete your first check-in", isUnlocked: true),
+        Badge(id: "social_butterfly", name: "Social Butterfly", emoji: "🦋", rarity: "Common", description: "Match with 5 people", isUnlocked: true),
+        Badge(id: "morning_person", name: "Morning Person", emoji: "🌅", rarity: "Rare", description: "Check-in before 9 AM", isUnlocked: true)
+    ]
+    
+    let lockedBadges = [
+        Badge(id: "coffee_connoisseur", name: "Coffee Connoisseur", emoji: "🎓", rarity: "Rare", description: "Try 10 different coffee drinks", isUnlocked: false),
+        Badge(id: "study_buddy", name: "Study Buddy", emoji: "📚", rarity: "Epic", description: "Complete 5 study sessions", isUnlocked: false),
+        Badge(id: "latte_legend", name: "Latte Legend", emoji: "👑", rarity: "Legendary", description: "Reach level 10", isUnlocked: false)
+    ]
+}
+
+struct Badge: Identifiable {
+    let id: String
+    let name: String
+    let emoji: String
+    let rarity: String
+    let description: String
+    let isUnlocked: Bool
+}
+
+struct RewardStatCard: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(color)
             
-            Spacer()
+            Text(value)
+                .font(.title3)
+                .fontWeight(.bold)
+            
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+}
+
+struct RewardBadgeCard: View {
+    let badge: Badge
+    
+    var rarityColor: Color {
+        switch badge.rarity {
+        case "Common": return .gray
+        case "Rare": return .blue
+        case "Epic": return .purple
+        case "Legendary": return .orange
+        default: return .gray
+        }
+    }
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            // Badge Icon
+            ZStack {
+                Circle()
+                    .fill(badge.isUnlocked ? rarityColor : Color.gray.opacity(0.3))
+                    .frame(width: 70, height: 70)
+                
+                Text(badge.emoji)
+                    .font(.system(size: 35))
+                    .grayscale(badge.isUnlocked ? 0 : 1)
+                    .opacity(badge.isUnlocked ? 1 : 0.5)
+            }
+            
+            VStack(spacing: 4) {
+                Text(badge.name)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                
+                Text(badge.rarity)
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(rarityColor)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(rarityColor.opacity(0.2))
+                    .cornerRadius(4)
+                
+                Text(badge.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(.top, 2)
+                
+                if !badge.isUnlocked {
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.fill")
+                            .font(.caption2)
+                        Text("Locked")
+                            .font(.caption2)
+                    }
+                    .foregroundColor(.blue)
+                    .padding(.top, 4)
+                }
+            }
         }
         .padding()
         .background(Color(.secondarySystemBackground))
