@@ -17,6 +17,7 @@ struct User: Identifiable, Codable, Equatable {
     var location: Location?
     var profileImageURL: String?
     var lastActiveAt: Date?
+    var avatarId: String?
     var createdAt: Date
     var updatedAt: Date
     
@@ -36,6 +37,7 @@ struct User: Identifiable, Codable, Equatable {
         location: Location? = nil,
         profileImageURL: String? = nil,
         lastActiveAt: Date? = nil,
+        avatarId: String? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -54,6 +56,7 @@ struct User: Identifiable, Codable, Equatable {
         self.location = location
         self.profileImageURL = profileImageURL
         self.lastActiveAt = lastActiveAt
+        self.avatarId = avatarId
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -62,6 +65,14 @@ struct User: Identifiable, Codable, Equatable {
     var isRecentlyActive: Bool {
         guard let lastActive = lastActiveAt else { return false }
         return Date().timeIntervalSince(lastActive) < 1800 // 30 minutes
+    }
+    
+    // Get the user's selected avatar
+    var avatar: Avatar {
+        if let avatarId = avatarId, let avatar = AvatarSystem.avatar(withId: avatarId) {
+            return avatar
+        }
+        return AvatarSystem.defaultAvatar
     }
 }
 

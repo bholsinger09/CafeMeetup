@@ -89,23 +89,22 @@ struct UserMapMarker: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Circle()
-                .fill(Color.brown)
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text(user.fullName.prefix(1))
-                        .font(.headline)
-                        .foregroundColor(.white)
-                )
-                .overlay(
-                    Circle()
-                        .stroke(Color.white, lineWidth: 3)
-                )
+            AvatarDisplayView(avatar: user.avatar, size: 50)
             
             Image(systemName: "arrowtriangle.down.fill")
                 .font(.caption)
-                .foregroundColor(.brown)
+                .foregroundColor(avatarColor)
                 .offset(y: -5)
+        }
+    }
+    
+    private var avatarColor: Color {
+        switch user.avatar.category {
+        case .marvel: return .red
+        case .dc: return .blue
+        case .cartoon: return .orange
+        case .anime: return .purple
+        case .classic: return .yellow
         }
     }
 }

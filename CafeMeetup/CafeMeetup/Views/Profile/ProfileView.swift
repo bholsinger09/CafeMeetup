@@ -4,6 +4,8 @@ struct ProfileView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var showEditProfile = false
     @State private var showSignOutAlert = false
+    @State private var showAvatarPicker = false
+    @State private var selectedAvatarId: String?
     
     var body: some View {
         NavigationStack {
@@ -42,16 +44,34 @@ struct ProfileView: View {
                                 .foregroundColor(.secondary)
                         }
                         
-                        Button {
-                            showEditProfile = true
-                        } label: {
-                            Text("Edit Profile")
+                        HStack(spacing: 12) {
+                            Button {
+                                showAvatarPicker = true
+                            } label: {
+                                HStack {
+                                    Text(currentAvatar.emoji)
+                                        .font(.title3)
+                                    Text("Change Avatar")
+                                }
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 24)
+                                .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
-                                .background(Color.accentGradient)
+                                .background(Color.purple)
                                 .cornerRadius(20)
-                                .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                                .shadow(color: Color.purple.opacity(0.3), radius: 8)
+                            }
+                            
+                            Button {
+                                showEditProfile = true
+                            } label: {
+                                Text("Edit Profile")
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 10)
+                                    .background(Color.accentGradient)
+                                    .cornerRadius(20)
+                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                            }
                         }
                     }
                     .padding()
@@ -173,6 +193,9 @@ struct ProfileView: View {
             .sheet(isPresented: $showEditProfile) {
                 EditProfileView()
             }
+            .sheet(isPresented: $showAvatarPicker) {
+                AvatarPickerView(selectedAvatarId: $selectedAvatarId)
+            }
             .alert("Sign Out", isPresented: $showSignOutAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Sign Out", role: .destructive) {
@@ -183,7 +206,26 @@ struct ProfileView: View {
             } message: {
                 Text("Are you sure you want to sign out?")
             }
+            .onAppear {
+                selectedAvatarId = authViewModel.currentUser?.avatarId
+            }
+            .onChange(of: selectedAvatarId) { newValue in
+                // Update user's avatar in auth view model
+                if var user = authViewModel.currentUser {
+                    user.avatarId = newValue
+                    authViewModel.currentUser = user
+                    // TODO: Save to backend when available
+                }
+            }
         }
+    }
+    
+    private var currentAvatar: Avatar {
+        if let avatarId = selectedAvatarId ?? authViewModel.currentUser?.avatarId,
+           let avatar = AvatarSystem.avatar(withId: avatarId) {
+            return avatar
+        }
+        return AvatarSystem.defaultAvatar
     }
 }
 
