@@ -353,19 +353,19 @@ struct ProfileCard: View {
             
             // User Info
             VStack(alignment: .leading, spacing: 8) {
-                HStack {
+                HStack(spacing: 8) {
                     Text(user.fullName)
                         .font(.title3)
                         .fontWeight(.bold)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                    
-                    Spacer()
+                        .minimumScaleFactor(0.6)
+                        .layoutPriority(1)
                     
                     if let gender = user.gender, !gender.isEmpty {
                         Text(gender)
-                            .font(.subheadline)
+                            .font(.caption)
                             .foregroundColor(.secondary)
+                            .fixedSize()
                     }
                 }
                 
