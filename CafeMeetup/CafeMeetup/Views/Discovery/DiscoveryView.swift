@@ -193,9 +193,14 @@ struct DiscoveryView: View {
     private func swipeCard() {
         let swipeThreshold: CGFloat = 100
         
+        print("👆 [DiscoveryView] swipeCard called - offset: \(offset.width)")
+        
         if abs(offset.width) > swipeThreshold {
+            print("✅ [DiscoveryView] Swipe threshold exceeded (\(abs(offset.width)) > \(swipeThreshold))")
             // Animate card off screen
             let direction: CGFloat = offset.width > 0 ? 1 : -1
+            print("➡️ [DiscoveryView] Swipe direction: \(direction > 0 ? "RIGHT (like)" : "LEFT (pass)")")
+            
             withAnimation(.easeOut(duration: 0.3)) {
                 offset = CGSize(width: direction * 500, height: 0)
             }
@@ -203,8 +208,10 @@ struct DiscoveryView: View {
             // Perform action and reset after animation
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 if direction > 0 {
+                    print("💖 [DiscoveryView] Calling likeUser() after swipe")
                     likeUser()
                 } else {
+                    print("❌ [DiscoveryView] Calling passUser() after swipe")
                     passUser()
                 }
                 
@@ -214,6 +221,7 @@ struct DiscoveryView: View {
                 cardId = UUID()
             }
         } else {
+            print("⬅️ [DiscoveryView] Swipe too short (\(abs(offset.width)) <= \(swipeThreshold)), snapping back")
             // Snap back if didn't swipe far enough
             offset = .zero
             color = .white
