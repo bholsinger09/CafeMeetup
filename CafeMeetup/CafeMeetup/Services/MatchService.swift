@@ -17,30 +17,41 @@ class MatchService: MatchServiceProtocol {
     private var matches: [Match] = []
     
     func addLike(userId: String, likedUserId: String) async throws -> Bool {
+        print("\n💖 [MatchService] addLike called")
+        print("💖 [MatchService] User \(userId) wants to like \(likedUserId)")
+        print("💖 [MatchService] Current likes count: \(likes.count)")
+        
         // Simulate network delay
         try await Task.sleep(nanoseconds: 300_000_000)
         
         // Check if already liked
         if likes.contains(where: { $0.userId == userId && $0.likedUserId == likedUserId }) {
+            print("⚠️ [MatchService] Already liked - returning false")
             return false
         }
         
         // Add the like
         let like = UserLike(userId: userId, likedUserId: likedUserId)
         likes.append(like)
-        print("[MatchService] \(userId) liked \(likedUserId)")
+        print("✅ [MatchService] Like added: \(userId) → \(likedUserId)")
+        print("💖 [MatchService] Total likes now: \(likes.count)")
         
         // Check for mutual like
+        print("🔍 [MatchService] Checking for mutual like...")
+        print("🔍 [MatchService] Looking for: \(likedUserId) → \(userId)")
         let mutualLike = likes.contains(where: { $0.userId == likedUserId && $0.likedUserId == userId })
+        print("🔍 [MatchService] Mutual like found: \(mutualLike)")
         
         if mutualLike {
             // Create a match
             let match = Match(userId1: userId, userId2: likedUserId)
             matches.append(match)
-            print("[MatchService] ✅ MATCH CREATED between \(userId) and \(likedUserId)")
+            print("🎉🎉🎉 [MatchService] ✅ MATCH CREATED between \(userId) and \(likedUserId)")
+            print("🎉 [MatchService] Total matches now: \(matches.count)")
             return true
         }
         
+        print("💔 [MatchService] No mutual like yet - returning false\n")
         return false
     }
     

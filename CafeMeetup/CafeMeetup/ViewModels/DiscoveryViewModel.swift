@@ -86,18 +86,28 @@ class DiscoveryViewModel: ObservableObject {
     }
     
     func likeUser(currentUserId: String, likedUser: User) async {
+        print("💖 [DiscoveryViewModel] likeUser called")
+        print("💖 [DiscoveryViewModel] Current user ID: \(currentUserId)")
+        print("💖 [DiscoveryViewModel] Liking user: \(likedUser.fullName) (\(likedUser.id))")
+        
         do {
             let isMatch = try await matchService.addLike(userId: currentUserId, likedUserId: likedUser.id)
+            print("💖 [DiscoveryViewModel] Match service returned: isMatch = \(isMatch)")
             
             if isMatch {
                 matchedUser = likedUser
                 showMatchPopup = true
-                print("[DiscoveryViewModel] ✅ IT'S A MATCH with \(likedUser.fullName)!")
+                print("🎉 [DiscoveryViewModel] ✅ IT'S A MATCH with \(likedUser.fullName)!")
+                print("🎉 [DiscoveryViewModel] showMatchPopup = \(showMatchPopup)")
+                print("🎉 [DiscoveryViewModel] matchedUser = \(matchedUser?.fullName ?? "nil")")
+            } else {
+                print("💔 [DiscoveryViewModel] Not a match (they haven't liked you yet)")
             }
             
             moveToNextUser()
         } catch {
             errorMessage = error.localizedDescription
+            print("❌ [DiscoveryViewModel] Error in likeUser: \(error.localizedDescription)")
         }
     }
     

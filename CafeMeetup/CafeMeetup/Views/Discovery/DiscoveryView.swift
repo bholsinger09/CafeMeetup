@@ -63,12 +63,12 @@ struct DiscoveryView: View {
                         }
                         .frame(
                             width: geometry.size.width - 32,
-                            height: geometry.size.height * 0.72
+                            height: geometry.size.height * 0.80
                         )
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 10)
+                        .padding(.top, 5)
                         
-                        Spacer(minLength: 10)
+                        Spacer(minLength: 5)
                         
                         // Action Buttons
                         HStack(spacing: 50) {
@@ -222,7 +222,13 @@ struct DiscoveryView: View {
     
     private func likeUser() {
         guard let currentUser = discoveryViewModel.currentUser,
-              let authUser = authViewModel.currentUser else { return }
+              let authUser = authViewModel.currentUser else {
+            print("❌ [DiscoveryView] likeUser failed - missing user data")
+            return
+        }
+        
+        print("💖 [DiscoveryView] Liking user: \(currentUser.fullName) (\(currentUser.id))")
+        print("💖 [DiscoveryView] Current user: \(authUser.fullName) (\(authUser.id))")
         
         Task {
             await discoveryViewModel.likeUser(currentUserId: authUser.id, likedUser: currentUser)
