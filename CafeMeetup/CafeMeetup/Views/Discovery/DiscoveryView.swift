@@ -12,16 +12,15 @@ struct DiscoveryView: View {
         let _ = print("🎨 [DiscoveryView] body being rendered")
         let _ = print("🎨 [DiscoveryView] User: \(authViewModel.currentUser?.email ?? "none")")
         
-        return ZStack {
-            Color.backgroundGradient
-                .ignoresSafeArea(.all)
-            
-            // Debug: Add border to identify view bounds
-            GeometryReader { geometry in
-                let _ = print("📐 [DiscoveryView] Geometry - width: \(geometry.size.width), height: \(geometry.size.height)")
-                let _ = print("📐 [DiscoveryView] Card will be - width: \(geometry.size.width - 32), height: \(geometry.size.height * 0.85)")
+        return GeometryReader { outerGeometry in
+            ZStack {
+                Color.backgroundGradient
+                    .ignoresSafeArea(.all)
                 
                 VStack(spacing: 0) {
+                    let _ = print("📐 [DiscoveryView] Available space - width: \(outerGeometry.size.width), height: \(outerGeometry.size.height)")
+                    let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.85)")
+                    
                     if discoveryViewModel.isLoading {
                         ProgressView()
                             .scaleEffect(1.5)
@@ -67,8 +66,8 @@ struct DiscoveryView: View {
                             }
                         }
                         .frame(
-                            width: geometry.size.width - 32,
-                            height: geometry.size.height * 0.85
+                            width: outerGeometry.size.width - 32,
+                            height: outerGeometry.size.height * 0.85
                         )
                         .frame(maxWidth: .infinity)
                         .padding(.top, 0)
@@ -159,7 +158,10 @@ struct DiscoveryView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea(.container, edges: .top)
         .preferredColorScheme(.dark)
         .task {
             await loadUsers()
