@@ -17,10 +17,14 @@ struct MainTabView: View {
                     Label("Matches", systemImage: "message.fill")
                 }
             
-            BlogFeedView()
-                .environmentObject(blogViewModel)
+            StudySessionsView()
                 .tabItem {
-                    Label("Feed", systemImage: "newspaper.fill")
+                    Label("Study", systemImage: "book.fill")
+                }
+            
+            BadgesRewardsView()
+                .tabItem {
+                    Label("Rewards", systemImage: "star.fill")
                 }
             
             MapView()

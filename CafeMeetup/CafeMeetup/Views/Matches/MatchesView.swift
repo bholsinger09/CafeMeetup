@@ -5,7 +5,7 @@ struct MatchesView: View {
     @StateObject private var matchViewModel = MatchViewModel()
     @State private var selectedMatch: Match?
     @State private var selectedUser: User?
-    @State private var showChat = false
+    @State private var showMatchProfile = false
     
     var body: some View {
         NavigationStack {
@@ -43,7 +43,7 @@ struct MatchesView: View {
                                         Task {
                                             if let user = await matchViewModel.getMatchedUser(match: match, currentUserId: authViewModel.currentUser?.id ?? "") {
                                                 selectedUser = user
-                                                showChat = true
+                                                showMatchProfile = true
                                             }
                                         }
                                     }
@@ -60,9 +60,9 @@ struct MatchesView: View {
                     await matchViewModel.fetchMatches(forUserId: userId)
                 }
             }
-            .sheet(isPresented: $showChat) {
-                if let selectedUser = selectedUser {
-                    ChatView(otherUser: selectedUser)
+            .sheet(isPresented: $showMatchProfile) {
+                if let selectedUser = selectedUser, let selectedMatch = selectedMatch {
+                    MatchProfileView(user: selectedUser, match: selectedMatch)
                 }
             }
         }
