@@ -11,7 +11,11 @@ class MatchViewModel: ObservableObject {
     private let userService: UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(matchService: MatchServiceProtocol = MatchService.shared, userService: UserServiceProtocol = UserService.shared) {
+    convenience init() {
+        self.init(matchService: MatchService.shared, userService: UserService.shared)
+    }
+    
+    init(matchService: MatchServiceProtocol, userService: UserServiceProtocol) {
         self.matchService = matchService
         self.userService = userService
         

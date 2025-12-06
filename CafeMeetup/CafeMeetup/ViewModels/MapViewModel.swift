@@ -18,7 +18,11 @@ class MapViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let maxDistanceMiles: Double = 5.0
     
-    init(userService: UserServiceProtocol = UserService.shared, locationService: LocationServiceProtocol = LocationService.shared) {
+    convenience init() {
+        self.init(userService: UserService.shared, locationService: LocationService.shared)
+    }
+    
+    init(userService: UserServiceProtocol, locationService: LocationServiceProtocol) {
         self.userService = userService
         self.locationService = locationService
         

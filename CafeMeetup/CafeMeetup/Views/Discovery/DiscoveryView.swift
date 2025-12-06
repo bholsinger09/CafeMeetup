@@ -19,7 +19,7 @@ struct DiscoveryView: View {
             GeometryReader { outerGeometry in
                 VStack(spacing: 0) {
                     let _ = print("📐 [DiscoveryView] Available space - width: \(outerGeometry.size.width), height: \(outerGeometry.size.height)")
-                    let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.75)")
+                    let _ = print("📐 [DiscoveryView] Card dimensions - width: \(outerGeometry.size.width - 32), height: \(outerGeometry.size.height * 0.70)")
                     
                     if discoveryViewModel.isLoading {
                         ProgressView()
@@ -67,8 +67,9 @@ struct DiscoveryView: View {
                         }
                         .frame(
                             width: outerGeometry.size.width - 32,
-                            height: outerGeometry.size.height * 0.75
+                            height: outerGeometry.size.height * 0.70
                         )
+                        .padding(.top, 8)
                         
                         Spacer()
                         
@@ -275,9 +276,10 @@ struct ProfileCard: View {
     let color: Color
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Profile Image
-            ZStack {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                // Profile Image
+                ZStack {
                 if let profileImageURL = user.profileImageURL,
                    let uiImage = UIImage.fromBase64String(profileImageURL) {
                     Image(uiImage: uiImage)
@@ -349,7 +351,7 @@ struct ProfileCard: View {
                     .opacity(min(Double(-offset.width / 100), 1.0))
                 }
             }
-            .frame(maxHeight: .infinity)
+            .frame(height: geometry.size.height * 0.65)
             
             // User Info
             VStack(alignment: .leading, spacing: 8) {
@@ -399,15 +401,16 @@ struct ProfileCard: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.darkSecondary)
+            }
+            .background(Color.darkSecondary)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .shadow(color: Color.black.opacity(0.2), radius: 10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(color.opacity(0.5), lineWidth: 3)
+            )
+            .offset(offset)
         }
-        .background(Color.darkSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: Color.black.opacity(0.2), radius: 10)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(color.opacity(0.5), lineWidth: 3)
-        )
-        .offset(offset)
     }
 }
 

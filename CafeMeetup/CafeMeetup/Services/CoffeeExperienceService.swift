@@ -20,7 +20,17 @@ class CoffeeExperienceService: ObservableObject {
     )
     @Published var userBadges: [CoffeeBadge] = CoffeeBadgeSystem.allBadges
     
-    private init() {
+    nonisolated private init() {
+        // Note: Cannot call loadMockData() here as it's @MainActor isolated
+        // Mock data will be loaded on first access
+    }
+    
+    // Lazy initialization flag
+    private var isInitialized = false
+    
+    private func ensureInitialized() {
+        guard !isInitialized else { return }
+        isInitialized = true
         loadMockData()
     }
     
@@ -39,6 +49,7 @@ class CoffeeExperienceService: ObservableObject {
         maxAttendees: Int,
         isPublic: Bool
     ) async throws {
+        ensureInitialized()
         let session = StudySession(
             id: UUID().uuidString,
             hostId: hostId,

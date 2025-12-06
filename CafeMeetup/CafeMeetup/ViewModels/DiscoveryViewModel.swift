@@ -21,7 +21,11 @@ class DiscoveryViewModel: ObservableObject {
         return potentialMatches[currentUserIndex]
     }
     
-    init(matchService: MatchServiceProtocol = MatchService.shared, userService: UserServiceProtocol = UserService.shared) {
+    convenience init() {
+        self.init(matchService: MatchService.shared, userService: UserService.shared)
+    }
+    
+    init(matchService: MatchServiceProtocol, userService: UserServiceProtocol) {
         print("🏗️ [DiscoveryViewModel] init() called")
         self.matchService = matchService
         self.userService = userService

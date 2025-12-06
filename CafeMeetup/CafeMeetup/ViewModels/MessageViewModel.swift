@@ -10,7 +10,11 @@ class MessageViewModel: ObservableObject {
     private let messageService: MessageServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(messageService: MessageServiceProtocol = MessageService.shared) {
+    convenience init() {
+        self.init(messageService: MessageService.shared)
+    }
+    
+    init(messageService: MessageServiceProtocol) {
         self.messageService = messageService
         
         // Listen for sign-out events

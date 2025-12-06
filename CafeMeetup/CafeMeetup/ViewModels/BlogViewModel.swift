@@ -11,7 +11,11 @@ class BlogViewModel: ObservableObject {
     private let blogService: BlogServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(blogService: BlogServiceProtocol = BlogService.shared) {
+    convenience init() {
+        self.init(blogService: BlogService.shared)
+    }
+    
+    init(blogService: BlogServiceProtocol) {
         self.blogService = blogService
     }
     

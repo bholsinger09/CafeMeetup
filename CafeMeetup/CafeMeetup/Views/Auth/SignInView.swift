@@ -9,6 +9,7 @@ struct SignInView: View {
     @State private var password = ""
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showProfileCompletion = false
     
     var body: some View {
         ZStack {
@@ -131,7 +132,14 @@ struct SignInView: View {
                             await authViewModel.signIn(email: email, password: password)
                             
                             if authViewModel.isAuthenticated {
-                                dismiss()
+                                // Check if profile is complete
+                                if let user = authViewModel.currentUser,
+                                   !user.college.isEmpty && !user.state.isEmpty && !user.city.isEmpty && !user.favoriteCoffee.isEmpty {
+                                    dismiss()
+                                } else {
+                                    // Show profile completion
+                                    showProfileCompletion = true
+                                }
                             } else {
                                 showError = true
                             }
@@ -172,6 +180,12 @@ struct SignInView: View {
                     .background(Color.black.opacity(0.2))
             }
         }
+        .sheet(isPresented: $showProfileCompletion) {
+            ProfileCompletionView(onComplete: {
+                dismiss()
+            })
+            .environmentObject(authViewModel)
+        }
     }
     
     private func handleAppleSignIn(authorization: ASAuthorization) async {
@@ -200,8 +214,17 @@ struct SignInView: View {
         print("🍎 [SignIn] isAuthenticated: \(authViewModel.isAuthenticated)")
         
         if authViewModel.isAuthenticated {
-            print("✅ [SignIn] Authentication successful, dismissing")
-            dismiss()
+            print("✅ [SignIn] Authentication successful")
+            
+            // Check if profile is complete before dismissing
+            if let user = authViewModel.currentUser,
+               !user.college.isEmpty && !user.state.isEmpty && !user.city.isEmpty && !user.favoriteCoffee.isEmpty {
+                print("✅ [SignIn] Profile complete, dismissing")
+                dismiss()
+            } else {
+                print("⚠️ [SignIn] Profile incomplete, showing profile completion")
+                showProfileCompletion = true
+            }
         } else {
             print("❌ [SignIn] Authentication failed")
             errorMessage = authViewModel.errorMessage ?? "Failed to sign in with Apple"

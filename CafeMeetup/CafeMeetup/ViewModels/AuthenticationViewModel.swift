@@ -13,7 +13,11 @@ class AuthenticationViewModel: ObservableObject {
     private let locationService: LocationServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authService: AuthenticationServiceProtocol = AuthenticationService.shared, locationService: LocationServiceProtocol = LocationService.shared) {
+    convenience init() {
+        self.init(authService: AuthenticationService.shared, locationService: LocationService.shared)
+    }
+    
+    init(authService: AuthenticationServiceProtocol, locationService: LocationServiceProtocol) {
         self.authService = authService
         self.locationService = locationService
         checkAuthStatus()
@@ -157,6 +161,24 @@ class AuthenticationViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func updateUser(_ user: User) async throws -> User {
+        isLoading = true
+        errorMessage = nil
+        
+        defer {
+            isLoading = false
+        }
+        
+        do {
+            let updatedUser = try await authService.updateUser(user)
+            currentUser = updatedUser
+            return updatedUser
+        } catch {
+            errorMessage = error.localizedDescription
+            throw error
+        }
     }
     
     func updateProfile(fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?, gender: String?, relationshipStatus: String?, profileImageURL: String? = nil) async {
