@@ -179,7 +179,7 @@ struct CurrentUserMarker: View {
     }
 }
 
-// Other users marker - yellow for nearby active users
+// Other users marker - shows user's avatar
 struct OtherUserMapMarker: View {
     let user: User
     
@@ -195,10 +195,8 @@ struct OtherUserMapMarker: View {
                 )
                 .frame(width: 40, height: 40)
                 .overlay(
-                    Text(user.fullName.prefix(1))
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
+                    Text(user.avatar.emoji)
+                        .font(.system(size: 24))
                 )
                 .overlay(
                     Circle()
@@ -232,14 +230,13 @@ struct UserDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Profile Image
+                    // Profile Image / Avatar
                     Circle()
                         .fill(Color.primaryGradient)
                         .frame(width: 100, height: 100)
                         .overlay(
-                            Text(user.fullName.prefix(1))
-                                .font(.system(size: 40, weight: .semibold))
-                                .foregroundColor(.white)
+                            Text(user.avatar.emoji)
+                                .font(.system(size: 50))
                         )
                         .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
                     
