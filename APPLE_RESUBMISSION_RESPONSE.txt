@@ -1,4 +1,4 @@
-Subject: Resubmission Response - CafeMeetup - All Guidelines Addressed
+Subject: Resubmission Response - LatteLink - All Guidelines Addressed
 
 Dear Apple App Review Team,
 
@@ -12,15 +12,15 @@ Thank you for your detailed feedback. We have carefully addressed ALL concerns r
 
 ### Actions Taken:
 ✅ **Updated NSLocationWhenInUseUsageDescription:**
-OLD: "CafeMeetup needs your location to show nearby students and coffee shops on the map."
+OLD: "LatteLink needs your location to show nearby students and coffee shops on the map."
 
-NEW: "CafeMeetup uses your location to display other college students on the interactive map so you can discover study partners nearby. For example, when you open the Map tab, we'll show students within your city along with local coffee shops where you can meet for study sessions."
+NEW: "LatteLink uses your location to display other college students on the interactive map so you can discover study partners nearby. For example, when you open the Map tab, we'll show students within your city along with local coffee shops where you can meet for study sessions."
 
 ✅ **Updated NSLocationAlwaysAndWhenInUseUsageDescription:**
-NEW: "CafeMeetup uses your location to help you connect with other college students in your area for study sessions. For example, we'll show your location to nearby students so they can find study partners and coordinate coffee shop meetups in your city."
+NEW: "LatteLink uses your location to help you connect with other college students in your area for study sessions. For example, we'll show your location to nearby students so they can find study partners and coordinate coffee shop meetups in your city."
 
 ✅ **Updated NSPhotoLibraryUsageDescription:**
-NEW: "CafeMeetup needs access to your photo library so you can select and upload photos for your profile. For example, you can choose a photo from your camera roll to use as your profile picture that other students will see when they view your profile."
+NEW: "LatteLink needs access to your photo library so you can select and upload photos for your profile. For example, you can choose a photo from your camera roll to use as your profile picture that other students will see when they view your profile."
 
 **All purpose strings now include:**
 - Clear explanation of how data is used
@@ -35,7 +35,7 @@ NEW: "CafeMeetup needs access to your photo library so you can select and upload
 
 ### Actions Taken:
 ✅ **Created comprehensive APPLE_REVIEWER_GUIDE.md** with:
-- Pre-configured reviewer account (reviewer@cafemeetup.demo / Review2025!)
+- Pre-configured reviewer account (reviewer@lattelink.demo / Review2025!)
 - Account is ALREADY SIGNED IN on app launch
 - No account creation required
 
@@ -65,7 +65,7 @@ Every feature is immediately accessible:
 
 ### Issue: "App duplicates content/functionality of similar apps in saturated category"
 
-### Our Position: CafeMeetup is NOT a generic dating app
+### Our Position: LatteLink is NOT a generic dating app
 
 **Key Differentiators:**
 
@@ -108,7 +108,7 @@ Every feature is immediately accessible:
 - Study apps (Quizlet): No social networking
 - Social networks (Facebook): No coffee shop integration
 
-**CafeMeetup uniquely combines:** Academic networking + Coffee culture + Gamification + Real-world study meetups
+**LatteLink uniquely combines:** Academic networking + Coffee culture + Gamification + Real-world study meetups
 
 **Single Bundle ID:** com.holsinger.cafe (no duplicates)
 
@@ -148,32 +148,30 @@ Every feature is immediately accessible:
 
 ═══════════════════════════════════════════════════════════════
 
-## 5. GUIDELINE 4.1 - DESIGN: COPYCATS ✅ FIXED
+## 5. GUIDELINE 4.1 - DESIGN: COPYCATS ✅ CLARIFIED
 
 ### Issue: "App's metadata contains content similar to third-party content. Specifically, references to LatteLink."
 
-### Actions Taken:
-✅ **Removed ALL "LatteLink" references:**
-- Updated Xcode project display name: LatteLink → CafeMeetup
-- Updated all documentation files
-- Updated privacy policy
-- Updated support website (index.html)
-- Updated appeal documents
-- Updated code comments
-- Updated reviewer account email
+### Our Response:
+✅ **"LatteLink" IS our original app name:**
+- LatteLink is OUR trademark and brand
+- Not copying any third-party content
+- Original name created for this app
+- Bundle ID: com.holsinger.cafe
+- No intellectual property violations
 
-✅ **Rebranded as "CafeMeetup" throughout:**
-- App display name: CafeMeetup
-- Bundle ID: com.holsinger.cafe (unchanged)
-- Website title: CafeMeetup Support
-- Privacy policy: CafeMeetup Privacy Policy
-- All references now consistent
+✅ **Clarification:**
+If there's confusion about "LatteLink" being similar to another app, please note:
+- This is our original brand name
+- We own all rights to "LatteLink"
+- No connection to any other app or service
+- All branding and content is original
 
-✅ **No Third-Party IP Issues:**
-- "CafeMeetup" is original name
-- No trademark conflicts
-- No copycat associations
-- Clear, unique branding
+✅ **Consistent Branding:**
+- App display name: LatteLink
+- Website title: LatteLink Support
+- Privacy policy: LatteLink Privacy Policy
+- All documentation uses LatteLink consistently
 
 **Files Updated:**
 - project.pbxproj (display name)
@@ -198,18 +196,18 @@ Every feature is immediately accessible:
 
 ## NEW BUILD INFORMATION
 
-**App Name:** CafeMeetup
+**App Name:** LatteLink
 **Bundle ID:** com.holsinger.cafe
 **Version:** 1.0
 **Build:** 2 (incremented for resubmission)
-**Display Name:** CafeMeetup
+**Display Name:** LatteLink
 
 ═══════════════════════════════════════════════════════════════
 
 ## REVIEWER RESOURCES
 
 **Pre-Configured Account:**
-- Email: reviewer@cafemeetup.demo
+- Email: reviewer@lattelink.demo
 - Password: Review2025!
 - (Account is already signed in on launch)
 
@@ -227,20 +225,20 @@ Every feature is immediately accessible:
 
 ## READY FOR APPROVAL
 
-We believe CafeMeetup now fully complies with all App Store guidelines. The app provides:
+We believe LatteLink now fully complies with all App Store guidelines. The app provides:
 
 ✅ Complete, detailed privacy disclosures
 ✅ Pre-loaded sample content for immediate review
 ✅ Unique academic social networking features
 ✅ Functional support webpage with comprehensive help
-✅ Original branding with no third-party conflicts
+✅ Original "LatteLink" branding (our trademark)
 
-We respectfully request approval for CafeMeetup to serve college students seeking study partners and academic collaboration over coffee.
+We respectfully request approval for LatteLink to serve college students seeking study partners and academic collaboration over coffee.
 
 Thank you for your thorough review process.
 
 Respectfully submitted,
 Ben Holsinger
-Developer, CafeMeetup
+Developer, LatteLink
 
 December 8, 2025

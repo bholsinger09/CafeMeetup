@@ -1,6 +1,6 @@
 # Apple App Review - Sample Data Guide
 
-**App Name:** CafeMeetup  
+**App Name:** LatteLink  
 **Bundle ID:** com.holsinger.cafe  
 **Review Build:** 1.0 (1)
 
@@ -10,13 +10,13 @@
 
 Dear Apple Reviewer,
 
-Thank you for reviewing CafeMeetup. We have pre-loaded sample user content throughout the app to demonstrate all features. **No account creation is required** - simply launch the app and use the pre-configured reviewer account below.
+Thank you for reviewing LatteLink. We have pre-loaded sample user content throughout the app to demonstrate all features. **No account creation is required** - simply launch the app and use the pre-configured reviewer account below.
 
 ---
 
 ## 📱 REVIEWER ACCOUNT (Pre-Configured)
 
-**Email:** `reviewer@cafemeetup.demo`  
+**Email:** `reviewer@lattelink.demo`  
 **Password:** `Review2025!`
 
 This account is **already signed in** when you launch the app. You can explore all features immediately without creating a new account.
@@ -242,7 +242,7 @@ We're available to provide:
 
 ---
 
-Thank you for taking the time to review CafeMeetup. We believe it provides a unique, high-quality experience for college students seeking study partners and academic collaboration.
+Thank you for taking the time to review LatteLink. We believe it provides a unique, high-quality experience for college students seeking study partners and academic collaboration.
 
 **Happy Testing!** ☕📚
 
