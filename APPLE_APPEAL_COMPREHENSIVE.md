@@ -31,7 +31,7 @@ Apps must provide accurate and complete developer contact information for suppor
 **✅ ACTIONS TAKEN:**
 
 1. **Added App Support Section** in Account Settings:
-   - Direct email link: support@cafemeetup.app
+   - Direct email link: bholsinger@hotmail.com
    - Privacy Policy link (hosted at: https://bholsinger09.github.io/CafeMeetup/privacy.html)
    - Terms of Service link
    - Report Issue feature
@@ -41,7 +41,7 @@ Apps must provide accurate and complete developer contact information for suppor
    - Support URL: https://bholsinger09.github.io/CafeMeetup/
    - Marketing URL: https://bholsinger09.github.io/CafeMeetup/
    - Privacy Policy URL: https://bholsinger09.github.io/CafeMeetup/privacy.html
-   - Developer Contact: bholsinger09@gmail.com
+   - Developer Contact: bholsinger@hotmail.com
 
 3. **In-App Contact Information:**
    - Support email accessible from Settings tab
@@ -50,7 +50,7 @@ Apps must provide accurate and complete developer contact information for suppor
 
 **VERIFICATION:**
 - Privacy Policy is live and accessible: https://bholsinger09.github.io/CafeMeetup/privacy.html
-- Support email is active: bholsinger09@gmail.com
+- Support email is active: bholsinger@hotmail.com
 - GitHub Pages hosting for all legal documents
 
 ---
@@ -454,8 +454,8 @@ We can provide:
 ## Contact Information
 
 **Developer:** Ben Holsinger  
-**Email:** bholsinger09@gmail.com  
-**Support:** support@cafemeetup.app  
+**Email:** bholsinger@hotmail.com  
+**Support:** bholsinger@hotmail.com  
 **GitHub:** https://github.com/bholsinger09/CafeMeetup  
 **Website:** https://bholsinger09.github.io/CafeMeetup/  
 **Apple Developer Account:** [Your Account ID]

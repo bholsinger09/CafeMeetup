@@ -12,7 +12,7 @@ struct AccountSettingsView: View {
             List {
                 // Support & Help Section
                 Section {
-                    Link(destination: URL(string: "mailto:bholsinger09@gmail.com?subject=CafeMeetup Support")!) {
+                    Link(destination: URL(string: "mailto:bholsinger@hotmail.com?subject=CafeMeetup Support")!) {
                         HStack(spacing: 12) {
                             Image(systemName: "envelope.fill")
                                 .foregroundColor(.blue)
@@ -20,7 +20,7 @@ struct AccountSettingsView: View {
                         }
                     }
                     
-                    Link(destination: URL(string: "mailto:bholsinger09@gmail.com?subject=CafeMeetup Bug Report")!) {
+                    Link(destination: URL(string: "mailto:bholsinger@hotmail.com?subject=CafeMeetup Bug Report")!) {
                         HStack(spacing: 12) {
                             Image(systemName: "exclamationmark.bubble.fill")
                                 .foregroundColor(.orange)

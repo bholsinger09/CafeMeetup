@@ -10,8 +10,8 @@ We respectfully appeal the rejection of CafeMeetup under five guidelines. We hav
 
 Actions Taken:
 • Added comprehensive Support & Help section in Account Settings with direct email links
-• Contact Support: bholsinger09@gmail.com
-• Report Issue: bholsinger09@gmail.com  
+• Contact Support: bholsinger@hotmail.com
+• Report Issue: bholsinger@hotmail.com  
 • Privacy Policy accessible in-app: https://bholsinger09.github.io/CafeMeetup/privacy.html
 • Terms of Service link: https://bholsinger09.github.io/CafeMeetup/
 • App version and build information displayed
@@ -190,8 +190,8 @@ We can provide:
 CONTACT INFORMATION:
 
 Developer: Ben Holsinger
-Email: bholsinger09@gmail.com
-Support: support@cafemeetup.app
+Email: bholsinger@hotmail.com
+Support: bholsinger@hotmail.com
 GitHub: https://github.com/bholsinger09/CafeMeetup
 Website: https://bholsinger09.github.io/CafeMeetup/
 Privacy Policy: https://bholsinger09.github.io/CafeMeetup/privacy.html
