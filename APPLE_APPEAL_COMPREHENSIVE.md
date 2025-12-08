@@ -1,7 +1,7 @@
 # Comprehensive Appeal - CafeMeetup App Store Rejection
 
 **Date:** December 8, 2025  
-**App Name:** CafeMeetup (LatteLink)  
+**App Name:** CafeMeetup  
 **Bundle ID:** com.holsinger.cafe  
 **Version:** 1.0  
 **Build:** 1

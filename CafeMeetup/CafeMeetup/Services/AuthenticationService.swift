@@ -27,7 +27,7 @@ class AuthenticationService: AuthenticationServiceProtocol {
         // Create demo account for Apple App Review
         let reviewerUser = User(
             id: "reviewer-demo-account",
-            email: "reviewer@lattelink.demo",
+            email: "reviewer@cafemeetup.demo",
             fullName: "Sarah Johnson",
             college: "Boise State University",
             state: "Idaho",
@@ -46,12 +46,12 @@ class AuthenticationService: AuthenticationServiceProtocol {
         )
         
         // Store in auth system
-        mockUsers["reviewer@lattelink.demo"] = ("Review2025!", reviewerUser)
+        mockUsers["reviewer@cafemeetup.demo"] = ("Review2025!", reviewerUser)
         
         // Add to user service so they appear in searches
         userService.addMockUser(reviewerUser)
         
-        print("✅ [AuthService] Reviewer demo account initialized: reviewer@lattelink.demo")
+        print("✅ [AuthService] Reviewer demo account initialized: reviewer@cafemeetup.demo")
     }
     
     func signUp(email: String, password: String, user: User) async throws -> User {

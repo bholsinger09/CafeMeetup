@@ -49,11 +49,11 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>CafeMeetup needs your location to show nearby students and coffee shops on the map.</string>
+	<string>CafeMeetup uses your location to display other college students on the interactive map so you can discover study partners nearby. For example, when you open the Map tab, we'll show students within your city along with local coffee shops where you can meet for study sessions.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>CafeMeetup needs your location to help you connect with nearby students.</string>
+	<string>CafeMeetup uses your location to help you connect with other college students in your area for study sessions. For example, we'll show your location to nearby students so they can find study partners and coordinate coffee shop meetups in your city.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>CafeMeetup needs access to your photos to let you upload profile pictures.</string>
+	<string>CafeMeetup needs access to your photo library so you can select and upload photos for your profile. For example, you can choose a photo from your camera roll to use as your profile picture that other students will see when they view your profile.</string>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array>
 		<string>MKDirectionsModeCar</string>

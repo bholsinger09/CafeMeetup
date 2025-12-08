@@ -1,6 +1,6 @@
-# LatteLink Support & Privacy
+# CafeMeetup Support & Privacy
 
-Static site for LatteLink app support and privacy policy pages.
+Static site for CafeMeetup app support and privacy policy pages.
 
 ## Pages
 - [Support](index.html)

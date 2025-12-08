@@ -4,7 +4,7 @@
 
 ### Demo Account Credentials
 
-**Email:** `reviewer@lattelink.demo`  
+**Email:** `reviewer@cafemeetup.demo`  
 **Password:** `Review2025!`
 
 ### Demo User Profile

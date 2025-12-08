@@ -1,7 +1,7 @@
 # Apple App Review Appeal - Guideline 4.3 Spam
 
 **Date:** December 6, 2025  
-**App Name:** CafeMeetup (LatteLink)  
+**App Name:** CafeMeetup  
 **Bundle ID:** com.holsinger.cafe  
 **Rejection Reason:** Guideline 4.3 - Spam
 
