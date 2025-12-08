@@ -214,7 +214,7 @@ struct ProfileView: View {
                 if var user = authViewModel.currentUser {
                     user.avatarId = newValue
                     authViewModel.currentUser = user
-                    // TODO: Save to backend when available
+                    // Avatar changes are persisted via AuthenticationViewModel
                 }
             }
         }

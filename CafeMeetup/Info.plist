@@ -52,6 +52,8 @@
 	<string>CafeMeetup needs your location to show nearby students and coffee shops on the map.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>CafeMeetup needs your location to help you connect with nearby students.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>CafeMeetup needs access to your photos to let you upload profile pictures.</string>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array>
 		<string>MKDirectionsModeCar</string>

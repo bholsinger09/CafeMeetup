@@ -10,6 +10,56 @@ struct AccountSettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                // Support & Help Section
+                Section {
+                    Link(destination: URL(string: "mailto:bholsinger09@gmail.com?subject=CafeMeetup Support")!) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "envelope.fill")
+                                .foregroundColor(.blue)
+                            Text("Contact Support")
+                        }
+                    }
+                    
+                    Link(destination: URL(string: "mailto:bholsinger09@gmail.com?subject=CafeMeetup Bug Report")!) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "exclamationmark.bubble.fill")
+                                .foregroundColor(.orange)
+                            Text("Report an Issue")
+                        }
+                    }
+                } header: {
+                    Text("Support & Help")
+                } footer: {
+                    Text("Get help or report bugs to our support team.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                // Legal & Privacy Section
+                Section {
+                    Link(destination: URL(string: "https://bholsinger09.github.io/CafeMeetup/privacy.html")!) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "hand.raised.fill")
+                                .foregroundColor(.green)
+                            Text("Privacy Policy")
+                        }
+                    }
+                    
+                    Link(destination: URL(string: "https://bholsinger09.github.io/CafeMeetup/")!) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "doc.text.fill")
+                                .foregroundColor(.purple)
+                            Text("Terms of Service")
+                        }
+                    }
+                } header: {
+                    Text("Legal")
+                } footer: {
+                    Text("Review our privacy practices and terms of use.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
                 Section {
                     NavigationLink {
                         AboutDataDeletionView()
@@ -41,6 +91,25 @@ struct AccountSettingsView: View {
                     Text("Permanently delete your account and all associated data. This action cannot be undone.")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                }
+                
+                // App Information Section
+                Section {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("1.0")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Build")
+                        Spacer()
+                        Text("1")
+                            .foregroundColor(.secondary)
+                    }
+                } header: {
+                    Text("App Information")
                 }
             }
             .scrollContentBackground(.hidden)
