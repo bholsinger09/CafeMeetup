@@ -182,8 +182,8 @@ struct AcademicDashboardView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
                 }
-                }
-                .padding(.vertical)
+            }
+            .padding(.vertical)
             }
             .navigationTitle("Academic Progress")
             .preferredColorScheme(.dark)
