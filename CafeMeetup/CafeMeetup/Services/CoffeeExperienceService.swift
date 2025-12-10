@@ -39,8 +39,8 @@ class CoffeeExperienceService: ObservableObject {
     func createStudySession(
         hostId: String,
         hostName: String,
-        subject: String,
-        courseNumber: String?,
+        courseCode: String,
+        courseName: String,
         studyTopic: String,
         cafeId: String,
         cafeName: String,
@@ -54,14 +54,16 @@ class CoffeeExperienceService: ObservableObject {
             id: UUID().uuidString,
             hostId: hostId,
             hostName: hostName,
-            subject: subject,
-            courseNumber: courseNumber,
+            courseCode: courseCode,
+            courseName: courseName,
             studyTopic: studyTopic,
             cafeId: cafeId,
             cafeName: cafeName,
             scheduledDate: scheduledDate,
             duration: duration,
             attendeeIds: [hostId],
+            attendeeNames: [hostId: hostName],
+            minAttendees: 3,
             maxAttendees: maxAttendees,
             isPublic: isPublic,
             status: .scheduled,
@@ -94,11 +96,11 @@ class CoffeeExperienceService: ObservableObject {
         }.sorted { $0.scheduledDate < $1.scheduledDate }
     }
     
-    func getPublicSessions(subject: String? = nil) -> [StudySession] {
+    func getPublicSessions(courseCode: String? = nil) -> [StudySession] {
         var sessions = studySessions.filter { $0.isPublic && $0.isUpcoming && !$0.isFull }
         
-        if let subject = subject {
-            sessions = sessions.filter { $0.subject == subject }
+        if let courseCode = courseCode {
+            sessions = sessions.filter { $0.courseCode == courseCode }
         }
         
         return sessions.sorted { $0.scheduledDate < $1.scheduledDate }
@@ -246,14 +248,16 @@ class CoffeeExperienceService: ObservableObject {
             id: "session1",
             hostId: "user1",
             hostName: "Sarah",
-            subject: "Computer Science",
-            courseNumber: "CS 101",
+            courseCode: "CS 101",
+            courseName: "Introduction to Computer Science",
             studyTopic: "Data Structures & Algorithms",
             cafeId: "cafe1",
             cafeName: "The Human Bean",
             scheduledDate: Date().addingTimeInterval(86400), // Tomorrow
             duration: 120,
             attendeeIds: ["user1"],
+            attendeeNames: ["user1": "Sarah"],
+            minAttendees: 3,
             maxAttendees: 4,
             isPublic: true,
             status: .scheduled,
