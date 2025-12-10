@@ -5,6 +5,8 @@ struct CreatePostView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     
+    let editingPost: BlogPost?
+    
     @State private var title = ""
     @State private var content = ""
     @State private var coffeeShopName = ""
@@ -18,6 +20,10 @@ struct CreatePostView: View {
     @State private var maxAttendees = 5
     
     private let suggestedTags = ["Study Meetup", "Group Study", "Exam Prep", "Project Collaboration", "Tutoring", "Study Tips", "Course Help"]
+    
+    init(editingPost: BlogPost? = nil) {
+        self.editingPost = editingPost
+    }
     
     var body: some View {
         NavigationStack {
@@ -126,9 +132,12 @@ struct CreatePostView: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.backgroundGradient)
-            .navigationTitle("Create Post")
+            .navigationTitle(editingPost == nil ? "Create Post" : "Edit Post")
             .navigationBarTitleDisplayMode(.inline)
             .preferredColorScheme(.dark)
+            .onAppear {
+                loadPostData()
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -152,21 +161,40 @@ struct CreatePostView: View {
                             print("✅ [CreatePost] Current user: \(currentUser.fullName)")
                             print("📝 [CreatePost] Creating post...")
                             
-                            await blogViewModel.createPost(
-                                title: title,
-                                content: content,
-                                tags: Array(selectedTags),
-                                coffeeShopId: nil,
-                                coffeeShopName: coffeeShopName.isEmpty ? nil : coffeeShopName,
-                                meetupDate: hasMeetupDate ? meetupDate : nil,
-                                currentUser: currentUser,
-                                studyCourse: isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil,
-                                studyTopic: isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil,
-                                isStudyMeetup: isStudyMeetup,
-                                maxAttendees: isStudyMeetup ? maxAttendees : nil
-                            )
+                            if let existingPost = editingPost {
+                                // Update existing post
+                                var updatedPost = existingPost
+                                updatedPost.title = title
+                                updatedPost.content = content
+                                updatedPost.tags = Array(selectedTags)
+                                updatedPost.coffeeShopName = coffeeShopName.isEmpty ? nil : coffeeShopName
+                                updatedPost.meetupDate = hasMeetupDate ? meetupDate : nil
+                                updatedPost.studyCourse = isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil
+                                updatedPost.studyTopic = isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil
+                                updatedPost.isStudyMeetup = isStudyMeetup
+                                updatedPost.maxAttendees = isStudyMeetup ? maxAttendees : nil
+                                updatedPost.updatedAt = Date()
+                                
+                                await blogViewModel.updatePost(updatedPost)
+                                print("✅ [CreatePost] Post updated successfully")
+                            } else {
+                                // Create new post
+                                await blogViewModel.createPost(
+                                    title: title,
+                                    content: content,
+                                    tags: Array(selectedTags),
+                                    coffeeShopId: nil,
+                                    coffeeShopName: coffeeShopName.isEmpty ? nil : coffeeShopName,
+                                    meetupDate: hasMeetupDate ? meetupDate : nil,
+                                    currentUser: currentUser,
+                                    studyCourse: isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil,
+                                    studyTopic: isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil,
+                                    isStudyMeetup: isStudyMeetup,
+                                    maxAttendees: isStudyMeetup ? maxAttendees : nil
+                                )
+                                print("✅ [CreatePost] Post created successfully")
+                            }
                             
-                            print("✅ [CreatePost] Post created successfully")
                             print("📝 [CreatePost] Dismissing view...")
                             dismiss()
                         }
@@ -183,6 +211,23 @@ struct CreatePostView: View {
     
     private var isValid: Bool {
         !title.isEmpty && !content.isEmpty
+    }
+    
+    private func loadPostData() {
+        guard let post = editingPost else { return }
+        
+        title = post.title
+        content = post.content
+        coffeeShopName = post.coffeeShopName ?? ""
+        selectedTags = Set(post.tags)
+        hasMeetupDate = post.meetupDate != nil
+        if let date = post.meetupDate {
+            meetupDate = date
+        }
+        isStudyMeetup = post.isStudyMeetup
+        studyCourse = post.studyCourse ?? ""
+        studyTopic = post.studyTopic ?? ""
+        maxAttendees = post.maxAttendees ?? 5
     }
 }
 

@@ -4,6 +4,8 @@ struct BlogFeedView: View {
     @EnvironmentObject var blogViewModel: BlogViewModel
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var showCreatePost = false
+    @State private var editingPost: BlogPost?
+    @State private var showEditPost = false
     
     var body: some View {
         NavigationStack {
@@ -19,6 +21,13 @@ struct BlogFeedView: View {
                                 BlogPostCard(post: post)
                                     .contextMenu {
                                         if post.authorId == authViewModel.currentUser?.id {
+                                            Button {
+                                                editingPost = post
+                                                showEditPost = true
+                                            } label: {
+                                                Label("Edit Post", systemImage: "pencil")
+                                            }
+                                            
                                             Button(role: .destructive) {
                                                 Task {
                                                     await blogViewModel.deletePost(id: post.id)
@@ -51,6 +60,11 @@ struct BlogFeedView: View {
             .preferredColorScheme(.dark)
             .sheet(isPresented: $showCreatePost) {
                 CreatePostView()
+            }
+            .sheet(isPresented: $showEditPost) {
+                if let post = editingPost {
+                    CreatePostView(editingPost: post)
+                }
             }
             .task {
                 if blogViewModel.posts.isEmpty {
