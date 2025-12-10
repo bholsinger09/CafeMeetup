@@ -5,7 +5,6 @@ struct BlogFeedView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var showCreatePost = false
     @State private var editingPost: BlogPost?
-    @State private var showEditPost = false
     
     var body: some View {
         NavigationStack {
@@ -23,7 +22,6 @@ struct BlogFeedView: View {
                                         if post.authorId == authViewModel.currentUser?.id {
                                             Button {
                                                 editingPost = post
-                                                showEditPost = true
                                             } label: {
                                                 Label("Edit Post", systemImage: "pencil")
                                             }
@@ -60,11 +58,13 @@ struct BlogFeedView: View {
             .preferredColorScheme(.dark)
             .sheet(isPresented: $showCreatePost) {
                 CreatePostView()
+                    .environmentObject(blogViewModel)
+                    .environmentObject(authViewModel)
             }
-            .sheet(isPresented: $showEditPost) {
-                if let post = editingPost {
-                    CreatePostView(editingPost: post)
-                }
+            .sheet(item: $editingPost) { post in
+                CreatePostView(editingPost: post)
+                    .environmentObject(blogViewModel)
+                    .environmentObject(authViewModel)
             }
             .task {
                 if blogViewModel.posts.isEmpty {
