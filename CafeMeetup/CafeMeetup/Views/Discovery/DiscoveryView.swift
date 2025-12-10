@@ -374,11 +374,6 @@ struct ProfileCard: View {
                 HStack(spacing: 16) {
                     Label(user.college, systemImage: "building.2.fill")
                         .font(.subheadline)
-                    
-                    if let relationshipStatus = user.relationshipStatus, !relationshipStatus.isEmpty {
-                        Label(relationshipStatus, systemImage: "heart.fill")
-                            .font(.subheadline)
-                    }
                 }
                 .foregroundColor(.secondary)
                 
