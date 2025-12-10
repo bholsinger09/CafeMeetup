@@ -41,7 +41,7 @@ struct StudySessionsView: View {
                             
                             // Sessions based on filter
                             ForEach(filteredSessions) { session in
-                                StudySessionCard(
+                                SessionCard(
                                     session: session,
                                     onJoin: {
                                         sessionService.joinSession(session, userName: "Current User")
@@ -143,7 +143,7 @@ struct StudySessionsView: View {
 
 // MARK: - Study Session Card
 
-struct StudySessionCard: View {
+struct SessionCard: View {
     let session: StudySession
     let onJoin: () -> Void
     let onLeave: () -> Void
@@ -177,10 +177,10 @@ struct StudySessionCard: View {
             
             // Session details
             VStack(alignment: .leading, spacing: 8) {
-                DetailRow(icon: "calendar", text: formatDate(session.scheduledDate))
-                DetailRow(icon: "clock", text: "\(session.duration) minutes")
-                DetailRow(icon: "location.fill", text: session.cafeName)
-                DetailRow(icon: "person.3.fill", text: "Hosted by \(session.hostName)")
+                SessionDetailRow(icon: "calendar", text: formatDate(session.scheduledDate))
+                SessionDetailRow(icon: "clock", text: "\(session.duration) minutes")
+                SessionDetailRow(icon: "location.fill", text: session.cafeName)
+                SessionDetailRow(icon: "person.3.fill", text: "Hosted by \(session.hostName)")
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
@@ -264,7 +264,7 @@ struct GroupSizeIndicator: View {
     }
 }
 
-struct DetailRow: View {
+struct SessionDetailRow: View {
     let icon: String
     let text: String
     

@@ -10,7 +10,7 @@ struct AcademicDashboardView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Weekly Study Hours
-                    StatCard(
+                    AcademicStatCard(
                         title: "Study Hours This Week",
                         value: "\(studyStats.hoursThisWeek)",
                         subtitle: "Goal: 15 hours",
@@ -20,7 +20,7 @@ struct AcademicDashboardView: View {
                     )
                     
                     // Study Streak
-                    StatCard(
+                    AcademicStatCard(
                         title: "Study Streak",
                         value: "\(studyStats.currentStreak) days",
                         subtitle: "Keep it going!",
@@ -145,7 +145,7 @@ struct AcademicDashboardView: View {
 
 // MARK: - Supporting Views
 
-struct StatCard: View {
+struct AcademicStatCard: View {
     let title: String
     let value: String
     let subtitle: String
