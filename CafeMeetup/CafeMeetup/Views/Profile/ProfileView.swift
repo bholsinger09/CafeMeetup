@@ -96,11 +96,6 @@ struct ProfileView: View {
                             Divider().padding(.leading, 50)
                             ProfileDetailRow(icon: "person.fill", title: "Gender", value: gender)
                         }
-                        
-                        if let relationshipStatus = authViewModel.currentUser?.relationshipStatus, !relationshipStatus.isEmpty {
-                            Divider().padding(.leading, 50)
-                            ProfileDetailRow(icon: "heart.fill", title: "Relationship Status", value: relationshipStatus)
-                        }
                     }
                     .background(Color.darkSecondary)
                     .cornerRadius(12)
