@@ -91,95 +91,97 @@ struct AcademicDashboardView: View {
                             )
                         }
                     }
+                    .padding(.horizontal)
                 }
-                    // Courses Being Studied
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Courses Being Studied")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(studyStats.courseBreakdown, id: \.course) { item in
-                                    CourseBreakdownCard(course: item.course, hours: item.hours)
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
+                
+                // Courses Being Studied
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Courses Being Studied")
+                        .font(.headline)
+                        .padding(.horizontal)
                     
-                    // Study Partners
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Most Frequent Study Partners")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        VStack(spacing: 8) {
-                            ForEach(studyStats.topStudyPartners, id: \.name) { partner in
-                                StudyPartnerRow(name: partner.name, sessions: partner.sessions)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(studyStats.courseBreakdown, id: \.course) { item in
+                                CourseBreakdownCard(course: item.course, hours: item.hours)
                             }
                         }
-                        .padding()
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(12)
                         .padding(.horizontal)
                     }
-                    
-                    // Coffee Shops Visited
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("Study Locations")
-                                .font(.headline)
-                            Spacer()
-                            Text("\(studyStats.uniqueCafesVisited) cafés")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
+                }
+                
+                // Study Partners
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Most Frequent Study Partners")
+                        .font(.headline)
                         .padding(.horizontal)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(studyStats.topCafes, id: \.name) { cafe in
-                                    CafeVisitCard(name: cafe.name, visits: cafe.visits)
-                                }
-                            }
-                            .padding(.horizontal)
+                    
+                    VStack(spacing: 8) {
+                        ForEach(studyStats.topStudyPartners, id: \.name) { partner in
+                            StudyPartnerRow(name: partner.name, sessions: partner.sessions)
                         }
                     }
-                    
-                    // Weekly Goal Progress
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Weekly Goals")
+                    .padding()
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                }
+                
+                // Coffee Shops Visited
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("Study Locations")
                             .font(.headline)
-                            .padding(.horizontal)
-                        
-                        VStack(spacing: 16) {
-                            GoalProgressRow(
-                                goal: "Study 15 hours",
-                                current: studyStats.hoursThisWeek,
-                                target: 15,
-                                icon: "clock.fill"
-                            )
-                            
-                            GoalProgressRow(
-                                goal: "Attend 5 group sessions",
-                                current: studyStats.sessionsThisWeek,
-                                target: 5,
-                                icon: "person.3.fill"
-                            )
-                            
-                            GoalProgressRow(
-                                goal: "Study 3 different courses",
-                                current: studyStats.coursesStudiedThisWeek,
-                                target: 3,
-                                icon: "book.fill"
-                            )
+                        Spacer()
+                        Text("\(studyStats.uniqueCafesVisited) cafés")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.horizontal)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(studyStats.topCafes, id: \.name) { cafe in
+                                CafeVisitCard(name: cafe.name, visits: cafe.visits)
+                            }
                         }
-                        .padding()
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(12)
                         .padding(.horizontal)
                     }
+                }
+                
+                // Weekly Goal Progress
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Weekly Goals")
+                        .font(.headline)
+                        .padding(.horizontal)
+                    
+                    VStack(spacing: 16) {
+                        GoalProgressRow(
+                            goal: "Study 15 hours",
+                            current: studyStats.hoursThisWeek,
+                            target: 15,
+                            icon: "clock.fill"
+                        )
+                        
+                        GoalProgressRow(
+                            goal: "Attend 5 group sessions",
+                            current: studyStats.sessionsThisWeek,
+                            target: 5,
+                            icon: "person.3.fill"
+                        )
+                        
+                        GoalProgressRow(
+                            goal: "Study 3 different courses",
+                            current: studyStats.coursesStudiedThisWeek,
+                            target: 3,
+                            icon: "book.fill"
+                        )
+                    }
+                    .padding()
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                }
                 }
                 .padding(.vertical)
             }
