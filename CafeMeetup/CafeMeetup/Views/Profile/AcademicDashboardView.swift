@@ -7,53 +7,52 @@ struct AcademicDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                if horizontalSizeClass == .regular {
-                    // iPad: Two-column grid layout
-                    LazyVGrid(columns: [
-                        GridItem(.flexible(), spacing: 20),
-                        GridItem(.flexible(), spacing: 20)
-                    ], spacing: 20) {
-                        // Weekly Study Hours
-                        AcademicStatCard(
-                            title: "Study Hours This Week",
-                            value: "\(studyStats.hoursThisWeek)",
-                            subtitle: "Goal: 15 hours",
-                            icon: "clock.fill",
-                            color: .blue,
-                            progress: Double(studyStats.hoursThisWeek) / 15.0
-                        )
-                        
-                        // Study Streak
-                        AcademicStatCard(
-                            title: "Study Streak",
-                            value: "\(studyStats.currentStreak) days",
-                            subtitle: "Keep it going!",
-                            icon: "flame.fill",
-                            color: .orange,
-                            progress: Double(studyStats.currentStreak) / 30.0
-                        )
-                        
-                        // Study Sessions Grid
-                        MiniStatCard(
-                            title: "Sessions This Week",
-                            value: "\(studyStats.sessionsThisWeek)",
-                            icon: "person.3.fill",
-                            color: .green
-                        )
-                        
-                        MiniStatCard(
-                            title: "Total Sessions",
-                            value: "\(studyStats.totalSessions)",
-                            icon: "checkmark.circle.fill",
-                            color: .purple
-                        )
-                    }
-                    .padding(.horizontal)
-                } else {
-                    // iPhone: Vertical stack layout
-                    VStack(spacing: 20) {
+        ScrollView {
+            if horizontalSizeClass == .regular {
+                // iPad: Two-column grid layout
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 20),
+                    GridItem(.flexible(), spacing: 20)
+                ], spacing: 20) {
+                    // Weekly Study Hours
+                    AcademicStatCard(
+                        title: "Study Hours This Week",
+                        value: "\(studyStats.hoursThisWeek)",
+                        subtitle: "Goal: 15 hours",
+                        icon: "clock.fill",
+                        color: .blue,
+                        progress: Double(studyStats.hoursThisWeek) / 15.0
+                    )
+                    
+                    // Study Streak
+                    AcademicStatCard(
+                        title: "Study Streak",
+                        value: "\(studyStats.currentStreak) days",
+                        subtitle: "Keep it going!",
+                        icon: "flame.fill",
+                        color: .orange,
+                        progress: Double(studyStats.currentStreak) / 30.0
+                    )
+                    
+                    // Study Sessions Grid
+                    MiniStatCard(
+                        title: "Sessions This Week",
+                        value: "\(studyStats.sessionsThisWeek)",
+                        icon: "person.3.fill",
+                        color: .green
+                    )
+                    
+                    MiniStatCard(
+                        title: "Total Sessions",
+                        value: "\(studyStats.totalSessions)",
+                        icon: "checkmark.circle.fill",
+                        color: .purple
+                    )
+                }
+                .padding(.horizontal)
+            } else {
+                // iPhone: Vertical stack layout
+                VStack(spacing: 20) {
                         // Weekly Study Hours
                         AcademicStatCard(
                             title: "Study Hours This Week",
@@ -183,11 +182,11 @@ struct AcademicDashboardView: View {
                     .padding(.horizontal)
                 }
             }
-            .padding(.vertical)
-            .navigationTitle("Academic Progress")
-            .preferredColorScheme(.dark)
-            .background(Color(UIColor.systemGroupedBackground))
         }
+        .padding(.vertical)
+        .navigationTitle("Academic Progress")
+        .preferredColorScheme(.dark)
+        .background(Color(UIColor.systemGroupedBackground))
     }
 }
 
