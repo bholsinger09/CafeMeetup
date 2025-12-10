@@ -12,8 +12,12 @@ struct CreatePostView: View {
     @State private var customTag = ""
     @State private var hasMeetupDate = false
     @State private var meetupDate = Date()
+    @State private var isStudyMeetup = false
+    @State private var studyCourse = ""
+    @State private var studyTopic = ""
+    @State private var maxAttendees = 5
     
-    private let suggestedTags = ["Meetup", "Coffee Chat", "Study Session", "Fellowship", "Bible Study", "Prayer", "Casual Hangout"]
+    private let suggestedTags = ["Study Meetup", "Group Study", "Exam Prep", "Project Collaboration", "Tutoring", "Study Tips", "Course Help"]
     
     var body: some View {
         NavigationStack {
@@ -24,7 +28,7 @@ struct CreatePostView: View {
                     
                     ZStack(alignment: .topLeading) {
                         if content.isEmpty {
-                            Text("Share your thoughts, organize a meetup, or start a conversation...")
+                            Text("Share study tips, organize a group session, or ask for course help...")
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal, 5)
                                 .padding(.vertical, 8)
@@ -37,6 +41,20 @@ struct CreatePostView: View {
                 
                 Section("Coffee Shop (Optional)") {
                     TextField("Coffee Shop Name", text: $coffeeShopName)
+                }
+                
+                Section("Study Meetup (Optional)") {
+                    Toggle("This is a study meetup", isOn: $isStudyMeetup)
+                    
+                    if isStudyMeetup {
+                        TextField("Course Code (e.g., CS 101)", text: $studyCourse)
+                        TextField("Study Topic (e.g., Midterm Review)", text: $studyTopic)
+                        
+                        Stepper("Max Attendees: \(maxAttendees)", value: $maxAttendees, in: 3...15)
+                        Text("Group study works best with 3-8 people")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Section("Meetup Date (Optional)") {
@@ -141,7 +159,11 @@ struct CreatePostView: View {
                                 coffeeShopId: nil,
                                 coffeeShopName: coffeeShopName.isEmpty ? nil : coffeeShopName,
                                 meetupDate: hasMeetupDate ? meetupDate : nil,
-                                currentUser: currentUser
+                                currentUser: currentUser,
+                                studyCourse: isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil,
+                                studyTopic: isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil,
+                                isStudyMeetup: isStudyMeetup,
+                                maxAttendees: isStudyMeetup ? maxAttendees : nil
                             )
                             
                             print("✅ [CreatePost] Post created successfully")

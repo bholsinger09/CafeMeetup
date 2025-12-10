@@ -19,13 +19,71 @@ protocol BlogServiceProtocol {
 class BlogService: BlogServiceProtocol {
     static let shared = BlogService()
     
-    private init() {}
+    private init() {
+        setupMockData()
+    }
     
     // Mock data storage
     private var posts: [BlogPost] = []
     private var comments: [Comment] = []
     private var likes: [Like] = []
     private var meetupInterests: [MeetupInterest] = []
+    
+    private func setupMockData() {
+        // Add mock study meetup posts
+        let post1 = BlogPost(
+            authorId: "user1",
+            authorName: "Sarah Johnson",
+            authorImageURL: nil,
+            title: "CS 101 Midterm Study Group",
+            content: "Looking for a few people to review Chapters 1-5 for the upcoming midterm. We can go over algorithms, data structures, and practice problems together. Great opportunity to clarify concepts and share study tips!",
+            tags: ["Study Meetup", "Exam Prep", "CS 101"],
+            coffeeShopId: nil,
+            coffeeShopName: "Central Perk Café",
+            meetupDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()),
+            location: "Downtown Campus",
+            studyCourse: "CS 101",
+            studyTopic: "Chapters 1-5 Review",
+            isStudyMeetup: true,
+            maxAttendees: 6
+        )
+        
+        let post2 = BlogPost(
+            authorId: "user2",
+            authorName: "Mike Chen",
+            authorImageURL: nil,
+            title: "MATH 250 Homework Help Session",
+            content: "Having trouble with integration techniques? Let's work through the problem set together! I've got some good resources and we can help each other understand the trickier problems. Calculus doesn't have to be painful when you have a study group!",
+            tags: ["Study Meetup", "Tutoring", "MATH 250"],
+            coffeeShopId: nil,
+            coffeeShopName: "Bean There Coffee",
+            meetupDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+            location: "North Campus",
+            studyCourse: "MATH 250",
+            studyTopic: "Integration Techniques",
+            isStudyMeetup: true,
+            maxAttendees: 4
+        )
+        
+        let post3 = BlogPost(
+            authorId: "user3",
+            authorName: "Emily Rodriguez",
+            authorImageURL: nil,
+            title: "Final Project Collaboration - CHEM 110",
+            content: "Need 2-3 more people for our chemistry lab project. We're working on the organic compounds analysis and could use different perspectives. Meeting to divide tasks and plan our presentation approach.",
+            tags: ["Study Meetup", "Project Collaboration", "CHEM 110"],
+            coffeeShopId: nil,
+            coffeeShopName: "The Grind",
+            meetupDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()),
+            location: "Science Building",
+            studyCourse: "CHEM 110",
+            studyTopic: "Lab Project Planning",
+            isStudyMeetup: true,
+            maxAttendees: 5
+        )
+        
+        posts = [post1, post2, post3]
+    }
     
     func fetchPosts(limit: Int = 50) async throws -> [BlogPost] {
         // Simulate network delay

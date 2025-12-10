@@ -26,7 +26,7 @@ struct BlogFeedView: View {
                     }
                 }
             }
-            .navigationTitle("Community Feed")
+            .navigationTitle("Academic Blog")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -60,7 +60,7 @@ struct BlogFeedView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.lightText)
             
-            Text("Be the first to share a meetup or coffee chat!")
+            Text("Share study tips, organize group sessions, or post about academic topics!")
                 .font(.subheadline)
                 .foregroundColor(.secondaryText)
                 .multilineTextAlignment(.center)
@@ -125,6 +125,25 @@ struct BlogPostCard: View {
             
             // Content
             VStack(alignment: .leading, spacing: 8) {
+                // Study course badge if this is a study meetup
+                if post.isStudyMeetup, let course = post.studyCourse {
+                    HStack {
+                        Image(systemName: "book.fill")
+                        Text(course)
+                        if let topic = post.studyTopic {
+                            Text("•")
+                            Text(topic)
+                                .lineLimit(1)
+                        }
+                    }
+                    .font(.caption)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Color.brown.opacity(0.2))
+                    .foregroundColor(.brown)
+                    .cornerRadius(8)
+                }
+                
                 Text(post.title)
                     .font(.title3)
                     .fontWeight(.semibold)
@@ -145,6 +164,13 @@ struct BlogPostCard: View {
                     HStack {
                         Image(systemName: "calendar")
                         Text(meetupDate, style: .date)
+                        
+                        // Show max attendees for study meetups
+                        if post.isStudyMeetup, let max = post.maxAttendees {
+                            Text("•")
+                            Image(systemName: "person.3.fill")
+                            Text("Max \(max) students")
+                        }
                     }
                     .font(.subheadline)
                     .foregroundColor(.secondary)

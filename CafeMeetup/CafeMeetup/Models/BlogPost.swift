@@ -19,6 +19,12 @@ struct BlogPost: Identifiable, Codable, Equatable {
     var createdAt: Date
     var updatedAt: Date
     
+    // Study meetup specific fields
+    var studyCourse: String? // e.g., "CS 101", "MATH 250"
+    var studyTopic: String? // e.g., "Midterm Review", "Chapter 5"
+    var isStudyMeetup: Bool = false // Flag for study-focused posts
+    var maxAttendees: Int? // For group study meetups
+    
     init(
         id: String = UUID().uuidString,
         authorId: String,
@@ -36,7 +42,11 @@ struct BlogPost: Identifiable, Codable, Equatable {
         commentCount: Int = 0,
         meetupInterestCount: Int = 0,
         createdAt: Date = Date(),
-        updatedAt: Date = Date()
+        updatedAt: Date = Date(),
+        studyCourse: String? = nil,
+        studyTopic: String? = nil,
+        isStudyMeetup: Bool = false,
+        maxAttendees: Int? = nil
     ) {
         self.id = id
         self.authorId = authorId
@@ -55,6 +65,10 @@ struct BlogPost: Identifiable, Codable, Equatable {
         self.meetupInterestCount = meetupInterestCount
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.studyCourse = studyCourse
+        self.studyTopic = studyTopic
+        self.isStudyMeetup = isStudyMeetup
+        self.maxAttendees = maxAttendees
     }
 }
 

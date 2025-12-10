@@ -32,11 +32,15 @@ class BlogViewModel: ObservableObject {
         isLoading = false
     }
     
-    func createPost(title: String, content: String, tags: [String], coffeeShopId: String?, coffeeShopName: String?, meetupDate: Date?, currentUser: User) async {
+    func createPost(title: String, content: String, tags: [String], coffeeShopId: String?, coffeeShopName: String?, meetupDate: Date?, currentUser: User, studyCourse: String? = nil, studyTopic: String? = nil, isStudyMeetup: Bool = false, maxAttendees: Int? = nil) async {
         print("📝 [BlogViewModel] createPost called")
         print("📝 [BlogViewModel] Title: '\(title)'")
         print("📝 [BlogViewModel] Content: '\(content)'")
         print("📝 [BlogViewModel] Tags: \(tags)")
+        print("📝 [BlogViewModel] Study Meetup: \(isStudyMeetup)")
+        if isStudyMeetup {
+            print("📝 [BlogViewModel] Course: \(studyCourse ?? "N/A"), Topic: \(studyTopic ?? "N/A"), Max: \(maxAttendees ?? 0)")
+        }
         
         isLoading = true
         errorMessage = nil
@@ -52,7 +56,11 @@ class BlogViewModel: ObservableObject {
                 coffeeShopId: coffeeShopId,
                 coffeeShopName: coffeeShopName,
                 meetupDate: meetupDate,
-                location: currentUser.location
+                location: currentUser.location,
+                studyCourse: studyCourse,
+                studyTopic: studyTopic,
+                isStudyMeetup: isStudyMeetup,
+                maxAttendees: maxAttendees
             )
             
             print("📝 [BlogViewModel] Post object created: \(post.id)")
