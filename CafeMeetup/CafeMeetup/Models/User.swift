@@ -21,6 +21,16 @@ struct User: Identifiable, Codable, Equatable {
     var createdAt: Date
     var updatedAt: Date
     
+    // Academic profile
+    var major: String?
+    var graduationYear: Int?
+    var currentCourses: [String]? // Course IDs
+    var isTutor: Bool = false
+    var tutorSubjects: [String]? // Subjects user can tutor
+    var studyHoursThisWeek: Int = 0
+    var totalStudySessions: Int = 0
+    var studyStreak: Int = 0 // Days in a row with study activity
+    
     init(
         id: String = UUID().uuidString,
         email: String,
@@ -39,7 +49,15 @@ struct User: Identifiable, Codable, Equatable {
         lastActiveAt: Date? = nil,
         avatarId: String? = nil,
         createdAt: Date = Date(),
-        updatedAt: Date = Date()
+        updatedAt: Date = Date(),
+        major: String? = nil,
+        graduationYear: Int? = nil,
+        currentCourses: [String]? = nil,
+        isTutor: Bool = false,
+        tutorSubjects: [String]? = nil,
+        studyHoursThisWeek: Int = 0,
+        totalStudySessions: Int = 0,
+        studyStreak: Int = 0
     ) {
         self.id = id
         self.email = email
@@ -59,6 +77,14 @@ struct User: Identifiable, Codable, Equatable {
         self.avatarId = avatarId
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.major = major
+        self.graduationYear = graduationYear
+        self.currentCourses = currentCourses
+        self.isTutor = isTutor
+        self.tutorSubjects = tutorSubjects
+        self.studyHoursThisWeek = studyHoursThisWeek
+        self.totalStudySessions = totalStudySessions
+        self.studyStreak = studyStreak
     }
     
     // Helper to check if user is recently active (within last 30 minutes)
@@ -73,6 +99,21 @@ struct User: Identifiable, Codable, Equatable {
             return avatar
         }
         return AvatarSystem.defaultAvatar
+    }
+    
+    // Academic year display
+    var academicYear: String? {
+        guard let year = graduationYear else { return nil }
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let yearsRemaining = year - currentYear
+        
+        switch yearsRemaining {
+        case 0: return "Senior (Graduating \(year))"
+        case 1: return "Junior (Class of \(year))"
+        case 2: return "Sophomore (Class of \(year))"
+        case 3: return "Freshman (Class of \(year))"
+        default: return "Class of \(year)"
+        }
     }
 }
 

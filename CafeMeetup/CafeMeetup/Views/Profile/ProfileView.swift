@@ -132,6 +132,60 @@ struct ProfileView: View {
                         .padding(.horizontal)
                     }
                     
+                    // Academic Section (Emphasizes Student Identity)
+                    VStack(spacing: 12) {
+                        // My Classes Button
+                        NavigationLink {
+                            MyCoursesView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "book.fill")
+                                Text("My Classes")
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.brown)
+                            .cornerRadius(12)
+                            .shadow(color: Color.brown.opacity(0.3), radius: 8)
+                        }
+                        
+                        // Academic Info Display
+                        if let major = authViewModel.currentUser?.major,
+                           let year = authViewModel.currentUser?.academicYear {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Major")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(major)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text("Year")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(year)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
+                            }
+                            .padding()
+                            .background(Color.darkSecondary)
+                            .cornerRadius(12)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                     // Rewards & Achievements Section
                     RewardsPreviewCard()
                         .padding(.horizontal)

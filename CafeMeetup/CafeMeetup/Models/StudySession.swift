@@ -1,24 +1,29 @@
 import Foundation
 import CoreLocation
 
-/// Study Session - Unique feature for college students to meet for study dates
-/// Combines dating with academic collaboration at coffee shops
-struct StudySession: Identifiable, Codable {
+/// Study Session - Primary feature for academic collaboration at coffee shops
+/// Students organize GROUP study sessions (3+ people) to work on coursework together
+struct StudySession: Identifiable, Codable, Equatable {
     let id: String
     let hostId: String
     var hostName: String
-    let subject: String
-    let courseNumber: String?
-    let studyTopic: String
+    let courseCode: String // e.g., "CS 101", "MATH 250"
+    let courseName: String // e.g., "Introduction to Programming"
+    let studyTopic: String // e.g., "Chapter 5: Loops", "Midterm Review"
     let cafeId: String
     var cafeName: String
     let scheduledDate: Date
-    let duration: Int // minutes
-    var attendeeIds: [String]
-    let maxAttendees: Int
-    let isPublic: Bool // Public sessions visible to all matches
+    let duration: Int // minutes (typically 60-180)
+    var attendeeIds: [String] // User IDs of students who joined
+    var attendeeNames: [String: String] // [userId: userName] for display
+    let minAttendees: Int // Minimum for session to happen (default 3)
+    let maxAttendees: Int // Maximum capacity (3-8 people)
+    let isPublic: Bool // Public sessions visible to all students in same course
     var status: SessionStatus
     let createdAt: Date
+    var studyMaterials: [String]? // URLs or descriptions of materials needed
+    var groupChatId: String? // Reference to group chat for this session
+    var completedAttendees: [String]? // Who checked in/completed the session
     
     enum SessionStatus: String, Codable {
         case scheduled = "Scheduled"
@@ -27,12 +32,72 @@ struct StudySession: Identifiable, Codable {
         case cancelled = "Cancelled"
     }
     
+    init(
+        id: String = UUID().uuidString,
+        hostId: String,
+        hostName: String,
+        courseCode: String,
+        courseName: String,
+        studyTopic: String,
+        cafeId: String,
+        cafeName: String,
+        scheduledDate: Date,
+        duration: Int = 120,
+        attendeeIds: [String] = [],
+        attendeeNames: [String: String] = [:],
+        minAttendees: Int = 3,
+        maxAttendees: Int = 6,
+        isPublic: Bool = true,
+        status: SessionStatus = .scheduled,
+        createdAt: Date = Date(),
+        studyMaterials: [String]? = nil,
+        groupChatId: String? = nil,
+        completedAttendees: [String]? = nil
+    ) {
+        self.id = id
+        self.hostId = hostId
+        self.hostName = hostName
+        self.courseCode = courseCode
+        self.courseName = courseName
+        self.studyTopic = studyTopic
+        self.cafeId = cafeId
+        self.cafeName = cafeName
+        self.scheduledDate = scheduledDate
+        self.duration = duration
+        self.attendeeIds = attendeeIds
+        self.attendeeNames = attendeeNames
+        self.minAttendees = minAttendees
+        self.maxAttendees = maxAttendees
+        self.isPublic = isPublic
+        self.status = status
+        self.createdAt = createdAt
+        self.studyMaterials = studyMaterials
+        self.groupChatId = groupChatId
+        self.completedAttendees = completedAttendees
+    }
+    
     var isUpcoming: Bool {
         scheduledDate > Date()
     }
     
     var isFull: Bool {
         attendeeIds.count >= maxAttendees
+    }
+    
+    var hasMinimumAttendees: Bool {
+        attendeeIds.count >= minAttendees
+    }
+    
+    var availableSpots: Int {
+        maxAttendees - attendeeIds.count
+    }
+    
+    var displayCourse: String {
+        "\(courseCode): \(courseName)"
+    }
+    
+    var isGroupSession: Bool {
+        maxAttendees >= 3
     }
 }
 
