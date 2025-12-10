@@ -61,6 +61,7 @@ struct StudySessionsView: View {
                 }
             }
             .navigationTitle("Study Sessions")
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showCreateSession = true }) {

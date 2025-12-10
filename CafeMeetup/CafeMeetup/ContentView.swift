@@ -16,6 +16,7 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: authViewModel.isAuthenticated)
+        .preferredColorScheme(.dark)
     }
 }
 
