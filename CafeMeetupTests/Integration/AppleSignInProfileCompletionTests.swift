@@ -35,8 +35,7 @@ final class AppleSignInProfileCompletionTests: XCTestCase {
             favoriteCoffeeShop: "The Human Bean",
             bio: nil,
             gender: nil,
-            relationshipStatus: nil,
-            location: nil
+            location: nil,
         )
         
         // When: User signs in with Apple

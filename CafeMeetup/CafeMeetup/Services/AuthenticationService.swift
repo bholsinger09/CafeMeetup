@@ -37,7 +37,6 @@ class AuthenticationService: AuthenticationServiceProtocol {
             favoriteCoffeeShop: "The Human Bean",
             bio: "Coffee enthusiast and Boise State student. Love meeting new people over a good cup of coffee!",
             gender: "Female",
-            relationshipStatus: "Single",
             location: Location(latitude: 43.6150, longitude: -116.2023), // Boise, ID
             profileImageURL: nil,
             lastActiveAt: Date(),
