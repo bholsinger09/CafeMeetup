@@ -20,7 +20,7 @@ class BlogService: BlogServiceProtocol {
     static let shared = BlogService()
     
     private init() {
-        setupMockData()
+        // Start with empty posts - users will create their own
     }
     
     // Mock data storage
@@ -29,6 +29,8 @@ class BlogService: BlogServiceProtocol {
     private var likes: [Like] = []
     private var meetupInterests: [MeetupInterest] = []
     
+    // Removed mock data - users start with clean feed
+    /*
     private func setupMockData() {
         // Add mock study meetup posts
         let post1 = BlogPost(
@@ -84,6 +86,7 @@ class BlogService: BlogServiceProtocol {
         
         posts = [post1, post2, post3]
     }
+    */
     
     func fetchPosts(limit: Int = 50) async throws -> [BlogPost] {
         // Simulate network delay

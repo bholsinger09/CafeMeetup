@@ -17,6 +17,17 @@ struct BlogFeedView: View {
                         LazyVStack(spacing: 16) {
                             ForEach(blogViewModel.posts) { post in
                                 BlogPostCard(post: post)
+                                    .contextMenu {
+                                        if post.authorId == authViewModel.currentUser?.id {
+                                            Button(role: .destructive) {
+                                                Task {
+                                                    await blogViewModel.deletePost(id: post.id)
+                                                }
+                                            } label: {
+                                                Label("Delete Post", systemImage: "trash")
+                                            }
+                                        }
+                                    }
                             }
                         }
                         .padding()
