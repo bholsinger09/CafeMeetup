@@ -13,7 +13,6 @@ struct EditProfileView: View {
     @State private var favoriteCoffeeShop: String = ""
     @State private var bio: String = ""
     @State private var gender: String = ""
-    @State private var relationshipStatus: String = ""
     @State private var profileImage: UIImage?
     @State private var showImagePicker = false
     
@@ -79,14 +78,6 @@ struct EditProfileView: View {
                         Text("Prefer not to say").tag("")
                         Text("Male").tag("Male")
                         Text("Female").tag("Female")
-                    }
-                    
-                    Picker("Relationship Status", selection: $relationshipStatus) {
-                        Text("Prefer not to say").tag("")
-                        Text("Single").tag("Single")
-                        Text("In a Relationship").tag("In a Relationship")
-                        Text("Married").tag("Married")
-                        Text("It's Complicated").tag("It's Complicated")
                     }
                 }
                 
@@ -161,7 +152,6 @@ struct EditProfileView: View {
                                 favoriteCoffeeShop: favoriteCoffeeShop,
                                 bio: bio.isEmpty ? nil : bio,
                                 gender: gender.isEmpty ? nil : gender,
-                                relationshipStatus: relationshipStatus.isEmpty ? nil : relationshipStatus,
                                 profileImageURL: profileImageBase64
                             )
                             dismiss()
@@ -194,7 +184,6 @@ struct EditProfileView: View {
         favoriteCoffeeShop = user.favoriteCoffeeShop
         bio = user.bio ?? ""
         gender = user.gender ?? ""
-        relationshipStatus = user.relationshipStatus ?? ""
     }
     
     private var isValid: Bool {
