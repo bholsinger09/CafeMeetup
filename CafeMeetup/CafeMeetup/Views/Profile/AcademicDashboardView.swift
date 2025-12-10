@@ -184,7 +184,6 @@ struct AcademicDashboardView: View {
                 }
             }
             .padding(.vertical)
-            }
             .navigationTitle("Academic Progress")
             .preferredColorScheme(.dark)
             .background(Color(UIColor.systemGroupedBackground))
