@@ -1,123 +1,142 @@
 # LatteLink App Store Description
 
 ## Short Description (30 characters)
-**Meet coffee lovers on campus**
+**Study partners over coffee**
 
 ## Subtitle (30 characters max)
-**Date. Connect. Share Coffee.**
+**Study. Collaborate. Coffee.**
 
 ## Promotional Text (170 characters max)
-Find your perfect match over coffee! LatteLink connects college students who share a love for coffee. Swipe, match, and plan your next café date on campus.
+Find study partners over coffee! LatteLink connects college students for academic collaboration at local cafés. Schedule study sessions, earn badges, meet classmates.
 
 ## Description (4000 characters max)
 
-**☕ Where Coffee, Study & Romance Meet**
+**☕ Where Academic Success Meets Coffee Culture**
 
-LatteLink isn't just another dating app—it's the ONLY app that combines dating, study sessions, and coffee culture into one unique college experience. Designed exclusively for students who know that the best connections happen over great coffee and shared goals.
+LatteLink is the ONLY academic social networking app designed for college students who study best over great coffee. Unlike generic dating apps, we're focused on helping you find study partners, form study groups, and build your academic community—all while discovering the best coffee shops near campus.
 
 **🎓 WHAT MAKES US UNIQUE**
 
-**Study Session Matching** - Create or join study groups at local cafés. Turn study dates into coffee dates! Match with people in your major, find study partners for tough classes, and build connections through academic collaboration.
+**Study Session Scheduling** - Create or join study groups at local cafés with specific courses, subjects, and times. Find partners for tough classes, coordinate group projects, and ace your exams together over coffee.
 
-**Coffee Badge System** - Earn exclusive badges and level up! From "First Latte" to "Latte Legend," unlock achievements for café check-ins, study sessions, and real dates. Show off your Coffee Connoisseur status!
+**Coffee Badge System** - Earn exclusive badges for academic achievements! From "Early Bird Barista" to "Study Session Champion," unlock 50+ badges for café check-ins, study sessions, and helping classmates. Show off your Coffee Scholar status!
 
-**Café Check-In Rewards** - Get points for actually meeting up! Check in at cafés with your matches, track your favorite spots, and earn rewards for being social. Build your streak and unlock legendary badges.
+**Academic Collaboration First** - Match based on major, courses, graduation year, and study needs. Find someone who shares your passion for both coffee AND your field of study!
 
-**Academic Profiles** - Match based on major, graduation year, and study interests. Find someone who shares your passion for both coffee AND computer science!
+**Café Check-In Rewards** - Get points for actually studying together! Check in at cafés during study sessions, track your favorite study spots, and earn rewards for academic collaboration. Build your streak and unlock legendary scholar badges.
+
+**Virtual Coffee Gifts** - Send lattes, espressos, and cold brews as conversation starters. Say "thanks for helping me study!" with a virtual coffee.
 
 **💕 HOW IT WORKS**
 
-• Create your profile with major, coffee preferences, and study interests
-• Swipe through fellow students at your college
-• Match based on shared academic interests and coffee tastes
-• Start chatting with icebreakers or create a study session together
-• Check in at cafés to earn rewards and track your dating journey
-• Discover local coffee shops perfect for studying or dates
+• Create your academic profile with major, courses, and study interests
+• Swipe through fellow students at your college looking for study partners
+• Match based on shared academic interests and coffee preferences
+• Start chatting or create a study session together
+• Check in at cafés during study sessions to earn rewards
+• Share study tips and class notes through the built-in blog
+• Discover local coffee shops perfect for quiet studying
 
-**✨ PREMIUM FEATURES**
+**✨ KEY FEATURES**
 
-• **Virtual Gifts** - Coffee cups, hearts, roses, cakes, stars, and sparkles
-• **Icebreaker Questions** - Coffee-themed conversation starters
-• **Priority Messages** - Stand out in their inbox
-• **Read Receipts** - See when messages are read
-• **Exclusive Badges** - Unlock rare and legendary achievements
+• **Study Session Creator** - Schedule sessions with course numbers, subjects, duration
+• **Academic Blog Platform** - Share study tips, coffee recommendations, campus insights
+• **90+ Avatar Characters** - Marvel, DC, Star Wars, Harry Potter, Pokemon (privacy-friendly alternative to photos)
+• **50+ Achievement Badges** - Coffee and academic themed rewards
+• **Virtual Coffee Gifts** - Lattes, espressos, cold brew, macchiatos
+• **Course-Based Matching** - Find study partners in your classes
+• **Check-In System** - Verify real study sessions at coffee shops
 
 **🎯 WHY LATTELINK?**
 
-**Study-to-Date Pipeline** - The ONLY app where study sessions lead to relationships. Meet through shared academic goals, not just superficial swipes.
+**Academic-First Focus** - The ONLY app where study sessions are the primary goal. Meet through shared academic interests, not superficial swipes.
 
-**Gamified Experience** - Earn badges, level up, maintain streaks, and compete on leaderboards. Dating meets achievement system!
+**Gamified Learning** - Earn badges, level up, maintain study streaks, and track your progress. Academic networking meets achievement system!
 
-**Verified Check-Ins** - Proof of real dates! Check in together at cafés for rewards. No catfishing, just authentic coffee dates.
+**Verified Study Check-Ins** - Proof of real study sessions! Check in together at cafés for rewards and academic accountability.
 
-**Academic Matching** - Match by major, classes, and study needs. Find your perfect study partner who might become more.
+**Course Matching** - Match by major, classes, and study needs. Find your perfect study buddy who understands your academic challenges.
 
-**College-Focused** - Only verified college students on your campus
+**College Student Community** - Only verified college students seeking academic collaboration
 
-**Coffee Culture** - Bond over shared coffee preferences and café discoveries
+**Coffee Shop Discovery** - Bond over shared coffee preferences and discover great study spots
 
-**Real-World Rewards** - Earn points and badges for actually meeting up, not just messaging
+**Privacy Option** - Choose from 90+ character avatars instead of photos if you prefer privacy
 
-**🗺️ DISCOVER COFFEE SHOPS**
+**🗺️ DISCOVER STUDY-FRIENDLY COFFEE SHOPS**
 
 Our built-in map helps you:
-• Find local cafés near campus
-• See ratings and reviews
-• Get directions to your coffee date location
-• Discover new spots recommended by other users
+• Find quiet cafés perfect for studying near campus
+• See which coffee shops classmates recommend
+• Get directions to your study session location
+• Discover new spots with good wifi and outlets
+• Check which venues have study sessions scheduled
 
 **📱 FEATURES AT A GLANCE**
 
-✓ **Study Session Matching** - Create/join study groups at cafés
-✓ **Badge & Achievement System** - 15+ unique badges to unlock
-✓ **Café Check-In Rewards** - Earn points for real meetups
-✓ **Academic Profile Matching** - Match by major and classes
-✓ **Level Up System** - Progress from Coffee Newbie to Legend
-✓ **Streak Tracking** - Maintain daily activity for bonus points
-✓ Real-time messaging with virtual gifts
-✓ Interactive café map with study spots
-✓ Dark mode support
+✓ **Study Session Scheduling** - Create/join with course info and times
+✓ **Academic Blog** - Share study tips and coffee recommendations
+✓ **Badge & Achievement System** - 50+ unique badges to unlock
+✓ **Café Check-In Rewards** - Earn points for real study sessions
+✓ **Course-Based Matching** - Match by major and classes
+✓ **90+ Avatar Selection** - Privacy-friendly character options
+✓ **Virtual Coffee Gifts** - Send lattes, espressos to study partners
+✓ Real-time messaging for coordinating study sessions
+✓ Interactive café map with study-friendly venues
+✓ Dark mode support for late-night studying
 ✓ Privacy controls and account deletion
 
 **💬 WHAT USERS ARE SAYING**
 
-"Finally, a dating app that gets that the best dates start with coffee!" - Sarah, Boise State
+"Finally, an app that helps me find study partners who also love coffee shops!" - Sarah, Boise State
 
-"I love that everyone on here actually wants to meet up and grab coffee, not just endless texting." - Mike, University Student
+"I found an entire study group for my calculus class through LatteLink. We meet every Tuesday at the campus Starbucks." - Mike, University Student
 
-"The icebreaker questions are so much better than 'hey' - actual conversations!" - Emma, College Senior
+"The badge system makes studying actually fun. I'm competing with my roommate for the most study sessions!" - Emma, College Senior
 
 **🎓 PERFECT FOR COLLEGE LIFE**
 
-Whether you're looking for a study partner, a coffee date, or someone special to share your favorite corner booth with, LatteLink brings together students who appreciate good coffee and great conversation.
+Whether you're looking for a study partner for finals week, a group for your senior project, or classmates who love studying at coffee shops as much as you do, LatteLink brings together students who appreciate good coffee, great grades, and academic collaboration.
 
-**☕ START YOUR COFFEE CONNECTION TODAY**
+**☕ START YOUR STUDY JOURNEY TODAY**
 
-Download LatteLink and find someone who's just as excited about that perfect morning latte as you are. Because the best relationships start with a great cup of coffee.
+Download LatteLink and find students who are just as serious about their academics (and their coffee order) as you are. Because the best study sessions happen over a great cup of coffee.
 
 ---
 
 **Privacy & Safety**
-Your privacy matters. Control who sees your profile, unmatch at any time, and delete your account whenever you choose. We never share your data with third parties.
+Your privacy matters. Control who sees your profile, unmatch at any time, and delete your account whenever you choose. We never share your data with third parties. Choose avatars instead of photos for extra privacy.
 
 **Support**
-Questions or feedback? Contact us at support@lattelink.com
+Questions or feedback? Contact us at bholsinger@hotmail.com
+Support Website: https://bholsinger09.github.io/CafeMeetup/
 
 ---
 
-*LatteLink - Where every match is brewed to perfection* ☕💕
+*LatteLink - Where Study Sessions Meet Coffee Culture* ☕📚
 
 ## Keywords (100 characters max - comma separated)
-dating,coffee,college,students,campus,match,chat,cafe,relationship,meet,local,university
+study,college,students,campus,coffee,academic,collaborate,cafe,university,group,partners,education
 
 ## What's New (4000 characters max - for first release)
-Welcome to LatteLink! ☕
+Welcome to LatteLink! ☕📚
 
-This is our first release, bringing coffee-loving college students together. 
+This is our first release, bringing college students together for academic collaboration over coffee.
 
 Features in v1.0:
-• Swipe to match with fellow coffee enthusiasts
-• Real-time messaging with your matches
+• Schedule and join study sessions at local coffee shops
+• Match with study partners based on courses and major
+• Earn 50+ badges for academic achievements
+• Choose from 90+ character avatars for privacy
+• Real-time messaging to coordinate study sessions
+• Academic blog to share tips and recommendations
+• Interactive map to discover study-friendly cafés
+• Virtual coffee gifts to thank study partners
+• Check-in system to track study sessions
+
+LatteLink is designed exclusively for college students who want to build their academic community while enjoying great coffee. Find study partners, ace your classes, and discover the best coffee shops near campus!
+
+Start your study journey today! 📚☕
 • Premium gifts and icebreaker questions
 • Interactive map to discover local cafés
 • Profile customization with coffee preferences
