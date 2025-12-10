@@ -5,6 +5,7 @@ struct BlogFeedView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var showCreatePost = false
     @State private var editingPost: BlogPost?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     var body: some View {
         NavigationStack {
@@ -15,29 +16,60 @@ struct BlogFeedView: View {
                     emptyStateView
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 16) {
-                            ForEach(blogViewModel.posts) { post in
-                                BlogPostCard(post: post)
-                                    .contextMenu {
-                                        if post.authorId == authViewModel.currentUser?.id {
-                                            Button {
-                                                editingPost = post
-                                            } label: {
-                                                Label("Edit Post", systemImage: "pencil")
-                                            }
-                                            
-                                            Button(role: .destructive) {
-                                                Task {
-                                                    await blogViewModel.deletePost(id: post.id)
+                        if horizontalSizeClass == .regular {
+                            // iPad: Two-column grid
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 16),
+                                GridItem(.flexible(), spacing: 16)
+                            ], spacing: 16) {
+                                ForEach(blogViewModel.posts) { post in
+                                    BlogPostCard(post: post)
+                                        .contextMenu {
+                                            if post.authorId == authViewModel.currentUser?.id {
+                                                Button {
+                                                    editingPost = post
+                                                } label: {
+                                                    Label("Edit Post", systemImage: "pencil")
                                                 }
-                                            } label: {
-                                                Label("Delete Post", systemImage: "trash")
+                                                
+                                                Button(role: .destructive) {
+                                                    Task {
+                                                        await blogViewModel.deletePost(id: post.id)
+                                                    }
+                                                } label: {
+                                                    Label("Delete Post", systemImage: "trash")
+                                                }
                                             }
                                         }
-                                    }
+                                }
                             }
+                            .padding()
+                        } else {
+                            // iPhone: Vertical list
+                            LazyVStack(spacing: 16) {
+                                ForEach(blogViewModel.posts) { post in
+                                    BlogPostCard(post: post)
+                                        .contextMenu {
+                                            if post.authorId == authViewModel.currentUser?.id {
+                                                Button {
+                                                    editingPost = post
+                                                } label: {
+                                                    Label("Edit Post", systemImage: "pencil")
+                                                }
+                                                
+                                                Button(role: .destructive) {
+                                                    Task {
+                                                        await blogViewModel.deletePost(id: post.id)
+                                                    }
+                                                } label: {
+                                                    Label("Delete Post", systemImage: "trash")
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                            .padding()
                         }
-                        .padding()
                     }
                     .refreshable {
                         await blogViewModel.fetchPosts()

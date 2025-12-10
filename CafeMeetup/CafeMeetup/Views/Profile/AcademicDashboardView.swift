@@ -4,33 +4,38 @@ import SwiftUI
 /// Emphasizes ACADEMIC ACHIEVEMENT over dating metrics
 struct AcademicDashboardView: View {
     @State private var studyStats = StudyStatistics()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 20) {
-                    // Weekly Study Hours
-                    AcademicStatCard(
-                        title: "Study Hours This Week",
-                        value: "\(studyStats.hoursThisWeek)",
-                        subtitle: "Goal: 15 hours",
-                        icon: "clock.fill",
-                        color: .blue,
-                        progress: Double(studyStats.hoursThisWeek) / 15.0
-                    )
-                    
-                    // Study Streak
-                    AcademicStatCard(
-                        title: "Study Streak",
-                        value: "\(studyStats.currentStreak) days",
-                        subtitle: "Keep it going!",
-                        icon: "flame.fill",
-                        color: .orange,
-                        progress: Double(studyStats.currentStreak) / 30.0
-                    )
-                    
-                    // Study Sessions Grid
-                    HStack(spacing: 16) {
+                if horizontalSizeClass == .regular {
+                    // iPad: Two-column grid layout
+                    LazyVGrid(columns: [
+                        GridItem(.flexible(), spacing: 20),
+                        GridItem(.flexible(), spacing: 20)
+                    ], spacing: 20) {
+                        // Weekly Study Hours
+                        AcademicStatCard(
+                            title: "Study Hours This Week",
+                            value: "\(studyStats.hoursThisWeek)",
+                            subtitle: "Goal: 15 hours",
+                            icon: "clock.fill",
+                            color: .blue,
+                            progress: Double(studyStats.hoursThisWeek) / 15.0
+                        )
+                        
+                        // Study Streak
+                        AcademicStatCard(
+                            title: "Study Streak",
+                            value: "\(studyStats.currentStreak) days",
+                            subtitle: "Keep it going!",
+                            icon: "flame.fill",
+                            color: .orange,
+                            progress: Double(studyStats.currentStreak) / 30.0
+                        )
+                        
+                        // Study Sessions Grid
                         MiniStatCard(
                             title: "Sessions This Week",
                             value: "\(studyStats.sessionsThisWeek)",
@@ -45,7 +50,48 @@ struct AcademicDashboardView: View {
                             color: .purple
                         )
                     }
-                    
+                    .padding(.horizontal)
+                } else {
+                    // iPhone: Vertical stack layout
+                    VStack(spacing: 20) {
+                        // Weekly Study Hours
+                        AcademicStatCard(
+                            title: "Study Hours This Week",
+                            value: "\(studyStats.hoursThisWeek)",
+                            subtitle: "Goal: 15 hours",
+                            icon: "clock.fill",
+                            color: .blue,
+                            progress: Double(studyStats.hoursThisWeek) / 15.0
+                        )
+                        
+                        // Study Streak
+                        AcademicStatCard(
+                            title: "Study Streak",
+                            value: "\(studyStats.currentStreak) days",
+                            subtitle: "Keep it going!",
+                            icon: "flame.fill",
+                            color: .orange,
+                            progress: Double(studyStats.currentStreak) / 30.0
+                        )
+                        
+                        // Study Sessions Grid
+                        HStack(spacing: 16) {
+                            MiniStatCard(
+                                title: "Sessions This Week",
+                                value: "\(studyStats.sessionsThisWeek)",
+                                icon: "person.3.fill",
+                                color: .green
+                            )
+                            
+                            MiniStatCard(
+                                title: "Total Sessions",
+                                value: "\(studyStats.totalSessions)",
+                                icon: "checkmark.circle.fill",
+                                color: .purple
+                            )
+                        }
+                    }
+                }
                     // Courses Being Studied
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Courses Being Studied")

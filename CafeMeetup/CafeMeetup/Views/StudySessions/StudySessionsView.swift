@@ -6,6 +6,7 @@ struct StudySessionsView: View {
     @StateObject private var sessionService: StudySessionService
     @State private var showCreateSession = false
     @State private var selectedFilter: SessionFilter = .upcoming
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     enum SessionFilter: String, CaseIterable {
         case upcoming = "Upcoming"
@@ -35,28 +36,60 @@ struct StudySessionsView: View {
                         .frame(maxHeight: .infinity)
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 16) {
-                            // Info banner
-                            infoBanner
-                            
-                            // Sessions based on filter
-                            ForEach(filteredSessions) { session in
-                                SessionCard(
-                                    session: session,
-                                    onJoin: {
-                                        sessionService.joinSession(session, userName: "Current User")
-                                    },
-                                    onLeave: {
-                                        sessionService.leaveSession(session)
-                                    }
-                                )
+                        if horizontalSizeClass == .regular {
+                            // iPad: Grid layout
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 16),
+                                GridItem(.flexible(), spacing: 16)
+                            ], spacing: 16) {
+                                // Info banner
+                                infoBanner
+                                    .gridCellColumns(2)
+                                
+                                // Sessions based on filter
+                                ForEach(filteredSessions) { session in
+                                    SessionCard(
+                                        session: session,
+                                        onJoin: {
+                                            sessionService.joinSession(session, userName: "Current User")
+                                        },
+                                        onLeave: {
+                                            sessionService.leaveSession(session)
+                                        }
+                                    )
+                                }
+                                
+                                if filteredSessions.isEmpty {
+                                    emptyStateView
+                                        .gridCellColumns(2)
+                                }
                             }
-                            
-                            if filteredSessions.isEmpty {
-                                emptyStateView
+                            .padding()
+                        } else {
+                            // iPhone: Vertical list
+                            LazyVStack(spacing: 16) {
+                                // Info banner
+                                infoBanner
+                                
+                                // Sessions based on filter
+                                ForEach(filteredSessions) { session in
+                                    SessionCard(
+                                        session: session,
+                                        onJoin: {
+                                            sessionService.joinSession(session, userName: "Current User")
+                                        },
+                                        onLeave: {
+                                            sessionService.leaveSession(session)
+                                        }
+                                    )
+                                }
+                                
+                                if filteredSessions.isEmpty {
+                                    emptyStateView
+                                }
                             }
+                            .padding()
                         }
-                        .padding()
                     }
                 }
             }
