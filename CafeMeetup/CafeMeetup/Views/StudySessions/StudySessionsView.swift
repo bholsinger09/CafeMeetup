@@ -19,80 +19,7 @@ struct StudySessionsView: View {
     }
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                // Filter Picker
-                Picker("Filter", selection: $selectedFilter) {
-                    ForEach(SessionFilter.allCases, id: \.self) { filter in
-                        Text(filter.rawValue).tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                
-                // Sessions List
-                if sessionService.isLoading {
-                    ProgressView("Loading study sessions...")
-                        .frame(maxHeight: .infinity)
-                } else {
-                    ScrollView {
-                        if horizontalSizeClass == .regular {
-                            // iPad: Grid layout
-                            LazyVGrid(columns: [
-                                GridItem(.flexible(), spacing: 16),
-                                GridItem(.flexible(), spacing: 16)
-                            ], spacing: 16) {
-                                // Info banner
-                                infoBanner
-                                    .gridCellColumns(2)
-                                
-                                // Sessions based on filter
-                                ForEach(filteredSessions) { session in
-                                    SessionCard(
-                                        session: session,
-                                        onJoin: {
-                                            sessionService.joinSession(session, userName: "Current User")
-                                        },
-                                        onLeave: {
-                                            sessionService.leaveSession(session)
-                                        }
-                                    )
-                                }
-                                
-                                if filteredSessions.isEmpty {
-                                    emptyStateView
-                                        .gridCellColumns(2)
-                                }
-                            }
-                            .padding()
-                        } else {
-                            // iPhone: Vertical list
-                            LazyVStack(spacing: 16) {
-                                // Info banner
-                                infoBanner
-                                
-                                // Sessions based on filter
-                                ForEach(filteredSessions) { session in
-                                    SessionCard(
-                                        session: session,
-                                        onJoin: {
-                                            sessionService.joinSession(session, userName: "Current User")
-                                        },
-                                        onLeave: {
-                                            sessionService.leaveSession(session)
-                                        }
-                                    )
-                                }
-                                
-                                if filteredSessions.isEmpty {
-                                    emptyStateView
-                                }
-                            }
-                            .padding()
-                        }
-                    }
-                }
-            }
+        content
             .navigationTitle("Study Sessions")
             .preferredColorScheme(.dark)
             .toolbar {
@@ -106,6 +33,87 @@ struct StudySessionsView: View {
             }
             .sheet(isPresented: $showCreateSession) {
                 CreateStudySessionView(sessionService: sessionService)
+            }
+    }
+    
+    private var content: some View {
+        VStack(spacing: 0) {
+            // Filter Picker
+            Picker("Filter", selection: $selectedFilter) {
+                ForEach(SessionFilter.allCases, id: \.self) { filter in
+                    Text(filter.rawValue).tag(filter)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            
+            // Sessions List
+            if sessionService.isLoading {
+                ProgressView("Loading study sessions...")
+                    .frame(maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    if horizontalSizeClass == .regular {
+                        // iPad: 3-column grid layout optimized for iPad Air 11"
+                        LazyVGrid(columns: [
+                            GridItem(.flexible(), spacing: 16),
+                            GridItem(.flexible(), spacing: 16),
+                            GridItem(.flexible(), spacing: 16)
+                        ], spacing: 16) {
+                            // Info banner
+                            infoBanner
+                                .gridCellColumns(3)
+                            
+                            // Sessions based on filter
+                            ForEach(filteredSessions) { session in
+                                SessionCard(
+                                    session: session,
+                                    currentUserId: sessionService.currentUserId,
+                                    onJoin: {
+                                        sessionService.joinSession(session, userName: "Current User")
+                                    },
+                                    onLeave: {
+                                        sessionService.leaveSession(session)
+                                    },
+                                    isCompact: true
+                                )
+                            }
+                            
+                            if filteredSessions.isEmpty {
+                                emptyStateView
+                                    .gridCellColumns(3)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                    } else {
+                        // iPhone: Vertical list
+                        LazyVStack(spacing: 16) {
+                            // Info banner
+                            infoBanner
+                            
+                            // Sessions based on filter
+                            ForEach(filteredSessions) { session in
+                                SessionCard(
+                                    session: session,
+                                    currentUserId: sessionService.currentUserId,
+                                    onJoin: {
+                                        sessionService.joinSession(session, userName: "Current User")
+                                    },
+                                    onLeave: {
+                                        sessionService.leaveSession(session)
+                                    },
+                                    isCompact: true
+                                )
+                            }
+                            
+                            if filteredSessions.isEmpty {
+                                emptyStateView
+                            }
+                        }
+                        .padding()
+                    }
+                }
             }
         }
     }
@@ -179,63 +187,79 @@ struct StudySessionsView: View {
 
 struct SessionCard: View {
     let session: StudySession
+    let currentUserId: String
     let onJoin: () -> Void
     let onLeave: () -> Void
+    var isCompact: Bool = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var hasJoined: Bool {
+        session.attendeeIds.contains(currentUserId)
+    }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: isCompact ? 8 : 12) {
             // Course header
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(session.courseCode)
-                        .font(.headline)
+                        .font(isCompact ? .subheadline : .headline)
+                        .fontWeight(.bold)
                         .foregroundColor(.brown)
                     
                     Text(session.courseName)
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundColor(.secondary)
+                        .lineLimit(1)
                 }
                 
                 Spacer()
                 
                 // Group size indicator
-                GroupSizeIndicator(current: session.attendeeIds.count, max: session.maxAttendees)
+                GroupSizeIndicator(current: session.attendeeIds.count, max: session.maxAttendees, isCompact: true)
             }
             
             // Study topic
             Text(session.studyTopic)
-                .font(.body)
+                .font(isCompact ? .caption : .body)
                 .fontWeight(.medium)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
             
             Divider()
             
             // Session details
-            VStack(alignment: .leading, spacing: 8) {
-                SessionDetailRow(icon: "calendar", text: formatDate(session.scheduledDate))
-                SessionDetailRow(icon: "clock", text: "\(session.duration) minutes")
-                SessionDetailRow(icon: "location.fill", text: session.cafeName)
-                SessionDetailRow(icon: "person.3.fill", text: "Hosted by \(session.hostName)")
+            VStack(alignment: .leading, spacing: 4) {
+                SessionDetailRow(icon: "calendar", text: formatDate(session.scheduledDate), isCompact: true)
+                SessionDetailRow(icon: "clock", text: "\(session.duration) min", isCompact: true)
+                SessionDetailRow(icon: "location.fill", text: session.cafeName, isCompact: true)
+                SessionDetailRow(icon: "person.3.fill", text: session.hostName, isCompact: true)
             }
-            .font(.subheadline)
+            .font(.caption2)
             .foregroundColor(.secondary)
             
-            // Attendees preview
+            // Attendees preview - compact
             if !session.attendeeIds.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text("Attendees (\(session.attendeeIds.count))")
-                        .font(.caption)
+                        .font(.caption2)
                         .fontWeight(.semibold)
                         .foregroundColor(.secondary)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(Array(session.attendeeNames.values), id: \.self) { name in
+                        HStack(spacing: 4) {
+                            ForEach(Array(session.attendeeNames.values.prefix(2)), id: \.self) { name in
                                 Text(name)
-                                    .font(.caption)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 6)
+                                    .font(.caption2)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 3)
                                     .background(Color.brown.opacity(0.1))
-                                    .cornerRadius(8)
+                                    .cornerRadius(4)
+                            }
+                            if session.attendeeNames.count > 2 {
+                                Text("+\(session.attendeeNames.count - 2)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -243,24 +267,49 @@ struct SessionCard: View {
             }
             
             // Join/Leave button
-            Button(action: { /* Check if already joined */ onJoin() }) {
-                HStack {
-                    Image(systemName: session.isFull ? "lock.fill" : "person.badge.plus")
-                    Text(session.isFull ? "Session Full" : "Join Session")
+            Button(action: { 
+                if hasJoined {
+                    onLeave()
+                } else {
+                    onJoin()
                 }
-                .font(.headline)
+            }) {
+                HStack(spacing: 4) {
+                    if session.isFull {
+                        Image(systemName: "lock.fill")
+                            .font(.caption)
+                    } else if hasJoined {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.caption)
+                    } else {
+                        Image(systemName: "person.badge.plus")
+                            .font(.caption)
+                    }
+                    
+                    if session.isFull {
+                        Text("Full")
+                            .font(.caption)
+                    } else if hasJoined {
+                        Text("Joined")
+                            .font(.caption)
+                    } else {
+                        Text("Join Session")
+                            .font(.caption)
+                    }
+                }
+                .fontWeight(.semibold)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(session.isFull ? Color.gray : Color.brown)
-                .cornerRadius(12)
+                .padding(.vertical, 10)
+                .background(session.isFull ? Color.gray : (hasJoined ? Color.green : Color.brown))
+                .cornerRadius(8)
             }
             .disabled(session.isFull)
         }
-        .padding()
+        .padding(12)
         .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(16)
-        .shadow(radius: 2)
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -274,17 +323,18 @@ struct SessionCard: View {
 struct GroupSizeIndicator: View {
     let current: Int
     let max: Int
+    var isCompact: Bool = false
     
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: isCompact ? 3 : 4) {
             Image(systemName: "person.3.fill")
-                .font(.caption)
+                .font(isCompact ? .caption2 : .caption)
             Text("\(current)/\(max)")
-                .font(.caption)
+                .font(isCompact ? .caption2 : .caption)
                 .fontWeight(.semibold)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, isCompact ? 8 : 10)
+        .padding(.vertical, isCompact ? 5 : 6)
         .background(fillColor)
         .foregroundColor(.white)
         .cornerRadius(8)
@@ -301,12 +351,15 @@ struct GroupSizeIndicator: View {
 struct SessionDetailRow: View {
     let icon: String
     let text: String
+    var isCompact: Bool = false
     
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: isCompact ? 6 : 8) {
             Image(systemName: icon)
-                .frame(width: 20)
+                .frame(width: isCompact ? 16 : 20)
+                .font(isCompact ? .caption : .body)
             Text(text)
+                .lineLimit(1)
         }
     }
 }

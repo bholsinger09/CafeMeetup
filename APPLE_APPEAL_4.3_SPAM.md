@@ -62,7 +62,7 @@ CafeMeetup is **NOT a generic dating app**. It is a specialized **academic socia
    - **Level Progression:** Advance through coffee connoisseur levels
 
 #### 5. **Avatar System (Personalization Beyond Photos)**
-   - **90+ Character Avatars:** Marvel, DC, Star Wars, Harry Potter, Pokemon, Cartoon characters
+   - **90+ Emoji Avatars:** Animals, Nature, Food, Activities, Symbols, People categories
    - **Privacy-First Option:** Users can choose avatars instead of real photos
    - **Personality Expression:** Match based on shared interests in pop culture
 

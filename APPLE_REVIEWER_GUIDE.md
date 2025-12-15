@@ -68,7 +68,7 @@ This account is **already signed in** when you launch the app. You can explore a
 - **Reviewer profile is fully configured:**
   - College: Stanford University
   - Location: Palo Alto, CA
-  - Avatar: Spider-Man (from 90+ character selection)
+  - Avatar: Cat (from 90+ emoji avatar selection)
   - Coffee preference: Americano
   - Bio and interests populated
 - **Test features:**
@@ -233,7 +233,7 @@ We're available to provide:
 
 1. **Academic-First Focus:** Study sessions, course matching, college verification
 2. **Coffee Shop Integration:** Venue check-ins, coffee preference matching, local business support
-3. **Avatar System:** 90+ pop culture characters (Marvel, DC, Star Wars, etc.) - unique privacy option
+3. **Avatar System:** 90+ emoji-based avatars (Animals, Nature, Food, Activities, etc.) - unique privacy option
 4. **Badge Gamification:** 50+ coffee and academic badges not found in dating apps
 5. **Blog Platform:** Academic content sharing and meetup coordination
 6. **Virtual Coffee Gifts:** Send lattes, espressos, cold brew (original feature)

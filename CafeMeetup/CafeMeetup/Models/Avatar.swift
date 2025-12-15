@@ -7,58 +7,101 @@ struct Avatar: Identifiable, Codable, Equatable {
     let category: AvatarCategory
     
     enum AvatarCategory: String, Codable, CaseIterable {
-        case marvel = "Marvel"
-        case dc = "DC"
-        case cartoon = "Cartoon"
-        case anime = "Anime"
-        case classic = "Classic"
+        case animals = "Animals"
+        case nature = "Nature"
+        case food = "Food & Drink"
+        case activities = "Activities"
+        case symbols = "Symbols"
+        case people = "People"
     }
 }
 
 struct AvatarSystem {
     static let allAvatars: [Avatar] = [
-        // Marvel Characters
-        Avatar(id: "spiderman", name: "Spider-Man", emoji: "🕷️", category: .marvel),
-        Avatar(id: "ironman", name: "Iron Man", emoji: "🦾", category: .marvel),
-        Avatar(id: "hulk", name: "Hulk", emoji: "💚", category: .marvel),
-        Avatar(id: "captain", name: "Captain America", emoji: "🛡️", category: .marvel),
-        Avatar(id: "thor", name: "Thor", emoji: "⚡", category: .marvel),
-        Avatar(id: "blackpanther", name: "Black Panther", emoji: "🐾", category: .marvel),
-        Avatar(id: "widow", name: "Black Widow", emoji: "🕸️", category: .marvel),
-        Avatar(id: "strange", name: "Dr. Strange", emoji: "🔮", category: .marvel),
+        // Animals
+        Avatar(id: "cat", name: "Cat", emoji: "🐱", category: .animals),
+        Avatar(id: "dog", name: "Dog", emoji: "🐕", category: .animals),
+        Avatar(id: "fox", name: "Fox", emoji: "🦊", category: .animals),
+        Avatar(id: "lion", name: "Lion", emoji: "🦁", category: .animals),
+        Avatar(id: "tiger", name: "Tiger", emoji: "🐯", category: .animals),
+        Avatar(id: "bear", name: "Bear", emoji: "🐻", category: .animals),
+        Avatar(id: "panda", name: "Panda", emoji: "🐼", category: .animals),
+        Avatar(id: "koala", name: "Koala", emoji: "🐨", category: .animals),
+        Avatar(id: "wolf", name: "Wolf", emoji: "🐺", category: .animals),
+        Avatar(id: "owl", name: "Owl", emoji: "🦉", category: .animals),
+        Avatar(id: "eagle", name: "Eagle", emoji: "🦅", category: .animals),
+        Avatar(id: "penguin", name: "Penguin", emoji: "🐧", category: .animals),
+        Avatar(id: "dolphin", name: "Dolphin", emoji: "🐬", category: .animals),
+        Avatar(id: "turtle", name: "Turtle", emoji: "🐢", category: .animals),
+        Avatar(id: "butterfly", name: "Butterfly", emoji: "🦋", category: .animals),
         
-        // DC Characters
-        Avatar(id: "batman", name: "Batman", emoji: "🦇", category: .dc),
-        Avatar(id: "superman", name: "Superman", emoji: "🦸", category: .dc),
-        Avatar(id: "wonderwoman", name: "Wonder Woman", emoji: "👸", category: .dc),
-        Avatar(id: "flash", name: "The Flash", emoji: "⚡", category: .dc),
-        Avatar(id: "aquaman", name: "Aquaman", emoji: "🔱", category: .dc),
-        Avatar(id: "joker", name: "Joker", emoji: "🃏", category: .dc),
-        Avatar(id: "harley", name: "Harley Quinn", emoji: "🎪", category: .dc),
+        // Nature
+        Avatar(id: "sunflower", name: "Sunflower", emoji: "🌻", category: .nature),
+        Avatar(id: "rose", name: "Rose", emoji: "🌹", category: .nature),
+        Avatar(id: "tree", name: "Tree", emoji: "🌳", category: .nature),
+        Avatar(id: "cactus", name: "Cactus", emoji: "🌵", category: .nature),
+        Avatar(id: "moon", name: "Moon", emoji: "🌙", category: .nature),
+        Avatar(id: "star", name: "Star", emoji: "⭐", category: .nature),
+        Avatar(id: "sun", name: "Sun", emoji: "☀️", category: .nature),
+        Avatar(id: "cloud", name: "Cloud", emoji: "☁️", category: .nature),
+        Avatar(id: "rainbow", name: "Rainbow", emoji: "🌈", category: .nature),
+        Avatar(id: "mountain", name: "Mountain", emoji: "⛰️", category: .nature),
+        Avatar(id: "wave", name: "Wave", emoji: "🌊", category: .nature),
+        Avatar(id: "fire", name: "Fire", emoji: "🔥", category: .nature),
+        Avatar(id: "snowflake", name: "Snowflake", emoji: "❄️", category: .nature),
+        Avatar(id: "lightning", name: "Lightning", emoji: "⚡", category: .nature),
         
-        // Cartoon Characters
-        Avatar(id: "wednesday", name: "Wednesday Addams", emoji: "🖤", category: .cartoon),
-        Avatar(id: "snoopy", name: "Snoopy", emoji: "🐕", category: .cartoon),
-        Avatar(id: "garfield", name: "Garfield", emoji: "🐱", category: .cartoon),
-        Avatar(id: "scooby", name: "Scooby-Doo", emoji: "🦴", category: .cartoon),
-        Avatar(id: "bugs", name: "Bugs Bunny", emoji: "🐰", category: .cartoon),
-        Avatar(id: "tweety", name: "Tweety", emoji: "🐤", category: .cartoon),
-        Avatar(id: "pikachu", name: "Pikachu", emoji: "⚡", category: .cartoon),
+        // Food & Drink
+        Avatar(id: "coffee", name: "Coffee", emoji: "☕", category: .food),
+        Avatar(id: "pizza", name: "Pizza", emoji: "🍕", category: .food),
+        Avatar(id: "burger", name: "Burger", emoji: "🍔", category: .food),
+        Avatar(id: "taco", name: "Taco", emoji: "🌮", category: .food),
+        Avatar(id: "sushi", name: "Sushi", emoji: "🍣", category: .food),
+        Avatar(id: "ramen", name: "Ramen", emoji: "🍜", category: .food),
+        Avatar(id: "donut", name: "Donut", emoji: "🍩", category: .food),
+        Avatar(id: "cupcake", name: "Cupcake", emoji: "🧁", category: .food),
+        Avatar(id: "icecream", name: "Ice Cream", emoji: "🍦", category: .food),
+        Avatar(id: "strawberry", name: "Strawberry", emoji: "🍓", category: .food),
+        Avatar(id: "avocado", name: "Avocado", emoji: "🥑", category: .food),
+        Avatar(id: "cookie", name: "Cookie", emoji: "🍪", category: .food),
         
-        // Anime Characters
-        Avatar(id: "naruto", name: "Naruto", emoji: "🍜", category: .anime),
-        Avatar(id: "goku", name: "Goku", emoji: "🥋", category: .anime),
-        Avatar(id: "luffy", name: "Luffy", emoji: "🏴‍☠️", category: .anime),
-        Avatar(id: "sailor", name: "Sailor Moon", emoji: "🌙", category: .anime),
-        Avatar(id: "totoro", name: "Totoro", emoji: "🌳", category: .anime),
+        // Activities
+        Avatar(id: "book", name: "Book", emoji: "📚", category: .activities),
+        Avatar(id: "graduation", name: "Graduation", emoji: "🎓", category: .activities),
+        Avatar(id: "pencil", name: "Pencil", emoji: "✏️", category: .activities),
+        Avatar(id: "laptop", name: "Laptop", emoji: "💻", category: .activities),
+        Avatar(id: "music", name: "Music", emoji: "🎵", category: .activities),
+        Avatar(id: "guitar", name: "Guitar", emoji: "🎸", category: .activities),
+        Avatar(id: "art", name: "Art", emoji: "🎨", category: .activities),
+        Avatar(id: "camera", name: "Camera", emoji: "📷", category: .activities),
+        Avatar(id: "soccer", name: "Soccer", emoji: "⚽", category: .activities),
+        Avatar(id: "basketball", name: "Basketball", emoji: "🏀", category: .activities),
+        Avatar(id: "tennis", name: "Tennis", emoji: "🎾", category: .activities),
+        Avatar(id: "gaming", name: "Gaming", emoji: "🎮", category: .activities),
         
-        // Classic Characters
-        Avatar(id: "mickey", name: "Mickey Mouse", emoji: "🐭", category: .classic),
-        Avatar(id: "minnie", name: "Minnie Mouse", emoji: "🎀", category: .classic),
-        Avatar(id: "pooh", name: "Winnie the Pooh", emoji: "🍯", category: .classic),
-        Avatar(id: "simba", name: "Simba", emoji: "🦁", category: .classic),
-        Avatar(id: "elsa", name: "Elsa", emoji: "❄️", category: .classic),
-        Avatar(id: "stitch", name: "Stitch", emoji: "👾", category: .classic),
+        // Symbols
+        Avatar(id: "heart", name: "Heart", emoji: "❤️", category: .symbols),
+        Avatar(id: "sparkles", name: "Sparkles", emoji: "✨", category: .symbols),
+        Avatar(id: "crown", name: "Crown", emoji: "👑", category: .symbols),
+        Avatar(id: "gem", name: "Gem", emoji: "💎", category: .symbols),
+        Avatar(id: "rocket", name: "Rocket", emoji: "🚀", category: .symbols),
+        Avatar(id: "trophy", name: "Trophy", emoji: "🏆", category: .symbols),
+        Avatar(id: "medal", name: "Medal", emoji: "🏅", category: .symbols),
+        Avatar(id: "bulb", name: "Light Bulb", emoji: "💡", category: .symbols),
+        Avatar(id: "peace", name: "Peace", emoji: "✌️", category: .symbols),
+        Avatar(id: "thumbsup", name: "Thumbs Up", emoji: "👍", category: .symbols),
+        
+        // People
+        Avatar(id: "scientist", name: "Scientist", emoji: "🧑‍🔬", category: .people),
+        Avatar(id: "artist", name: "Artist", emoji: "🧑‍🎨", category: .people),
+        Avatar(id: "teacher", name: "Teacher", emoji: "🧑‍🏫", category: .people),
+        Avatar(id: "student", name: "Student", emoji: "🧑‍🎓", category: .people),
+        Avatar(id: "chef", name: "Chef", emoji: "🧑‍🍳", category: .people),
+        Avatar(id: "astronaut", name: "Astronaut", emoji: "🧑‍🚀", category: .people),
+        Avatar(id: "doctor", name: "Doctor", emoji: "🧑‍⚕️", category: .people),
+        Avatar(id: "engineer", name: "Engineer", emoji: "🧑‍💻", category: .people),
+        Avatar(id: "musician", name: "Musician", emoji: "🧑‍🎤", category: .people),
+        Avatar(id: "athlete", name: "Athlete", emoji: "🧑‍🦱", category: .people),
     ]
     
     static func avatar(withId id: String) -> Avatar? {
@@ -70,6 +113,6 @@ struct AvatarSystem {
     }
     
     static var defaultAvatar: Avatar {
-        allAvatars[0] // Spider-Man as default
+        allAvatars[0] // Cat as default
     }
 }

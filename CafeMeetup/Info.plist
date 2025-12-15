@@ -49,9 +49,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>LatteLink uses your location to show you nearby coffee shops with great study environments and to display local study sessions on the map. For example, when you open the Study Spots tab, we'll show coffee shops in your area where you can meet for group study sessions.</string>
+	<string>LatteLink uses your location to help you discover and connect with nearby students for study sessions. Specifically: 1) Display coffee shops and study spots within your area on an interactive map, 2) Show you other students who are studying nearby so you can coordinate meetups, 3) Filter study sessions by proximity to help you find convenient locations. For example, when you open the "Nearby Students" map, we'll show students studying within a few miles of your current location, along with the coffee shops they're at, making it easy to join them for collaborative studying.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>LatteLink uses your location to help you find group study sessions in your area and discover study-friendly coffee shops nearby. For example, we'll show study sessions happening at coffee shops in your city.</string>
+	<string>LatteLink uses your location to help you discover and connect with nearby students for study sessions. Specifically: 1) Display coffee shops and study spots within your area on an interactive map, 2) Show you other students who are studying nearby so you can coordinate meetups, 3) Filter study sessions by proximity to help you find convenient locations. For example, when you open the "Nearby Students" map, we'll show students studying within a few miles of your current location, along with the coffee shops they're at, making it easy to join them for collaborative studying.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>LatteLink needs access to your photo library so you can select and upload photos for your profile. For example, you can choose a photo from your camera roll to use as your profile picture that other students will see when they view your profile.</string>
 	<key>MKDirectionsApplicationSupportedModes</key>

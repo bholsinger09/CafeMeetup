@@ -102,7 +102,7 @@ Apps submitted for review must be complete and ready for public use, not beta ve
 
 6. **Profile Management:**
    - ✅ Edit profile (bio, college, coffee preferences)
-   - ✅ Avatar selection (90+ characters: Marvel, DC, Star Wars, etc.)
+   - ✅ Avatar selection (90+ emoji options: Animals, Nature, Food, etc.)
    - ✅ Photo upload capability
    - ✅ Account settings
    - ✅ Privacy controls
@@ -179,7 +179,7 @@ Apps that are simply a copy of another app or make subtle changes to an existing
 - **Rewards Tab:** Gamification not present in dating apps
 
 #### 4. **Original Feature Implementations**
-- **Avatar Selection:** 90+ pop culture characters (Marvel, DC, Star Wars, Harry Potter, Pokemon, Cartoons)
+- **Avatar Selection:** 90+ emoji-based avatars (Animals, Nature, Food, Activities, Symbols, People)
 - **Virtual Coffee Gifts:** Latte, Espresso, Cold Brew, Macchiato graphics
 - **Study Session Scheduling:** Built-in calendar and course number fields
 - **Coffee Check-ins:** Venue-specific rewards system

@@ -3,7 +3,7 @@ import SwiftUI
 struct AvatarPickerView: View {
     @Binding var selectedAvatarId: String?
     @Environment(\.dismiss) var dismiss
-    @State private var selectedCategory: Avatar.AvatarCategory = .marvel
+    @State private var selectedCategory: Avatar.AvatarCategory = .animals
     
     var body: some View {
         NavigationView {
@@ -122,20 +122,22 @@ struct AvatarDisplayView: View {
     
     private var gradientColors: [Color] {
         switch avatar.category {
-        case .marvel:
-            return [.red, .yellow]
-        case .dc:
-            return [.blue, .cyan]
-        case .cartoon:
-            return [.orange, .pink]
-        case .anime:
+        case .animals:
+            return [.brown, .orange]
+        case .nature:
+            return [.green, .blue]
+        case .food:
+            return [.orange, .yellow]
+        case .activities:
             return [.purple, .pink]
-        case .classic:
-            return [.yellow, .orange]
+        case .symbols:
+            return [.red, .yellow]
+        case .people:
+            return [.blue, .cyan]
         }
     }
 }
 
 #Preview {
-    AvatarPickerView(selectedAvatarId: .constant("wednesday"))
+    AvatarPickerView(selectedAvatarId: .constant("cat"))
 }

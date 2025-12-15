@@ -11,7 +11,7 @@ class StudySessionService: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    private let currentUserId: String
+    let currentUserId: String
     
     init(userId: String) {
         self.currentUserId = userId

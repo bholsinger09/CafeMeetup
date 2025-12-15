@@ -10,11 +10,12 @@ struct MainTabView: View {
         Group {
             if horizontalSizeClass == .regular {
                 // iPad layout with sidebar
-                NavigationSplitView {
+                NavigationSplitView(columnVisibility: .constant(.detailOnly)) {
                     sidebarContent
                 } detail: {
                     StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
                 }
+                .navigationSplitViewStyle(.balanced)
             } else {
                 // iPhone layout with tab bar
                 TabView {

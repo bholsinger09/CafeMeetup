@@ -1,6 +1,6 @@
-# CafeMeetup ☕📱🙏
+# LatteLink ☕📚
 
-A SwiftUI app for Christian college students to connect over coffee.
+An iOS app for college students to organize group study sessions at coffee shops.
 
 ![iOS](https://img.shields.io/badge/iOS-16.0%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
@@ -9,35 +9,37 @@ A SwiftUI app for Christian college students to connect over coffee.
 
 ## 🎯 Overview
 
-CafeMeetup is a faith-based social networking app designed specifically for Christian college students to discover and connect with fellow believers over coffee. Built with modern SwiftUI, MVVM architecture, and test-driven development practices.
+LatteLink is an academic productivity app designed for college students to organize and join GROUP STUDY SESSIONS (3+ people) at local coffee shops. This is NOT a dating app—it's focused exclusively on collaborative group learning organized by course codes.
 
 ## ✨ Features
 
-### 👥 User System
-- **Multi-Step Registration**: 4-step onboarding process
-- **Profile Management**: Personal info, college, location, and coffee preferences
-- **Authentication**: Secure email/password sign-up and sign-in
-- **Editable Profiles**: Update preferences and bio anytime
+### 📚 Group Study Sessions
+- **Course-Based Organization**: Find sessions by specific course codes (CS 101, CALC 2, etc.)
+- **Group Requirements**: All sessions require 3+ students (no one-on-one meetups)
+- **Session Creation**: Organize study groups for your classes at coffee shops
+- **Join Sessions**: Browse and join existing study groups in your courses
+- **Check-In System**: Verify attendance at coffee shop study sessions
 
-### 📝 Community Blog/Feed
-- **Create Posts**: Share meetup ideas, study sessions, or coffee chats
-- **Tagging System**: Organize posts with tags (Meetup, Study Session, Fellowship, etc.)
-- **Social Interactions**: Like and comment on posts
-- **Meetup Coordination**: Optional dates and coffee shop associations
-- **Real-time Updates**: See the latest posts from your community
+### 🎓 Academic Progress
+- **Course Management**: Track your current classes and schedule
+- **Study Tracking**: Monitor sessions attended and participation
+- **Badge System**: Earn 50+ achievement badges for study streaks
+- **Progress Dashboard**: View your academic collaboration metrics
+- **Study Streaks**: Build consistency with regular group study
 
-### 🗺️ Interactive Map
-- **Apple Maps Integration**: Native iOS map experience
-- **User Discovery**: See Christian students in your city
-- **Location Services**: Real-time location with privacy controls
-- **Profile Quick View**: Tap markers to view student profiles
-- **Center on Location**: Quickly navigate to your current position
+### 🗺️ Coffee Shop Discovery
+- **Interactive Map**: Find study-friendly cafés with wifi and quiet areas
+- **Session Locations**: See where study groups are meeting
+- **Venue Details**: Get info about coffee shops (wifi, outlets, noise level)
+- **Directions**: Navigate to your study session location
+- **Location Services**: Find coffee shops near campus
 
-### ☕ Coffee Preferences
-- **Favorite Coffee**: Track your preferred coffee type
-- **Favorite Shop**: Share your go-to coffee spot
-- **Shop Discovery**: Find popular local coffee shops (extensible)
-- **Meet-up Locations**: Coordinate gatherings at specific cafés
+### 📝 Academic Blog
+- **Study Tips**: Share exam prep strategies and course advice
+- **Course Reviews**: Help classmates choose classes
+- **Meetup Coordination**: Organize recurring study groups
+- **Resource Sharing**: Post helpful materials and study guides
+- **Tag System**: Organize content by course, topic, or exam
 
 ## 🏗️ Architecture
 

@@ -1,160 +1,202 @@
 # LatteLink App Store Description
 
 ## Short Description (30 characters)
-**Study partners over coffee**
+**Group study at coffee shops**
 
 ## Subtitle (30 characters max)
-**Study. Collaborate. Coffee.**
+**Study Groups. Coffee. Win.**
 
 ## Promotional Text (170 characters max)
-Find study partners over coffee! LatteLink connects college students for academic collaboration at local cafés. Schedule study sessions, earn badges, meet classmates.
+Join group study sessions at coffee shops! LatteLink connects college students in 3+ person study groups organized by course. Collaborate, earn badges, ace your exams.
 
 ## Description (4000 characters max)
 
-**☕ Where Academic Success Meets Coffee Culture**
+**☕ Academic Group Study Sessions at Coffee Shops**
 
-LatteLink is the ONLY academic social networking app designed for college students who study best over great coffee. Unlike generic dating apps, we're focused on helping you find study partners, form study groups, and build your academic community—all while discovering the best coffee shops near campus.
+LatteLink is an academic productivity app that helps college students organize and join GROUP STUDY SESSIONS (3+ people) at local coffee shops. This is NOT a dating or one-on-one meetup app—it's designed exclusively for collaborative group learning in a coffee shop environment.
 
-**🎓 WHAT MAKES US UNIQUE**
+**🎓 HOW IT WORKS**
 
-**Study Session Scheduling** - Create or join study groups at local cafés with specific courses, subjects, and times. Find partners for tough classes, coordinate group projects, and ace your exams together over coffee.
+**1. Browse Study Sessions by Course**
+Find existing study groups for YOUR specific classes (CS 101, CALC 2, CHEM 110, etc.) meeting at local coffee shops. See the course code, topic, location, date/time, and current attendees before joining.
 
-**Coffee Badge System** - Earn exclusive badges for academic achievements! From "Early Bird Barista" to "Study Session Champion," unlock 50+ badges for café check-ins, study sessions, and helping classmates. Show off your Coffee Scholar status!
+**2. Join Group Sessions (3+ Students Required)**
+All sessions require a minimum of 3 participants to ensure true collaborative group study. No one-on-one meetups—this is about academic collaboration in groups.
 
-**Academic Collaboration First** - Match based on major, courses, graduation year, and study needs. Find someone who shares your passion for both coffee AND your field of study!
+**3. Organize Study Sessions**
+Create your own group study session for an upcoming exam or project. Specify the course, study topic, coffee shop location, and time. Other students in your class can join.
 
-**Café Check-In Rewards** - Get points for actually studying together! Check in at cafés during study sessions, track your favorite study spots, and earn rewards for academic collaboration. Build your streak and unlock legendary scholar badges.
-
-**Virtual Coffee Gifts** - Send lattes, espressos, and cold brews as conversation starters. Say "thanks for helping me study!" with a virtual coffee.
-
-**💕 HOW IT WORKS**
-
-• Create your academic profile with major, courses, and study interests
-• Browse study sessions organized by course and subject
-• Join group study sessions (3+ students) at local coffee shops
-• Collaborate through group chats and session planning
-• Check in at cafés during study sessions to earn rewards
-• Share study tips and organize meetups through the academic blog
-• Discover local coffee shops perfect for quiet studying
+**4. Check In to Earn Academic Rewards**
+When you arrive at the coffee shop for your study session, check in to verify attendance and earn badges for academic achievement. Build study streaks and unlock rewards.
 
 **✨ KEY FEATURES**
 
-• **Study Session Creator** - Schedule sessions with course numbers, subjects, duration
-• **Academic Blog Platform** - Share study tips, coffee recommendations, campus insights
-• **90+ Avatar Characters** - Marvel, DC, Star Wars, Harry Potter, Pokemon (privacy-friendly alternative to photos)
-• **50+ Achievement Badges** - Coffee and academic themed rewards
-• **Virtual Coffee Gifts** - Lattes, espressos, cold brew, macchiatos
-• **Course-Based Matching** - Find study partners in your classes
-• **Check-In System** - Verify real study sessions at coffee shops
+• **Course-Based Organization** - Find study groups by exact course codes from your university
+• **Group Sessions Only** - Minimum 3+ students per session, emphasis on collaborative learning
+• **Coffee Shop Locations** - All sessions take place at public coffee shops and cafés
+• **Academic Progress Tracking** - Track your courses, study sessions attended, and learning progress
+• **Badge Achievement System** - Earn 50+ badges for study streaks, session hosting, and helping classmates
+• **Interactive Map** - Discover study-friendly coffee shops with wifi and quiet study areas
+• **Academic Blog** - Share study tips, exam strategies, and course recommendations
+• **Group Chat** - Coordinate with session attendees about topics, materials, and logistics
+• **90+ Privacy Avatars** - Use emoji avatars instead of photos for privacy
+• **Verified Check-Ins** - Confirm real study session attendance at coffee shop locations
 
-**🎯 WHY LATTELINK?**
+**🎯 WHAT MAKES LATTELINK DIFFERENT**
 
-**Academic-First Focus** - The ONLY app where study sessions are the primary goal. Meet through organized group study sessions, not superficial matching.
+**NOT A DATING APP** - LatteLink is exclusively for GROUP academic collaboration. All features emphasize 3+ person study groups, course-specific organization, and educational outcomes.
 
-**Gamified Learning** - Earn badges, level up, maintain study streaks, and track your progress. Academic networking meets achievement system!
+**Academic Verification** - Users register with .edu email addresses and specify their university, major, and current courses. The app matches students based on shared classes, not appearance or personal interests.
 
-**Verified Study Check-Ins** - Proof of real study sessions! Check in together at cafés for rewards and academic accountability.
+**Public Venue Requirement** - All study sessions must be scheduled at public coffee shops and cafés. This ensures safe, appropriate academic environments.
 
-**Course Organization** - Find study sessions by specific course codes (CS 101, MATH 250). Join groups tackling the same academic challenges as you.
+**Group Accountability** - The 3+ person minimum and check-in system ensure real collaborative studying happens, not social meetups.
 
-**College Student Community** - Only verified college students seeking academic collaboration
+**📚 PERFECT FOR**
 
-**Coffee Shop Discovery** - Bond over shared coffee preferences and discover great study spots
+• Students struggling with difficult classes who need study partners
+• Group projects requiring regular coordination
+• Exam prep study groups (midterms, finals)
+• Class study sessions for lab courses, programming projects, problem sets
+• Finding classmates who share your schedule and study at coffee shops
+• Building an academic support network in your major
 
-**Privacy Option** - Choose from 90+ character avatars instead of photos if you prefer privacy
+**🗺️ FIND STUDY-FRIENDLY COFFEE SHOPS**
 
-**🗺️ DISCOVER STUDY-FRIENDLY COFFEE SHOPS**
+The built-in map shows:
+• Coffee shops where study sessions are scheduled
+• Venues with good wifi, outlets, and quiet study areas
+• Recommended cafés from other students
+• Distance from campus
+• Directions to session locations
 
-Our built-in map helps you:
-• Find quiet cafés perfect for studying near campus
-• See which coffee shops classmates recommend
-• Get directions to your study session location
-• Discover new spots with good wifi and outlets
-• Check which venues have study sessions scheduled
+**☕ WHY COFFEE SHOPS?**
 
-**📱 FEATURES AT A GLANCE**
+Many students study better in coffee shop environments than dorm rooms or libraries. The ambient noise, comfortable seating, caffeine access, and casual atmosphere help students focus while feeling less isolated. LatteLink helps you find other students who prefer this study style.
 
-✓ **Study Session Scheduling** - Create/join with course info and times
-✓ **Academic Blog** - Share study tips and coffee recommendations
-✓ **Badge & Achievement System** - 50+ unique badges to unlock
-✓ **Café Check-In Rewards** - Earn points for real study sessions
-✓ **Course-Based Organization** - Find groups by course codes
-✓ **90+ Avatar Selection** - Privacy-friendly character options
-✓ **Virtual Coffee Gifts** - Send lattes, espressos to study partners
-✓ Real-time messaging for coordinating study sessions
-✓ Interactive café map with study-friendly venues
-✓ Dark mode support for late-night studying
-✓ Privacy controls and account deletion
+**📱 FEATURES**
 
-**💬 WHAT USERS ARE SAYING**
+✓ Browse study sessions by course code
+✓ Join group sessions (3+ students)
+✓ Create sessions for your classes
+✓ Interactive coffee shop map
+✓ Academic progress dashboard
+✓ 50+ achievement badges
+✓ Study streak tracking
+✓ Group messaging
+✓ 90+ privacy avatar options
+✓ Course schedule management
+✓ Blog for study tips
+✓ Check-in verification system
+✓ Dark mode
+✓ Privacy controls
 
-"Finally, an app that helps me find study partners who also love coffee shops!" - Sarah, Boise State
+**🎓 ACADEMIC FOCUS**
 
-"I joined a calculus study group through LatteLink. We meet every Tuesday at the campus Starbucks and it's been a game-changer!" - Mike, University Student
+LatteLink is designed for serious students who want to improve their grades through collaborative group study. Features emphasize:
+- Course-specific organization
+- Group learning (3+ people)
+- Academic achievement tracking
+- Study session verification
+- Educational content sharing
 
-"The badge system makes studying actually fun. I'm competing with my roommate for the most study sessions!" - Emma, College Senior
+**💬 STUDENT TESTIMONIALS**
 
-**🎓 PERFECT FOR COLLEGE LIFE**
+"I joined a calculus study group through LatteLink. Five of us meet every Tuesday at Starbucks and we all improved our grades!" - Mike, University Student
 
-Whether you're looking for a study group for finals week, collaborators for your senior project, or classmates who love studying at coffee shops as much as you do, LatteLink brings together students who appreciate good coffee, great grades, and group academic collaboration.
+"Finally found other CS majors who like studying at coffee shops. Our group of 4 meets twice a week for coding projects." - Sarah, Computer Science Major
 
-**☕ START YOUR STUDY JOURNEY TODAY**
+"The group sessions are perfect for exam prep. We formed a 6-person study group for organic chemistry finals." - Emma, Pre-Med Student
 
-Download LatteLink and find students who are just as serious about their academics (and their coffee order) as you are. Because the best study sessions happen over a great cup of coffee.
+**🔒 PRIVACY & SAFETY**
+
+• Choose emoji avatars instead of photos
+• .edu email verification required
+• Public venue requirement (coffee shops only)
+• Group sessions only (3+ students)
+• Block and report features
+• Control profile visibility
+• Delete account anytime
+• No data sharing with third parties
+
+**☕ GET STARTED**
+
+1. Download LatteLink
+2. Verify with your .edu email
+3. Add your current courses
+4. Find or create study sessions
+5. Meet at coffee shops to study
+6. Earn badges for academic progress
+
+LatteLink brings together college students who are serious about their academics and prefer the coffee shop study environment. Find your study group today!
 
 ---
-
-**Privacy & Safety**
-Your privacy matters. Control who sees your profile, unmatch at any time, and delete your account whenever you choose. We never share your data with third parties. Choose avatars instead of photos for extra privacy.
 
 **Support**
-Questions or feedback? Contact us at bholsinger@hotmail.com
-Support Website: https://bholsinger09.github.io/CafeMeetup/
+Questions? Email: bholsinger@hotmail.com
+Website: https://bholsinger09.github.io/CafeMeetup/
 
----
-
-*LatteLink - Where Study Sessions Meet Coffee Culture* ☕📚
+*LatteLink - Group Study Sessions at Coffee Shops* ☕📚
 
 ## Keywords (100 characters max - comma separated)
-study,college,students,campus,coffee,academic,collaborate,cafe,university,group,partners,education
+study group,college,university,academic,coffee shop,exam prep,course,education,collaborate,learning
 
 ## What's New (4000 characters max - for first release)
 Welcome to LatteLink! ☕📚
 
-This is our first release, bringing college students together for academic collaboration over coffee.
+Version 1.0 - Academic Group Study Sessions
 
-Features in v1.0:
-• Schedule and join group study sessions (3+ students) at local coffee shops
-• Find sessions organized by specific course codes (CS 101, MATH 250, etc.)
-• Earn 50+ badges for academic achievements and study streaks
-• Choose from 90+ character avatars for privacy
-• Group chat messaging to coordinate study sessions
-• Academic blog to organize study meetups and share tips
-• Interactive map to discover study-friendly cafés
-• Track your classes and academic progress
-• Check-in system to track study sessions
+LatteLink helps college students organize and join GROUP STUDY SESSIONS (3+ people) at coffee shops. This is an academic productivity tool, not a dating or social app.
 
-LatteLink is designed exclusively for college students who want to build their academic community while enjoying great coffee. Find study partners, ace your classes, and discover the best coffee shops near campus!
+**Key Features:**
 
-Start your study journey today! 📚☕
-• Premium gifts and icebreaker questions
-• Interactive map to discover local cafés
-• Profile customization with coffee preferences
-• Dark mode support
-• Easy account management
+GROUP STUDY SESSIONS
+• Browse sessions organized by course code (CS 101, CALC 2, etc.)
+• Join existing study groups at local coffee shops
+• Create sessions for your classes (3+ student minimum)
+• Coordinate through group messaging
 
-Start your coffee connection journey today!
+ACADEMIC TRACKING
+• Add your current courses and schedule
+• Track study sessions attended
+• Earn 50+ achievement badges
+• Monitor your academic progress
+• Build study streaks
+
+COFFEE SHOP DISCOVERY
+• Interactive map of study-friendly cafés
+• Find venues with wifi and quiet areas
+• See where other students are studying
+• Get directions to session locations
+
+PRIVACY & SAFETY
+• .edu email verification required
+• Choose from 90+ emoji avatars (no photos required)
+• All sessions at public coffee shops
+• Group-only format (3+ students)
+• Block and report features
+
+COLLABORATION TOOLS
+• Group chat for session coordination
+• Academic blog for study tips
+• Course-specific organization
+• Check-in verification system
+
+LatteLink is designed for serious students who want to improve their grades through collaborative group study at coffee shops. Find your study group today!
+
+Questions? Email: bholsinger@hotmail.com
+Website: https://bholsinger09.github.io/CafeMeetup/
 
 ## Support URL
-https://github.com/bholsinger09/CafeMeetup
+https://bholsinger09.github.io/CafeMeetup/
 
 ## Marketing URL (Optional)
-https://github.com/bholsinger09/CafeMeetup
+https://bholsinger09.github.io/CafeMeetup/
 
 ## Categories
-Primary: Lifestyle
-Secondary: Social Networking
+Primary: Education
+Secondary: Productivity
 
 ## Age Rating
-17+ (Unrestricted Web Access, Infrequent/Mild Profanity or Crude Humor)
-Note: Social networking with user-generated content
+12+ (Infrequent/Mild Profanity or Crude Humor)
+Note: Academic collaboration app with user-generated content
