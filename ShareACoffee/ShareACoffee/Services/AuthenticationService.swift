@@ -155,24 +155,31 @@ class AuthenticationService: AuthenticationServiceProtocol {
     }
     
     func updateUser(_ user: User) async throws -> User {
+        print("🔍 [AuthService] updateUser called for user: \(user.email)")
+        print("🔍 [AuthService] User data - Country: '\(user.country)', State: '\(user.state)', City: '\(user.city)'")
+        
         // Simulate network delay
         try await Task.sleep(nanoseconds: 300_000_000)
         
         guard let email = currentUser?.email else {
+            print("❌ [AuthService] No current user email")
             throw AuthError.userNotFound
         }
         
         guard var stored = mockUsers[email] else {
+            print("❌ [AuthService] User not found in mockUsers for email: \(email)")
             throw AuthError.userNotFound
         }
         
+        print("🔍 [AuthService] Updating stored user...")
         stored.user = user
         mockUsers[email] = stored
         currentUser = user
         
         // Update in UserService
         userService.updateUser(user)
-        print("[AuthService] Updated user in UserService: \(user.fullName)")
+        print("✅ [AuthService] Updated user in UserService: \(user.fullName)")
+        print("✅ [AuthService] Returning updated user - Country: '\(user.country)', State: '\(user.state)', City: '\(user.city)'")
         
         return user
     }

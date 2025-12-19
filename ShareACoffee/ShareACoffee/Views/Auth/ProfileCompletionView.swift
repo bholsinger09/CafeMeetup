@@ -8,6 +8,7 @@ struct ProfileCompletionView: View {
     
     @State private var fullName = ""
     @State private var college = ""
+    @State private var country = "United States"
     @State private var state = ""
     @State private var city = ""
     @State private var address = ""
@@ -79,23 +80,47 @@ struct ProfileCompletionView: View {
                                 .foregroundColor(.lightText)
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("State")
+                                Text("Country")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                                 
-                                Picker("Select State", selection: $state) {
-                                    Text("Select State").tag("")
-                                    ForEach(LocationData.states, id: \.self) { stateName in
-                                        Text(stateName).tag(stateName)
+                                Picker("Select Country", selection: $country) {
+                                    ForEach(LocationData.countries, id: \.self) { countryName in
+                                        Text(countryName).tag(countryName)
                                     }
                                 }
                                 .pickerStyle(.menu)
                                 .padding(12)
                                 .background(Color.darkSecondary)
                                 .cornerRadius(8)
-                                .onChange(of: state) { oldValue, newValue in
+                                .onChange(of: country) { oldValue, newValue in
                                     if oldValue != newValue {
+                                        state = ""
                                         city = ""
+                                    }
+                                }
+                            }
+                            
+                            if LocationData.usesStates(country: country) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(country == "United Kingdom" ? "Region" : country == "Canada" ? "Province" : "State")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                    
+                                    Picker("Select", selection: $state) {
+                                        Text("Select").tag("")
+                                        ForEach(LocationData.statesOrProvinces(for: country), id: \.self) { stateName in
+                                            Text(stateName).tag(stateName)
+                                        }
+                                    }
+                                    .pickerStyle(.menu)
+                                    .padding(12)
+                                    .background(Color.darkSecondary)
+                                    .cornerRadius(8)
+                                    .onChange(of: state) { oldValue, newValue in
+                                        if oldValue != newValue {
+                                            city = ""
+                                        }
                                     }
                                 }
                             }
@@ -107,7 +132,7 @@ struct ProfileCompletionView: View {
                                 
                                 Picker("Select City", selection: $city) {
                                     Text("Select City").tag("")
-                                    ForEach(LocationData.cities(for: state), id: \.self) { cityName in
+                                    ForEach(LocationData.cities(for: country, state: state), id: \.self) { cityName in
                                         Text(cityName).tag(cityName)
                                     }
                                 }
@@ -115,11 +140,11 @@ struct ProfileCompletionView: View {
                                 .padding(12)
                                 .background(Color.darkSecondary)
                                 .cornerRadius(8)
-                                .disabled(state.isEmpty)
+                                .disabled(LocationData.usesStates(country: country) && state.isEmpty)
                             }
                             
-                            if state.isEmpty {
-                                Text("Please select a state first")
+                            if LocationData.usesStates(country: country) && state.isEmpty {
+                                Text("Please select a \(country == "United Kingdom" ? "region" : country == "Canada" ? "province" : "state") first")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -209,6 +234,7 @@ struct ProfileCompletionView: View {
                 if let user = authViewModel.currentUser {
                     fullName = user.fullName
                     college = user.college
+                    country = user.country
                     state = user.state
                     city = user.city
                     address = user.address ?? ""
@@ -241,6 +267,7 @@ struct ProfileCompletionView: View {
         // Update user with completed information
         user.fullName = fullName
         user.college = college
+        user.country = country
         user.state = state
         user.city = city
         user.address = address.isEmpty ? nil : address

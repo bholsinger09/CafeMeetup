@@ -181,17 +181,25 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    func updateProfile(fullName: String, college: String, state: String, city: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?, gender: String?, profileImageURL: String? = nil) async {
-        guard var user = currentUser else { return }
+    func updateProfile(fullName: String, college: String, state: String, city: String, country: String, address: String?, favoriteCoffee: String, favoriteCoffeeShop: String, bio: String?, gender: String?, profileImageURL: String? = nil) async {
+        print("🔍 [AuthViewModel] updateProfile called")
+        guard var user = currentUser else {
+            print("❌ [AuthViewModel] No current user found")
+            return
+        }
+        
+        print("🔍 [AuthViewModel] Current user: \(user.email)")
         
         isLoading = true
         errorMessage = nil
         
         do {
+            print("🔍 [AuthViewModel] Updating user fields...")
             user.fullName = fullName
             user.college = college
             user.state = state
             user.city = city
+            user.country = country
             user.address = address
             user.favoriteCoffee = favoriteCoffee
             user.favoriteCoffeeShop = favoriteCoffeeShop
@@ -203,8 +211,15 @@ class AuthenticationViewModel: ObservableObject {
             user.updatedAt = Date()
             user.lastActiveAt = Date()
             
+            print("🔍 [AuthViewModel] Updated fields - Country: '\(user.country)', State: '\(user.state)', City: '\(user.city)'")
+            print("🔍 [AuthViewModel] Calling authService.updateUser...")
+            
             currentUser = try await authService.updateUser(user)
+            
+            print("✅ [AuthViewModel] User updated successfully")
+            print("✅ [AuthViewModel] New user data - Country: '\(currentUser?.country ?? "nil")', State: '\(currentUser?.state ?? "nil")', City: '\(currentUser?.city ?? "nil")'")
         } catch {
+            print("❌ [AuthViewModel] Update failed with error: \(error)")
             errorMessage = error.localizedDescription
         }
         

@@ -8,6 +8,7 @@ struct EditProfileView: View {
     @State private var college: String = ""
     @State private var state: String = ""
     @State private var city: String = ""
+    @State private var country: String = "United States"
     @State private var address: String = ""
     @State private var favoriteCoffee: String = ""
     @State private var favoriteCoffeeShop: String = ""
@@ -15,6 +16,8 @@ struct EditProfileView: View {
     @State private var gender: String = ""
     @State private var profileImage: UIImage?
     @State private var showImagePicker = false
+    @State private var showSaveAlert = false
+    @State private var saveAlertMessage = ""
     
     var body: some View {
         NavigationStack {
@@ -82,26 +85,48 @@ struct EditProfileView: View {
                 }
                 
                 Section("Location") {
-                    Picker("State", selection: $state) {
-                        Text("Select State").tag("")
-                        ForEach(LocationData.states, id: \.self) { stateName in
-                            Text(stateName).tag(stateName)
+                    Picker("Country", selection: $country) {
+                        ForEach(LocationData.countries, id: \.self) { countryName in
+                            Text(countryName).tag(countryName)
                         }
                     }
-                    .onChange(of: state) { oldValue, newValue in
-                        // Reset city when state changes
-                        if oldValue != newValue && !LocationData.cities(for: newValue).contains(city) {
+                    .onChange(of: country) { oldValue, newValue in
+                        // Reset state and city when country changes
+                        if oldValue != newValue {
+                            state = ""
                             city = ""
                         }
                     }
                     
-                    Picker("City", selection: $city) {
-                        Text("Select City").tag("")
-                        ForEach(LocationData.cities(for: state), id: \.self) { cityName in
-                            Text(cityName).tag(cityName)
+                    if LocationData.usesStates(country: country) {
+                        Picker("State/Province", selection: $state) {
+                            Text("Select \(country == "United Kingdom" ? "Region" : country == "Canada" ? "Province" : "State")").tag("")
+                            ForEach(LocationData.statesOrProvinces(for: country), id: \.self) { stateName in
+                                Text(stateName).tag(stateName)
+                            }
+                        }
+                        .onChange(of: state) { oldValue, newValue in
+                            // Reset city when state changes
+                            if oldValue != newValue && !LocationData.cities(for: country, state: newValue).contains(city) {
+                                city = ""
+                            }
+                        }
+                        
+                        Picker("City", selection: $city) {
+                            Text("Select City").tag("")
+                            ForEach(LocationData.cities(for: country, state: state), id: \.self) { cityName in
+                                Text(cityName).tag(cityName)
+                            }
+                        }
+                        .disabled(state.isEmpty)
+                    } else {
+                        Picker("City", selection: $city) {
+                            Text("Select City").tag("")
+                            ForEach(LocationData.cities(for: country, state: ""), id: \.self) { cityName in
+                                Text(cityName).tag(cityName)
+                            }
                         }
                     }
-                    .disabled(state.isEmpty)
                     
                     TextField("Address (Optional)", text: $address)
                 }
@@ -140,13 +165,24 @@ struct EditProfileView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
+                            saveAlertMessage = "Save button tapped. Starting..."
+                            showSaveAlert = true
+                            
+                            print("🔍 [EditProfile] Save button tapped")
+                            print("🔍 [EditProfile] Form valid: \(isValid)")
+                            print("🔍 [EditProfile] Country: '\(country)'")
+                            print("🔍 [EditProfile] State: '\(state)'")
+                            print("🔍 [EditProfile] City: '\(city)'")
+                            
                             let profileImageBase64 = profileImage?.toBase64String()
                             
+                            print("🔍 [EditProfile] Calling updateProfile...")
                             await authViewModel.updateProfile(
                                 fullName: fullName,
                                 college: college,
                                 state: state,
                                 city: city,
+                                country: country,
                                 address: address.isEmpty ? nil : address,
                                 favoriteCoffee: favoriteCoffee,
                                 favoriteCoffeeShop: favoriteCoffeeShop,
@@ -154,6 +190,17 @@ struct EditProfileView: View {
                                 gender: gender.isEmpty ? nil : gender,
                                 profileImageURL: profileImageBase64
                             )
+                            print("🔍 [EditProfile] updateProfile completed")
+                            
+                            if let error = authViewModel.errorMessage {
+                                print("❌ [EditProfile] Error: \(error)")
+                                saveAlertMessage = "Error: \(error)"
+                            } else {
+                                print("✅ [EditProfile] Profile updated successfully")
+                                saveAlertMessage = "Profile saved successfully!"
+                            }
+                            
+                            try? await Task.sleep(nanoseconds: 1_000_000_000)
                             dismiss()
                         }
                     } label: {
@@ -170,6 +217,11 @@ struct EditProfileView: View {
             .sheet(isPresented: $showImagePicker) {
                 ImagePicker(image: $profileImage)
             }
+            .alert("Save Status", isPresented: $showSaveAlert) {
+                Button("OK") { }
+            } message: {
+                Text(saveAlertMessage)
+            }
         }
     }
     
@@ -179,6 +231,7 @@ struct EditProfileView: View {
         college = user.college
         state = user.state
         city = user.city
+        country = user.country
         address = user.address ?? ""
         favoriteCoffee = user.favoriteCoffee
         favoriteCoffeeShop = user.favoriteCoffeeShop
@@ -187,7 +240,15 @@ struct EditProfileView: View {
     }
     
     private var isValid: Bool {
-        !fullName.isEmpty && !college.isEmpty && !state.isEmpty && !city.isEmpty && !favoriteCoffee.isEmpty && !favoriteCoffeeShop.isEmpty
+        let basicFieldsValid = !fullName.isEmpty && !college.isEmpty && !city.isEmpty && !favoriteCoffee.isEmpty && !favoriteCoffeeShop.isEmpty
+        
+        // For countries with states, state must not be empty
+        if LocationData.usesStates(country: country) {
+            return basicFieldsValid && !state.isEmpty
+        }
+        
+        // For countries without states, just check basic fields
+        return basicFieldsValid
     }
 }
 

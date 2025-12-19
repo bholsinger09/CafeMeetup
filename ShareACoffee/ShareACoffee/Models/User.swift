@@ -8,6 +8,7 @@ struct User: Identifiable, Codable, Equatable {
     var college: String
     var state: String
     var city: String
+    var country: String // Country user lives in
     var address: String?
     var favoriteCoffee: String
     var favoriteCoffeeShop: String
@@ -17,6 +18,7 @@ struct User: Identifiable, Codable, Equatable {
     var profileImageURL: String?
     var lastActiveAt: Date?
     var avatarId: String?
+    var preferredLanguage: String // Language preference for the app
     var createdAt: Date
     var updatedAt: Date
     
@@ -37,6 +39,7 @@ struct User: Identifiable, Codable, Equatable {
         college: String,
         state: String,
         city: String,
+        country: String = "United States",
         address: String? = nil,
         favoriteCoffee: String,
         favoriteCoffeeShop: String,
@@ -46,6 +49,7 @@ struct User: Identifiable, Codable, Equatable {
         profileImageURL: String? = nil,
         lastActiveAt: Date? = nil,
         avatarId: String? = nil,
+        preferredLanguage: String = "en",
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         major: String? = nil,
@@ -63,6 +67,7 @@ struct User: Identifiable, Codable, Equatable {
         self.college = college
         self.state = state
         self.city = city
+        self.country = country
         self.address = address
         self.favoriteCoffee = favoriteCoffee
         self.favoriteCoffeeShop = favoriteCoffeeShop
@@ -72,6 +77,7 @@ struct User: Identifiable, Codable, Equatable {
         self.profileImageURL = profileImageURL
         self.lastActiveAt = lastActiveAt
         self.avatarId = avatarId
+        self.preferredLanguage = preferredLanguage
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.major = major

@@ -3,6 +3,21 @@ import SwiftUI
 struct WelcomeView: View {
     @State private var showSignUp = false
     @State private var showSignIn = false
+    @State private var selectedLanguage = "en"
+    @AppStorage("appLanguage") private var appLanguage = "en"
+    @StateObject private var localization = LocalizationManager.shared
+    
+    let languages = [
+        ("en", "English", "🇺🇸"),
+        ("es", "Español", "🇪🇸"),
+        ("fr", "Français", "🇫🇷"),
+        ("de", "Deutsch", "🇩🇪"),
+        ("it", "Italiano", "🇮🇹"),
+        ("pt", "Português", "🇵🇹"),
+        ("ja", "日本語", "🇯🇵"),
+        ("ko", "한국어", "🇰🇷"),
+        ("zh", "中文", "🇨🇳")
+    ]
     
     var body: some View {
         NavigationStack {
@@ -21,6 +36,51 @@ struct WelcomeView: View {
                 
                 VStack(spacing: 30) {
                     Spacer()
+                    
+                    // Language selector at top
+                    HStack {
+                        Spacer()
+                        VStack(spacing: 4) {
+                            Text(localization.localized("language.choose"))
+                                .font(.caption)
+                                .foregroundColor(Color(red: 0.85, green: 0.75, blue: 0.85))
+                            
+                            Menu {
+                                ForEach(languages, id: \.0) { code, name, flag in
+                                    Button {
+                                        selectedLanguage = code
+                                        appLanguage = code
+                                        localization.appLanguage = code
+                                    } label: {
+                                        HStack {
+                                            Text(flag)
+                                            Text(name)
+                                            if code == selectedLanguage {
+                                                Image(systemName: "checkmark")
+                                            }
+                                        }
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Text(languages.first(where: { $0.0 == selectedLanguage })?.2 ?? "🇺🇸")
+                                        .font(.title3)
+                                    Text(languages.first(where: { $0.0 == selectedLanguage })?.1 ?? "English")
+                                        .font(.subheadline)
+                                        .foregroundColor(Color(red: 0.85, green: 0.75, blue: 0.85))
+                                    Image(systemName: "chevron.down")
+                                        .font(.caption)
+                                        .foregroundColor(Color(red: 0.85, green: 0.75, blue: 0.85))
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Color(red: 0.20, green: 0.15, blue: 0.22).opacity(0.6))
+                                .cornerRadius(20)
+                            }
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.top, 10)
+                    }
                     
                     // App Icon/Logo - Black coffee mug with gold lightning bolt
                     ZStack {
@@ -45,7 +105,7 @@ struct WelcomeView: View {
                     
                     // Title
                     VStack(spacing: 10) {
-                        Text("ShareACoffee")
+                        Text(localization.localized("app.name"))
                             .font(.system(size: 42, weight: .bold))
                             .foregroundStyle(
                                 LinearGradient(
@@ -55,7 +115,7 @@ struct WelcomeView: View {
                                 )
                             )
                         
-                        Text("Study groups at coffee shops")
+                        Text(localization.localized("welcome.tagline"))
                             .font(.subheadline)
                             .foregroundColor(Color(red: 0.85, green: 0.80, blue: 0.85))
                             .multilineTextAlignment(.center)
@@ -66,9 +126,9 @@ struct WelcomeView: View {
                     
                     // Value proposition
                     VStack(spacing: 12) {
-                        BenefitRow(icon: "book.fill", text: "Join study groups by course code")
-                        BenefitRow(icon: "cup.and.saucer.fill", text: "Study at coffee shops near you")
-                        BenefitRow(icon: "person.3.fill", text: "Collaborate with 3+ students")
+                        BenefitRow(icon: "book.fill", text: localization.localized("welcome.benefit1"))
+                        BenefitRow(icon: "cup.and.saucer.fill", text: localization.localized("welcome.benefit2"))
+                        BenefitRow(icon: "person.3.fill", text: localization.localized("welcome.benefit3"))
                     }
                     .padding(.horizontal, 32)
                     
@@ -79,7 +139,7 @@ struct WelcomeView: View {
                         Button {
                             showSignUp = true
                         } label: {
-                            Text("Get Started")
+                            Text(localization.localized("button.getStarted"))
                                 .font(.headline)
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -98,7 +158,7 @@ struct WelcomeView: View {
                         Button {
                             showSignIn = true
                         } label: {
-                            Text("Sign In")
+                            Text(localization.localized("button.signIn"))
                                 .font(.headline)
                                 .foregroundColor(Color(red: 0.85, green: 0.75, blue: 0.85))
                                 .frame(maxWidth: .infinity)
@@ -129,6 +189,9 @@ struct WelcomeView: View {
                 SignInView()
             }
             .preferredColorScheme(.dark)
+            .onAppear {
+                selectedLanguage = appLanguage
+            }
         }
     }
 }
