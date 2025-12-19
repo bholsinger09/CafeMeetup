@@ -1,19 +1,19 @@
-# LatteLink App Store Description
+# StudyBrew App Store Description
 
 ## Short Description (30 characters)
-**Group study at coffee shops**
+**Study groups at coffee shops**
 
 ## Subtitle (30 characters max)
-**Study Groups. Coffee. Win.**
+**Course Study Groups + Coffee**
 
 ## Promotional Text (170 characters max)
-Join group study sessions at coffee shops! LatteLink connects college students in 3+ person study groups organized by course. Collaborate, earn badges, ace your exams.
+Organize study groups at coffee shops by course code! StudyBrew helps college students form 3+ person study groups for exams and projects. Academic tool for coffee lovers.
 
 ## Description (4000 characters max)
 
-**☕ Academic Group Study Sessions at Coffee Shops**
+**☕ Course-Based Study Groups at Coffee Shops**
 
-LatteLink is an academic productivity app that helps college students organize and join GROUP STUDY SESSIONS (3+ people) at local coffee shops. This is NOT a dating or one-on-one meetup app—it's designed exclusively for collaborative group learning in a coffee shop environment.
+StudyBrew is an academic productivity tool for organizing course-specific study groups at coffee shops and cafés. Minimum 3 students per session. Strictly for coordinating group academic work by course code.
 
 **🎓 HOW IT WORKS**
 
@@ -128,7 +128,7 @@ LatteLink is designed for serious students who want to improve their grades thro
 5. Meet at coffee shops to study
 6. Earn badges for academic progress
 
-LatteLink brings together college students who are serious about their academics and prefer the coffee shop study environment. Find your study group today!
+StudyBrew is designed exclusively for academic group study coordination at coffee shops. All features support course-based learning and group collaboration.
 
 ---
 
@@ -136,17 +136,17 @@ LatteLink brings together college students who are serious about their academics
 Questions? Email: bholsinger@hotmail.com
 Website: https://bholsinger09.github.io/CafeMeetup/
 
-*LatteLink - Group Study Sessions at Coffee Shops* ☕📚
+*StudyBrew - Study Groups at Coffee Shops* ☕📚
 
 ## Keywords (100 characters max - comma separated)
 study group,college,university,academic,coffee shop,exam prep,course,education,collaborate,learning
 
 ## What's New (4000 characters max - for first release)
-Welcome to LatteLink! ☕📚
+Welcome to StudyBrew! ☕📚
 
-Version 1.0 - Academic Group Study Sessions
+Version 1.0 - Course-Based Study Groups at Coffee Shops
 
-LatteLink helps college students organize and join GROUP STUDY SESSIONS (3+ people) at coffee shops. This is an academic productivity tool, not a dating or social app.
+StudyBrew is an academic coordination tool for organizing study groups by course code at coffee shops. Minimum 3 students per group. Strictly for educational purposes.
 
 **Key Features:**
 

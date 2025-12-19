@@ -1,4 +1,4 @@
-# LatteLink ☕📚
+# StudyBrew ☕📚
 
 An iOS app for college students to organize group study sessions at coffee shops.
 
@@ -9,7 +9,7 @@ An iOS app for college students to organize group study sessions at coffee shops
 
 ## 🎯 Overview
 
-LatteLink is an academic productivity app designed for college students to organize and join GROUP STUDY SESSIONS (3+ people) at local coffee shops. This is NOT a dating app—it's focused exclusively on collaborative group learning organized by course codes.
+StudyBrew is an academic productivity tool for organizing course-specific study groups (minimum 3 students) at coffee shops and cafés. Strictly for coordinating group academic work by course code.
 
 ## ✨ Features
 
