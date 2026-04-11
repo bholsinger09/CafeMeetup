@@ -3,6 +3,7 @@ import Combine
 
 /// Service for managing real-time collaborative features during live study sessions
 /// Note: This is a mock implementation. For production, integrate with Firebase Realtime Database.
+@MainActor
 class LiveSessionService {
     static let shared = LiveSessionService()
     
@@ -351,7 +352,7 @@ class LiveSessionService {
     // MARK: - Cleanup
     
     /// Remove all listeners
-    nonisolated func removeAllListeners() {
+    func removeAllListeners() {
         cancellables.removeAll()
         whiteboardSubjects.removeAll()
         pomodoroSubjects.removeAll()
