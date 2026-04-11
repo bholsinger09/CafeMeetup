@@ -258,7 +258,7 @@ struct ProfileView: View {
             .onAppear {
                 selectedAvatarId = authViewModel.currentUser?.avatarId
             }
-            .onChange(of: selectedAvatarId) { newValue in
+            .onChange(of: selectedAvatarId) { oldValue, newValue in
                 // Update user's avatar in auth view model
                 if var user = authViewModel.currentUser {
                     user.avatarId = newValue

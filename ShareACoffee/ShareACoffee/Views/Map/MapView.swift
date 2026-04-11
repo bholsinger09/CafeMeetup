@@ -49,15 +49,19 @@ struct MapView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Map(coordinateRegion: $mapViewModel.region, annotationItems: allMapAnnotations) { annotation in
-                    MapAnnotation(coordinate: annotation.coordinate) {
+                Map(position: .constant(.region(mapViewModel.region))) {
+                    ForEach(allMapAnnotations) { annotation in
                         if annotation.isCurrentUser {
-                            CurrentUserMarker()
+                            Annotation("You", coordinate: annotation.coordinate) {
+                                CurrentUserMarker()
+                            }
                         } else if let user = annotation.user {
-                            OtherUserMapMarker(user: user)
-                                .onTapGesture {
-                                    selectedUser = user
-                                }
+                            Annotation(user.fullName, coordinate: annotation.coordinate) {
+                                OtherUserMapMarker(user: user)
+                                    .onTapGesture {
+                                        selectedUser = user
+                                    }
+                            }
                         }
                     }
                 }

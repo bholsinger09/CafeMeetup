@@ -25,7 +25,7 @@ struct DiscoveryView: View {
                         ProgressView()
                             .scaleEffect(1.5)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else if let currentUser = discoveryViewModel.currentUser {
+                    } else if discoveryViewModel.currentUser != nil {
                         // Card Stack
                         ZStack {
                             // Show next 2 cards in background for depth (reverse order so top card is on top)
