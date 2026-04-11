@@ -7,7 +7,6 @@ struct LiveStudySessionView: View {
     let userName: String
     let isHost: Bool
     
-    @StateObject private var liveSessionService = LiveSessionService()
     @State private var activeParticipants: [String] = []
     @State private var showWhiteboard = false
     @State private var showPomodoro = false
@@ -312,14 +311,14 @@ struct LiveStudySessionView: View {
     // MARK: - Actions
     
     private func joinLiveSession() {
-        liveSessionService.joinLiveSession(
+        LiveSessionService.shared.joinLiveSession(
             studySessionId: studySession.id,
             userId: userId,
             userName: userName
         )
         
         // Observe active participants
-        liveSessionService.observeActiveParticipants(sessionId: studySession.id) { participants in
+        LiveSessionService.shared.observeActiveParticipants(sessionId: studySession.id) { participants in
             activeParticipants = participants
         }
         
@@ -327,7 +326,7 @@ struct LiveStudySessionView: View {
     }
     
     private func leaveLiveSession() {
-        liveSessionService.leaveLiveSession(studySessionId: studySession.id, userId: userId)
+        LiveSessionService.shared.leaveLiveSession(studySessionId: studySession.id, userId: userId)
     }
     
     private func startSession() {

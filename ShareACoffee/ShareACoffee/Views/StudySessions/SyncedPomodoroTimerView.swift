@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Synchronized Pomodoro Timer - Shared focus timer for study groups
 struct SyncedPomodoroTimerView: View {
