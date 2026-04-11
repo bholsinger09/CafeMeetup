@@ -143,7 +143,7 @@ class ARCafeAnnotationNode: SCNNode {
         }
         
         // Direction
-        if let bearing = cafe.bearing {
+        if cafe.bearing != nil {
             let directionView = createInfoItem(
                 icon: "🧭",
                 value: cafe.directionDescription,
