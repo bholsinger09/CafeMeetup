@@ -407,8 +407,8 @@ class LivePollViewModel: ObservableObject {
             createdByName: userName,
             question: question,
             options: options,
-            isAnonymous: isAnonymous,
-            allowMultipleVotes: allowMultipleVotes
+            allowMultipleVotes: allowMultipleVotes,
+            isAnonymous: isAnonymous
         )
         
         liveSessionService.createPoll(sessionId: studySessionId, poll: poll) { success in
