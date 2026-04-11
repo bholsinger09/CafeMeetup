@@ -5,6 +5,7 @@ import Combine
 @MainActor
 class MapViewModel: ObservableObject {
     @Published var users: [User] = []
+    @Published var nearbyCoffeeShops: [CoffeeShop] = []
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
         span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)

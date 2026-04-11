@@ -13,6 +13,7 @@ struct MapView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var selectedUser: User?
+    @State private var showARCafeFinder = false
     
     // Combine current user location and other users into annotations
     private var allMapAnnotations: [MapAnnotationData] {
@@ -98,6 +99,25 @@ struct MapView: View {
                                     .clipShape(Circle())
                                     .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                             }
+                            
+                            // AR Cafe Finder button
+                            Button {
+                                showARCafeFinder = true
+                            } label: {
+                                Image(systemName: "arkit")
+                                    .font(.title3)
+                                    .foregroundColor(.white)
+                                    .frame(width: 50, height: 50)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [Color.purple, Color.blue],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.purple.opacity(0.3), radius: 8)
+                            }
                         }
                         .padding()
                     }
@@ -108,6 +128,14 @@ struct MapView: View {
             .preferredColorScheme(.dark)
             .sheet(item: $selectedUser) { user in
                 UserDetailSheet(user: user)
+            }
+            .fullScreenCover(isPresented: $showARCafeFinder) {
+                if let userLocation = mapViewModel.currentUserLocation?.coordinate {
+                    ARCafeFinderView(
+                        cafes: mapViewModel.nearbyCoffeeShops,
+                        userLocation: userLocation
+                    )
+                }
             }
             .task {
                 print("[MapView] Task started")
