@@ -178,8 +178,8 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     func navigateToCafe(_ cafe: ARCafeLocation) {
         // Open in Maps app
         let coordinate = cafe.coordinate
-        let mapItem = MKMapItem()
-        mapItem.placemark = MKPlacemark(coordinate: coordinate)
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = cafe.name
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
     }
