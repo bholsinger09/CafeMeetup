@@ -187,6 +187,7 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     
     func navigateToCafe(_ cafe: ARCafeLocation) {
         // Open in Maps app using coordinate-based approach
+        // Note: MKPlacemark is deprecated in iOS 26.0, but the replacement (MKAddress) is not yet functional
         let regionDistance: CLLocationDistance = 1000
         let coordinates = cafe.coordinate
         let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
@@ -195,6 +196,11 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
             MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span),
             MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking
         ] as [String : Any]
+        
+        // Using deprecated API until iOS 26.0 replacement is available
+        if #available(iOS 26.0, *) {
+            // TODO: Use MKAddress when API becomes functional
+        }
         let placemark = MKPlacemark(coordinate: coordinates)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = cafe.name
