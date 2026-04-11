@@ -36,8 +36,9 @@ struct ImagePicker: UIViewControllerRepresentable {
             if provider.canLoadObject(ofClass: UIImage.self) {
                 provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
                     guard let self = self else { return }
+                    let loadedImage = image as? UIImage
                     Task { @MainActor in
-                        self.parent.image = image as? UIImage
+                        self.parent.image = loadedImage
                     }
                 }
             }
