@@ -20,7 +20,7 @@ class ARCafeAnnotationNode: SCNNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupNode() {
+    nonisolated private func setupNode() {
         // Create main marker
         let markerNode = createMarker()
         addChildNode(markerNode)
@@ -40,7 +40,7 @@ class ARCafeAnnotationNode: SCNNode {
         addPulseAnimation()
     }
     
-    private func createMarker() -> SCNNode {
+    nonisolated private func createMarker() -> SCNNode {
         let node = SCNNode()
         
         // Main cone marker
@@ -67,7 +67,7 @@ class ARCafeAnnotationNode: SCNNode {
         return node
     }
     
-    private func createInfoCard() -> SCNNode {
+    nonisolated private func createInfoCard() -> SCNNode {
         let cardNode = SCNNode()
         
         // Create card background
@@ -91,7 +91,7 @@ class ARCafeAnnotationNode: SCNNode {
         return cardNode
     }
     
-    private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
+    nonisolated private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.backgroundColor = UIColor.black.withAlphaComponent(0.85)
         view.layer.cornerRadius = 20
@@ -156,7 +156,7 @@ class ARCafeAnnotationNode: SCNNode {
         return view
     }
     
-    private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
+    nonisolated private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
         let container = UIView(frame: frame)
         
         let iconLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 30))
@@ -182,7 +182,7 @@ class ARCafeAnnotationNode: SCNNode {
         return container
     }
     
-    private func getMarkerColor() -> UIColor {
+    nonisolated private func getMarkerColor() -> UIColor {
         // Color based on distance and occupancy
         if cafe.distance < 100 {
             return .systemGreen // Very close
@@ -195,7 +195,7 @@ class ARCafeAnnotationNode: SCNNode {
         }
     }
     
-    private func addPulseAnimation() {
+    nonisolated private func addPulseAnimation() {
         let pulseAnimation = CABasicAnimation(keyPath: "scale")
         pulseAnimation.duration = 1.5
         pulseAnimation.fromValue = SCNVector3(1, 1, 1)
@@ -240,7 +240,7 @@ class ARDirectionArrowNode: SCNNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupArrow() {
+    nonisolated private func setupArrow() {
         // Create arrow shape
         let arrowPath = createArrowPath()
         let arrowShape = SCNShape(path: arrowPath, extrusionDepth: 0.05)
@@ -259,7 +259,7 @@ class ARDirectionArrowNode: SCNNode {
         addFloatingAnimation()
     }
     
-    private func createArrowPath() -> UIBezierPath {
+    nonisolated private func createArrowPath() -> UIBezierPath {
         let path = UIBezierPath()
         
         // Arrow shaft
@@ -277,7 +277,7 @@ class ARDirectionArrowNode: SCNNode {
         return path
     }
     
-    private func addFloatingAnimation() {
+    nonisolated private func addFloatingAnimation() {
         let floatAnimation = CABasicAnimation(keyPath: "position.y")
         floatAnimation.duration = 2.0
         floatAnimation.fromValue = 0
@@ -310,14 +310,14 @@ class AROccupancyHeatmapNode: SCNNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func createHeatmap() {
+    nonisolated private func createHeatmap() {
         for cafe in cafes where cafe.currentOccupancy > 0 {
             let heatNode = createHeatCircle(for: cafe)
             addChildNode(heatNode)
         }
     }
     
-    private func createHeatCircle(for cafe: ARCafeLocation) -> SCNNode {
+    nonisolated private func createHeatCircle(for cafe: ARCafeLocation) -> SCNNode {
         let radius = 0.3 + (Float(cafe.currentOccupancy) * 0.02) // Radius based on occupancy
         let circle = SCNPlane(width: CGFloat(radius * 2), height: CGFloat(radius * 2))
         
