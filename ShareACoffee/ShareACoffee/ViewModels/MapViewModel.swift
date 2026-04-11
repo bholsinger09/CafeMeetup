@@ -133,12 +133,15 @@ class MapViewModel: ObservableObject {
     }
     
     private func geocodeLocation(city: String, state: String) async {
-        let geocoder = CLGeocoder()
-        let addressString = "\(city), \(state)"
+        // Use MKLocalSearch instead of deprecated CLGeocoder
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = "\(city), \(state)"
+        
+        let search = MKLocalSearch(request: searchRequest)
         
         do {
-            let placemarks = try await geocoder.geocodeAddressString(addressString)
-            if let coordinate = placemarks.first?.location?.coordinate {
+            let response = try await search.start()
+            if let coordinate = response.mapItems.first?.placemark.coordinate {
                 region = MKCoordinateRegion(
                     center: coordinate,
                     span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
@@ -146,7 +149,7 @@ class MapViewModel: ObservableObject {
             }
         } catch {
             // Silently fail and keep default or current region
-            print("Failed to geocode \(addressString): \(error.localizedDescription)")
+            print("Failed to geocode \(city), \(state): \(error.localizedDescription)")
         }
     }
     
