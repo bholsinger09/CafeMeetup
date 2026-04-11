@@ -4,23 +4,24 @@ import SceneKit
 import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
+@MainActor
 class ARCafeAnnotationNode: SCNNode {
     let cafe: ARCafeLocation
     private var infoCardNode: SCNNode?
     private var pulseAnimation: CAAnimation?
     
-    nonisolated init(cafe: ARCafeLocation) {
+    nonisolated(unsafe) init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
         
         setupNode()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    nonisolated(unsafe) required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    nonisolated private func setupNode() {
+    private func setupNode() {
         // Create main marker
         let markerNode = createMarker()
         addChildNode(markerNode)
@@ -40,7 +41,7 @@ class ARCafeAnnotationNode: SCNNode {
         addPulseAnimation()
     }
     
-    nonisolated private func createMarker() -> SCNNode {
+    private func createMarker() -> SCNNode {
         let node = SCNNode()
         
         // Main cone marker
@@ -67,7 +68,7 @@ class ARCafeAnnotationNode: SCNNode {
         return node
     }
     
-    nonisolated private func createInfoCard() -> SCNNode {
+    private func createInfoCard() -> SCNNode {
         let cardNode = SCNNode()
         
         // Create card background
@@ -91,7 +92,7 @@ class ARCafeAnnotationNode: SCNNode {
         return cardNode
     }
     
-    nonisolated private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
+    private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.backgroundColor = UIColor.black.withAlphaComponent(0.85)
         view.layer.cornerRadius = 20
@@ -156,7 +157,7 @@ class ARCafeAnnotationNode: SCNNode {
         return view
     }
     
-    nonisolated private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
+    private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
         let container = UIView(frame: frame)
         
         let iconLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 30))
@@ -182,7 +183,7 @@ class ARCafeAnnotationNode: SCNNode {
         return container
     }
     
-    nonisolated private func getMarkerColor() -> UIColor {
+    private func getMarkerColor() -> UIColor {
         // Color based on distance and occupancy
         if cafe.distance < 100 {
             return .systemGreen // Very close
@@ -195,7 +196,7 @@ class ARCafeAnnotationNode: SCNNode {
         }
     }
     
-    nonisolated private func addPulseAnimation() {
+    private func addPulseAnimation() {
         let pulseAnimation = CABasicAnimation(keyPath: "scale")
         pulseAnimation.duration = 1.5
         pulseAnimation.fromValue = SCNVector3(1, 1, 1)
@@ -225,22 +226,23 @@ class ARCafeAnnotationNode: SCNNode {
 }
 
 /// AR Direction Arrow - Floating arrow that points to selected cafe
+@MainActor
 class ARDirectionArrowNode: SCNNode {
     private let targetCafe: ARCafeLocation
     private var arrowNode: SCNNode?
     
-    nonisolated init(targetCafe: ARCafeLocation) {
+    nonisolated(unsafe) init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
         super.init()
         
         setupArrow()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    nonisolated(unsafe) required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    nonisolated private func setupArrow() {
+    private func setupArrow() {
         // Create arrow shape
         let arrowPath = createArrowPath()
         let arrowShape = SCNShape(path: arrowPath, extrusionDepth: 0.05)
@@ -259,7 +261,7 @@ class ARDirectionArrowNode: SCNNode {
         addFloatingAnimation()
     }
     
-    nonisolated private func createArrowPath() -> UIBezierPath {
+    private func createArrowPath() -> UIBezierPath {
         let path = UIBezierPath()
         
         // Arrow shaft
@@ -277,7 +279,7 @@ class ARDirectionArrowNode: SCNNode {
         return path
     }
     
-    nonisolated private func addFloatingAnimation() {
+    private func addFloatingAnimation() {
         let floatAnimation = CABasicAnimation(keyPath: "position.y")
         floatAnimation.duration = 2.0
         floatAnimation.fromValue = 0
@@ -296,28 +298,29 @@ class ARDirectionArrowNode: SCNNode {
 }
 
 /// AR Occupancy Heatmap - Visual overlay showing cafe occupancy levels
+@MainActor
 class AROccupancyHeatmapNode: SCNNode {
     private let cafes: [ARCafeLocation]
     
-    nonisolated init(cafes: [ARCafeLocation]) {
+    nonisolated(unsafe) init(cafes: [ARCafeLocation]) {
         self.cafes = cafes
         super.init()
         
         createHeatmap()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    nonisolated(unsafe) required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    nonisolated private func createHeatmap() {
+    private func createHeatmap() {
         for cafe in cafes where cafe.currentOccupancy > 0 {
             let heatNode = createHeatCircle(for: cafe)
             addChildNode(heatNode)
         }
     }
     
-    nonisolated private func createHeatCircle(for cafe: ARCafeLocation) -> SCNNode {
+    private func createHeatCircle(for cafe: ARCafeLocation) -> SCNNode {
         let radius = 0.3 + (Float(cafe.currentOccupancy) * 0.02) // Radius based on occupancy
         let circle = SCNPlane(width: CGFloat(radius * 2), height: CGFloat(radius * 2))
         
