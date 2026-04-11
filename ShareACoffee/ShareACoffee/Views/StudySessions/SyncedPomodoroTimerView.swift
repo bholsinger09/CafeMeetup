@@ -233,14 +233,13 @@ class PomodoroViewModel: ObservableObject {
     let studySessionId: String
     let isHost: Bool
     
-    private var liveSessionService: LiveSessionService
+    private let liveSessionService = LiveSessionService.shared
     private var timerSubscription: Timer?
     
     init(studySessionId: String, isHost: Bool, existingState: PomodoroState? = nil) {
         self.studySessionId = studySessionId
         self.isHost = isHost
         self.pomodoroState = existingState ?? PomodoroState()
-        self.liveSessionService = LiveSessionService()
         
         setupRealtimeListeners()
         

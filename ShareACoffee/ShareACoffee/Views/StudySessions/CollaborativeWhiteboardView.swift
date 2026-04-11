@@ -230,13 +230,12 @@ class WhiteboardViewModel: ObservableObject {
     let currentUserName: String
     let studySessionId: String
     
-    private var liveSessionService: LiveSessionService
+    private let liveSessionService = LiveSessionService.shared
     
     init(studySessionId: String, userId: String, userName: String) {
         self.studySessionId = studySessionId
         self.currentUserId = userId
         self.currentUserName = userName
-        self.liveSessionService = LiveSessionService()
         
         setupRealtimeListeners()
     }

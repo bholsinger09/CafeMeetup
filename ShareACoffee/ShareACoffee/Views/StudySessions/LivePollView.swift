@@ -379,14 +379,13 @@ class LivePollViewModel: ObservableObject {
         isHost && (currentPoll == nil || currentPoll?.isActive == false)
     }
     
-    private var liveSessionService: LiveSessionService
+    private let liveSessionService = LiveSessionService.shared
     
     init(studySessionId: String, userId: String, userName: String, isHost: Bool) {
         self.studySessionId = studySessionId
         self.userId = userId
         self.userName = userName
         self.isHost = isHost
-        self.liveSessionService = LiveSessionService()
         
         setupRealtimeListeners()
     }

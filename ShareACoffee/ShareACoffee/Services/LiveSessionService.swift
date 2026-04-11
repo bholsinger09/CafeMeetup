@@ -1,381 +1,363 @@
 import Foundation
-import Firebase
-import FirebaseDatabase
+import Combine
 
 /// Service for managing real-time collaborative features during live study sessions
+/// Note: This is a mock implementation. For production, integrate with Firebase Realtime Database.
 class LiveSessionService {
-    private let database = Database.database().reference()
-    private var listeners: [String: DatabaseHandle] = [:]
+    static let shared = LiveSessionService()
+    
+    // Mock in-memory storage
+    private var liveSessions: [String: LiveSession] = [:]
+    private var whiteboardStates: [String: WhiteboardState] = [:]
+    private var pomodoroStates: [String: PomodoroState] = [:]
+    private var currentPolls: [String: LivePoll] = [:]
+    private var currentQuizzes: [String: LiveQuiz] = [:]
+    private var activeParticipants: [String: Set<String>] = [:]
+    
+    // Publishers for real-time updates
+    private var whiteboardSubjects: [String: PassthroughSubject<WhiteboardState, Never>] = [:]
+    private var pomodoroSubjects: [String: PassthroughSubject<PomodoroState, Never>] = [:]
+    private var participantsSubjects: [String: PassthroughSubject<[String], Never>] = [:]
+    private var pollSubjects: [String: PassthroughSubject<LivePoll?, Never>] = [:]
+    private var quizSubjects: [String: PassthroughSubject<LiveQuiz?, Never>] = [:]
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    private init() {}
     
     // MARK: - Live Session Management
     
     /// Start a live session for a study session
     func startLiveSession(studySessionId: String, userId: String, completion: @escaping (Bool) -> Void) {
         let liveSession = LiveSession(studySessionId: studySessionId)
-        let sessionRef = database.child("liveSessions").child(studySessionId)
+        liveSessions[studySessionId] = liveSession
         
-        do {
-            let data = try JSONEncoder().encode(liveSession)
-            let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
-            
-            sessionRef.setValue(dict) { error, _ in
-                if let error = error {
-                    print("Error starting live session: \(error.localizedDescription)")
-                    completion(false)
-                } else {
-                    // Add user as active participant
-                    self.joinLiveSession(studySessionId: studySessionId, userId: userId, userName: "")
-                    completion(true)
-                }
-            }
-        } catch {
-            print("Error encoding live session: \(error.localizedDescription)")
-            completion(false)
+        // Initialize empty states
+        whiteboardStates[studySessionId] = WhiteboardState()
+        pomodoroStates[studySessionId] = PomodoroState()
+        activeParticipants[studySessionId] = []
+        
+        // Add user as participant
+        joinLiveSession(studySessionId: studySessionId, userId: userId, userName: "")
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Join an active live session
     func joinLiveSession(studySessionId: String, userId: String, userName: String) {
-        let participantRef = database.child("liveSessions").child(studySessionId).child("activeParticipants").child(userId)
+        if activeParticipants[studySessionId] == nil {
+            activeParticipants[studySessionId] = []
+        }
+        activeParticipants[studySessionId]?.insert(userName)
         
-        participantRef.setValue([
-            "name": userName,
-            "joinedAt": ServerValue.timestamp()
-        ])
-        
-        // Set up presence - auto-remove when disconnected
-        participantRef.onDisconnectRemoveValue()
+        // Notify observers
+        if let subject = participantsSubjects[studySessionId] {
+            subject.send(Array(activeParticipants[studySessionId] ?? []))
+        }
     }
     
     /// Leave a live session
     func leaveLiveSession(studySessionId: String, userId: String) {
-        let participantRef = database.child("liveSessions").child(studySessionId).child("activeParticipants").child(userId)
-        participantRef.removeValue()
+        // In mock version, we don't track by userId, just clear all
+        activeParticipants[studySessionId]?.removeAll()
+        
+        if let subject = participantsSubjects[studySessionId] {
+            subject.send([])
+        }
     }
     
     /// Observe active participants
     func observeActiveParticipants(sessionId: String, completion: @escaping ([String]) -> Void) {
-        let participantsRef = database.child("liveSessions").child(sessionId).child("activeParticipants")
-        
-        let handle = participantsRef.observe(.value) { snapshot in
-            var participants: [String] = []
-            
-            for child in snapshot.children {
-                if let snap = child as? DataSnapshot,
-                   let dict = snap.value as? [String: Any],
-                   let name = dict["name"] as? String {
-                    participants.append(name)
-                }
-            }
-            
-            completion(participants)
+        // Create subject if doesn't exist
+        if participantsSubjects[sessionId] == nil {
+            participantsSubjects[sessionId] = PassthroughSubject<[String], Never>()
         }
         
-        listeners["participants_\(sessionId)"] = handle
+        // Subscribe to updates
+        participantsSubjects[sessionId]?
+            .sink { participants in
+                completion(participants)
+            }
+            .store(in: &cancellables)
+        
+        // Send current state
+        let participants = Array(activeParticipants[sessionId] ?? [])
+        completion(participants)
     }
     
     // MARK: - Whiteboard Management
     
     /// Add a stroke to the whiteboard
     func addWhiteboardStroke(sessionId: String, stroke: WhiteboardStroke, completion: @escaping (Bool) -> Void) {
-        let strokeRef = database.child("liveSessions").child(sessionId).child("whiteboard").child("strokes").childByAutoId()
+        if whiteboardStates[sessionId] == nil {
+            whiteboardStates[sessionId] = WhiteboardState()
+        }
         
-        do {
-            let data = try JSONEncoder().encode(stroke)
-            let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
-            
-            strokeRef.setValue(dict) { error, _ in
-                completion(error == nil)
-            }
-        } catch {
-            print("Error encoding stroke: \(error.localizedDescription)")
-            completion(false)
+        whiteboardStates[sessionId]?.strokes.append(stroke)
+        whiteboardStates[sessionId]?.lastUpdatedBy = stroke.userId
+        whiteboardStates[sessionId]?.lastUpdatedAt = Date()
+        
+        // Notify observers
+        if let state = whiteboardStates[sessionId],
+           let subject = whiteboardSubjects[sessionId] {
+            subject.send(state)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Clear the whiteboard
     func clearWhiteboard(sessionId: String, completion: @escaping (Bool) -> Void) {
-        let whiteboardRef = database.child("liveSessions").child(sessionId).child("whiteboard").child("strokes")
+        whiteboardStates[sessionId] = WhiteboardState()
         
-        whiteboardRef.removeValue { error, _ in
-            completion(error == nil)
+        // Notify observers
+        if let state = whiteboardStates[sessionId],
+           let subject = whiteboardSubjects[sessionId] {
+            subject.send(state)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Observe whiteboard state
     func observeWhiteboardState(sessionId: String, completion: @escaping (WhiteboardState) -> Void) {
-        let whiteboardRef = database.child("liveSessions").child(sessionId).child("whiteboard")
-        
-        let handle = whiteboardRef.observe(.value) { snapshot in
-            guard let dict = snapshot.value as? [String: Any] else {
-                completion(WhiteboardState())
-                return
-            }
-            
-            var strokes: [WhiteboardStroke] = []
-            
-            if let strokesDict = dict["strokes"] as? [String: [String: Any]] {
-                for (_, strokeData) in strokesDict {
-                    if let data = try? JSONSerialization.data(withJSONObject: strokeData),
-                       let stroke = try? JSONDecoder().decode(WhiteboardStroke.self, from: data) {
-                        strokes.append(stroke)
-                    }
-                }
-            }
-            
-            let state = WhiteboardState(
-                strokes: strokes.sorted(by: { $0.createdAt < $1.createdAt }),
-                backgroundColor: dict["backgroundColor"] as? String ?? "#FFFFFF",
-                lastUpdatedBy: dict["lastUpdatedBy"] as? String,
-                lastUpdatedAt: Date()
-            )
-            
-            completion(state)
+        // Create subject if doesn't exist
+        if whiteboardSubjects[sessionId] == nil {
+            whiteboardSubjects[sessionId] = PassthroughSubject<WhiteboardState, Never>()
         }
         
-        listeners["whiteboard_\(sessionId)"] = handle
+        // Subscribe to updates
+        whiteboardSubjects[sessionId]?
+            .sink { state in
+                completion(state)
+            }
+            .store(in: &cancellables)
+        
+        // Send current state
+        let state = whiteboardStates[sessionId] ?? WhiteboardState()
+        completion(state)
     }
     
     // MARK: - Pomodoro Timer Management
     
     /// Update Pomodoro timer state
     func updatePomodoroState(sessionId: String, state: PomodoroState, completion: @escaping (Bool) -> Void) {
-        let pomodoroRef = database.child("liveSessions").child(sessionId).child("pomodoro")
+        pomodoroStates[sessionId] = state
         
-        do {
-            let data = try JSONEncoder().encode(state)
-            let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
-            
-            pomodoroRef.setValue(dict) { error, _ in
-                completion(error == nil)
-            }
-        } catch {
-            print("Error encoding pomodoro state: \(error.localizedDescription)")
-            completion(false)
+        // Notify observers
+        if let subject = pomodoroSubjects[sessionId] {
+            subject.send(state)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Observe Pomodoro timer state
     func observePomodoroState(sessionId: String, completion: @escaping (PomodoroState) -> Void) {
-        let pomodoroRef = database.child("liveSessions").child(sessionId).child("pomodoro")
-        
-        let handle = pomodoroRef.observe(.value) { snapshot in
-            guard let dict = snapshot.value as? [String: Any],
-                  let data = try? JSONSerialization.data(withJSONObject: dict),
-                  let state = try? JSONDecoder().decode(PomodoroState.self, from: data) else {
-                completion(PomodoroState())
-                return
-            }
-            
-            completion(state)
+        // Create subject if doesn't exist
+        if pomodoroSubjects[sessionId] == nil {
+            pomodoroSubjects[sessionId] = PassthroughSubject<PomodoroState, Never>()
         }
         
-        listeners["pomodoro_\(sessionId)"] = handle
+        // Subscribe to updates
+        pomodoroSubjects[sessionId]?
+            .sink { state in
+                completion(state)
+            }
+            .store(in: &cancellables)
+        
+        // Send current state
+        let state = pomodoroStates[sessionId] ?? PomodoroState()
+        completion(state)
     }
     
     // MARK: - Live Poll Management
     
     /// Create a new poll
     func createPoll(sessionId: String, poll: LivePoll, completion: @escaping (Bool) -> Void) {
-        let pollRef = database.child("liveSessions").child(sessionId).child("polls").child(poll.id)
+        currentPolls[sessionId] = poll
         
-        do {
-            let data = try JSONEncoder().encode(poll)
-            let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
-            
-            pollRef.setValue(dict) { error, _ in
-                if error == nil {
-                    // Set as current poll
-                    self.database.child("liveSessions").child(sessionId).child("currentPollId").setValue(poll.id)
-                }
-                completion(error == nil)
-            }
-        } catch {
-            print("Error encoding poll: \(error.localizedDescription)")
-            completion(false)
+        // Notify observers
+        if let subject = pollSubjects[sessionId] {
+            subject.send(poll)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Submit a vote for a poll
     func submitPollVote(sessionId: String, pollId: String, userId: String, optionIndex: Int, completion: @escaping (Bool) -> Void) {
-        let voteRef = database.child("liveSessions").child(sessionId).child("polls").child(pollId).child("votes").child(userId)
+        guard var poll = currentPolls[sessionId] else {
+            completion(false)
+            return
+        }
         
-        voteRef.setValue(optionIndex) { error, _ in
-            if error == nil {
-                // Increment vote count for the option
-                let optionRef = self.database.child("liveSessions").child(sessionId).child("polls").child(pollId).child("options").child(String(optionIndex)).child("voteCount")
-                optionRef.runTransactionBlock { currentData in
-                    let currentCount = (currentData.value as? Int) ?? 0
-                    currentData.value = currentCount + 1
-                    return TransactionResult.success(withValue: currentData)
-                }
-            }
-            completion(error == nil)
+        // Add vote
+        poll.votes[userId] = optionIndex
+        
+        // Update option vote count
+        if optionIndex < poll.options.count {
+            poll.options[optionIndex].voteCount += 1
+        }
+        
+        currentPolls[sessionId] = poll
+        
+        // Notify observers
+        if let subject = pollSubjects[sessionId] {
+            subject.send(poll)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Close a poll
     func closePoll(sessionId: String, pollId: String, completion: @escaping (Bool) -> Void) {
-        let pollRef = database.child("liveSessions").child(sessionId).child("polls").child(pollId)
+        guard var poll = currentPolls[sessionId] else {
+            completion(false)
+            return
+        }
         
-        pollRef.child("isActive").setValue(false) { error, _ in
-            if error == nil {
-                pollRef.child("closedAt").setValue(ServerValue.timestamp())
-            }
-            completion(error == nil)
+        poll.isActive = false
+        poll.closedAt = Date()
+        currentPolls[sessionId] = poll
+        
+        // Notify observers
+        if let subject = pollSubjects[sessionId] {
+            subject.send(poll)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Observe current poll
     func observeCurrentPoll(sessionId: String, completion: @escaping (LivePoll?) -> Void) {
-        let pollIdRef = database.child("liveSessions").child(sessionId).child("currentPollId")
-        
-        let handle = pollIdRef.observe(.value) { snapshot in
-            guard let pollId = snapshot.value as? String else {
-                completion(nil)
-                return
-            }
-            
-            // Now get the actual poll data
-            let pollRef = self.database.child("liveSessions").child(sessionId).child("polls").child(pollId)
-            
-            pollRef.observeSingleEvent(of: .value) { pollSnapshot in
-                guard let dict = pollSnapshot.value as? [String: Any],
-                      let data = try? JSONSerialization.data(withJSONObject: dict),
-                      let poll = try? JSONDecoder().decode(LivePoll.self, from: data) else {
-                    completion(nil)
-                    return
-                }
-                
-                completion(poll)
-            }
+        // Create subject if doesn't exist
+        if pollSubjects[sessionId] == nil {
+            pollSubjects[sessionId] = PassthroughSubject<LivePoll?, Never>()
         }
         
-        listeners["currentPoll_\(sessionId)"] = handle
+        // Subscribe to updates
+        pollSubjects[sessionId]?
+            .sink { poll in
+                completion(poll)
+            }
+            .store(in: &cancellables)
+        
+        // Send current state
+        completion(currentPolls[sessionId])
     }
     
     // MARK: - Live Quiz Management
     
     /// Create a new quiz
     func createQuiz(sessionId: String, quiz: LiveQuiz, completion: @escaping (Bool) -> Void) {
-        let quizRef = database.child("liveSessions").child(sessionId).child("quizzes").child(quiz.id)
+        currentQuizzes[sessionId] = quiz
         
-        do {
-            let data = try JSONEncoder().encode(quiz)
-            let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
-            
-            quizRef.setValue(dict) { error, _ in
-                if error == nil {
-                    // Set as current quiz
-                    self.database.child("liveSessions").child(sessionId).child("currentQuizId").setValue(quiz.id)
-                }
-                completion(error == nil)
-            }
-        } catch {
-            print("Error encoding quiz: \(error.localizedDescription)")
-            completion(false)
+        // Notify observers
+        if let subject = quizSubjects[sessionId] {
+            subject.send(quiz)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Submit an answer for a quiz question
     func submitQuizAnswer(sessionId: String, quizId: String, questionIndex: Int, userId: String, answerIndex: Int, completion: @escaping (Bool) -> Void) {
-        let answerRef = database.child("liveSessions").child(sessionId).child("quizzes").child(quizId).child("questions").child(String(questionIndex)).child("answers").child(userId)
+        guard var quiz = currentQuizzes[sessionId] else {
+            completion(false)
+            return
+        }
         
-        answerRef.setValue(answerIndex) { error, _ in
-            if error == nil {
-                // Get the correct answer to see if user got it right
-                let questionRef = self.database.child("liveSessions").child(sessionId).child("quizzes").child(quizId).child("questions").child(String(questionIndex))
-                
-                questionRef.observeSingleEvent(of: .value) { snapshot in
-                    if let dict = snapshot.value as? [String: Any],
-                       let correctIndex = dict["correctAnswerIndex"] as? Int {
-                        
-                        // If answer is correct, increment user's score
-                        if answerIndex == correctIndex {
-                            let scoreRef = self.database.child("liveSessions").child(sessionId).child("quizzes").child(quizId).child("participantScores").child(userId)
-                            
-                            scoreRef.runTransactionBlock { currentData in
-                                let currentScore = (currentData.value as? Int) ?? 0
-                                currentData.value = currentScore + 1
-                                return TransactionResult.success(withValue: currentData)
-                            }
-                        }
-                    }
-                }
-            }
-            completion(error == nil)
+        guard questionIndex < quiz.questions.count else {
+            completion(false)
+            return
+        }
+        
+        // Add answer
+        quiz.questions[questionIndex].answers[userId] = answerIndex
+        
+        // Check if answer is correct and update score
+        if answerIndex == quiz.questions[questionIndex].correctAnswerIndex {
+            let currentScore = quiz.participantScores[userId] ?? 0
+            quiz.participantScores[userId] = currentScore + 1
+        }
+        
+        currentQuizzes[sessionId] = quiz
+        
+        // Notify observers
+        if let subject = quizSubjects[sessionId] {
+            subject.send(quiz)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Advance to next question
     func nextQuizQuestion(sessionId: String, quizId: String, completion: @escaping (Bool) -> Void) {
-        let quizRef = database.child("liveSessions").child(sessionId).child("quizzes").child(quizId)
+        guard var quiz = currentQuizzes[sessionId] else {
+            completion(false)
+            return
+        }
         
-        quizRef.child("currentQuestionIndex").runTransactionBlock { currentData in
-            let currentIndex = (currentData.value as? Int) ?? 0
-            currentData.value = currentIndex + 1
-            return TransactionResult.success(withValue: currentData)
-        } andCompletionBlock: { error, _, _ in
-            completion(error == nil)
+        quiz.currentQuestionIndex += 1
+        currentQuizzes[sessionId] = quiz
+        
+        // Notify observers
+        if let subject = quizSubjects[sessionId] {
+            subject.send(quiz)
+        }
+        
+        DispatchQueue.main.async {
+            completion(true)
         }
     }
     
     /// Observe current quiz
     func observeCurrentQuiz(sessionId: String, completion: @escaping (LiveQuiz?) -> Void) {
-        let quizIdRef = database.child("liveSessions").child(sessionId).child("currentQuizId")
-        
-        let handle = quizIdRef.observe(.value) { snapshot in
-            guard let quizId = snapshot.value as? String else {
-                completion(nil)
-                return
-            }
-            
-            // Now get the actual quiz data
-            let quizRef = self.database.child("liveSessions").child(sessionId).child("quizzes").child(quizId)
-            
-            quizRef.observe(.value) { quizSnapshot in
-                guard let dict = quizSnapshot.value as? [String: Any],
-                      let data = try? JSONSerialization.data(withJSONObject: dict),
-                      let quiz = try? JSONDecoder().decode(LiveQuiz.self, from: data) else {
-                    completion(nil)
-                    return
-                }
-                
-                completion(quiz)
-            }
+        // Create subject if doesn't exist
+        if quizSubjects[sessionId] == nil {
+            quizSubjects[sessionId] = PassthroughSubject<LiveQuiz?, Never>()
         }
         
-        listeners["currentQuiz_\(sessionId)"] = handle
+        // Subscribe to updates
+        quizSubjects[sessionId]?
+            .sink { quiz in
+                completion(quiz)
+            }
+            .store(in: &cancellables)
+        
+        // Send current state
+        completion(currentQuizzes[sessionId])
     }
     
     // MARK: - Cleanup
     
     /// Remove all listeners
     func removeAllListeners() {
-        for (path, handle) in listeners {
-            let components = path.split(separator: "_")
-            if components.count == 2 {
-                let sessionId = String(components[1])
-                let type = String(components[0])
-                
-                switch type {
-                case "participants":
-                    database.child("liveSessions").child(sessionId).child("activeParticipants").removeObserver(withHandle: handle)
-                case "whiteboard":
-                    database.child("liveSessions").child(sessionId).child("whiteboard").removeObserver(withHandle: handle)
-                case "pomodoro":
-                    database.child("liveSessions").child(sessionId).child("pomodoro").removeObserver(withHandle: handle)
-                case "currentPoll":
-                    database.child("liveSessions").child(sessionId).child("currentPollId").removeObserver(withHandle: handle)
-                case "currentQuiz":
-                    database.child("liveSessions").child(sessionId).child("currentQuizId").removeObserver(withHandle: handle)
-                default:
-                    break
-                }
-            }
-        }
-        
-        listeners.removeAll()
+        cancellables.removeAll()
+        whiteboardSubjects.removeAll()
+        pomodoroSubjects.removeAll()
+        participantsSubjects.removeAll()
+        pollSubjects.removeAll()
+        quizSubjects.removeAll()
     }
     
     deinit {
