@@ -154,9 +154,10 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     
     func updateCafeVisibility(cameraTransform: simd_float4x4) {
         let cameraDirection = simd_make_float3(cameraTransform.columns.2)
+        var updatedCafes = nearbyCafes
         
-        for index in nearbyCafes.indices {
-            if let position = calculateARPosition(for: nearbyCafes[index]) {
+        for index in updatedCafes.indices {
+            if let position = calculateARPosition(for: updatedCafes[index]) {
                 let cafeDirection = simd_normalize(simd_make_float3(position.x, 0, position.z))
                 let dot = simd_dot(
                     simd_normalize(simd_make_float3(cameraDirection.x, 0, cameraDirection.z)),
@@ -164,8 +165,12 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
                 )
                 
                 // Cafe is visible if it's in front of camera (dot > 0.3 = ~70 degree FOV)
-                nearbyCafes[index].isVisible = dot > 0.3
+                updatedCafes[index].isVisible = dot > 0.3
             }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.nearbyCafes = updatedCafes
         }
     }
     
@@ -177,9 +182,8 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     
     func navigateToCafe(_ cafe: ARCafeLocation) {
         // Open in Maps app
-        let coordinate = cafe.coordinate
-        let placemark = MKPlacemark(coordinate: coordinate)
-        let mapItem = MKMapItem(placemark: placemark)
+        let location = CLLocation(latitude: cafe.coordinate.latitude, longitude: cafe.coordinate.longitude)
+        let mapItem = MKMapItem(location: location)
         mapItem.name = cafe.name
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
     }
@@ -188,10 +192,15 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     
     private func loadCafeOccupancyData() {
         // Load real-time occupancy and active sessions from Firebase
-        for index in nearbyCafes.indices {
+        var updatedCafes = nearbyCafes
+        for index in updatedCafes.indices {
             // Mock data for now - in production, fetch from Firebase
-            nearbyCafes[index].currentOccupancy = Int.random(in: 0...15)
-            nearbyCafes[index].activeSessionsCount = Int.random(in: 0...5)
+            updatedCafes[index].currentOccupancy = Int.random(in: 0...15)
+            updatedCafes[index].activeSessionsCount = Int.random(in: 0...5)
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.nearbyCafes = updatedCafes
         }
     }
 }
