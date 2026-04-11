@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Live Quiz View - Interactive quizzes for group study sessions
 struct LiveQuizView: View {

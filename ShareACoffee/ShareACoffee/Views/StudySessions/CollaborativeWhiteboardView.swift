@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Collaborative Whiteboard - Real-time drawing canvas for study groups
 struct CollaborativeWhiteboardView: View {

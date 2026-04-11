@@ -26,12 +26,12 @@ struct ARCafeLocation: Identifiable {
         self.id = coffeeShop.id
         self.name = coffeeShop.name
         self.coordinate = CLLocationCoordinate2D(
-            latitude: coffeeShop.latitude,
-            longitude: coffeeShop.longitude
+            latitude: coffeeShop.location.latitude,
+            longitude: coffeeShop.location.longitude
         )
         
         // Calculate distance
-        let shopLocation = CLLocation(latitude: coffeeShop.latitude, longitude: coffeeShop.longitude)
+        let shopLocation = CLLocation(latitude: coffeeShop.location.latitude, longitude: coffeeShop.location.longitude)
         let userLoc = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
         self.distance = shopLocation.distance(from: userLoc)
         

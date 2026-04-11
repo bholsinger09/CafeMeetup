@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import Combine
 
 /// Live Poll View - Interactive voting during study sessions
 struct LivePollView: View {
