@@ -186,25 +186,16 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     }
     
     func navigateToCafe(_ cafe: ARCafeLocation) {
-        // Open in Maps app using coordinate-based approach
-        // Note: MKPlacemark is deprecated in iOS 26.0, but the replacement (MKAddress) is not yet functional
-        let regionDistance: CLLocationDistance = 1000
-        let coordinates = cafe.coordinate
-        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
-        let options = [
-            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
-            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span),
-            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking
-        ] as [String : Any]
+        // Open in Maps app using URL scheme to avoid deprecated MapKit APIs
+        let coordinate = cafe.coordinate
+        let encodedName = cafe.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? cafe.name
         
-        // Using deprecated API until iOS 26.0 replacement is available
-        if #available(iOS 26.0, *) {
-            // TODO: Use MKAddress when API becomes functional
+        // Use Maps URL scheme for directions with walking mode
+        let urlString = "http://maps.apple.com/?daddr=\(coordinate.latitude),\(coordinate.longitude)&dirflg=w&q=\(encodedName)"
+        
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
         }
-        let placemark = MKPlacemark(coordinate: coordinates)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = cafe.name
-        mapItem.openInMaps(launchOptions: options)
     }
     
     // MARK: - Load Real-time Data
