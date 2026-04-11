@@ -178,7 +178,8 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     func navigateToCafe(_ cafe: ARCafeLocation) {
         // Open in Maps app
         let coordinate = cafe.coordinate
-        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
+        let mapItem = MKMapItem()
+        mapItem.placemark = MKPlacemark(coordinate: coordinate)
         mapItem.name = cafe.name
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
     }
@@ -188,8 +189,6 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     private func loadCafeOccupancyData() {
         // Load real-time occupancy and active sessions from Firebase
         for index in nearbyCafes.indices {
-            let cafeId = nearbyCafes[index].id
-            
             // Mock data for now - in production, fetch from Firebase
             nearbyCafes[index].currentOccupancy = Int.random(in: 0...15)
             nearbyCafes[index].activeSessionsCount = Int.random(in: 0...5)
@@ -218,10 +217,10 @@ extension ARCafeFinderViewModel: CLLocationManagerDelegate {
 
 extension CLLocation {
     func bearing(to destination: CLLocation) -> Double {
-        let lat1 = latitude * .pi / 180.0
-        let lon1 = longitude * .pi / 180.0
-        let lat2 = destination.latitude * .pi / 180.0
-        let lon2 = destination.longitude * .pi / 180.0
+        let lat1 = coordinate.latitude * .pi / 180.0
+        let lon1 = coordinate.longitude * .pi / 180.0
+        let lat2 = destination.coordinate.latitude * .pi / 180.0
+        let lon2 = destination.coordinate.longitude * .pi / 180.0
         
         let dLon = lon2 - lon1
         
