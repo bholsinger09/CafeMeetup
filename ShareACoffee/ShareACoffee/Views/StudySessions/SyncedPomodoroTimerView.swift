@@ -235,7 +235,7 @@ class PomodoroViewModel: ObservableObject {
     let isHost: Bool
     
     private let liveSessionService = LiveSessionService.shared
-    private var timerSubscription: Timer?
+    nonisolated(unsafe) private var timerSubscription: Timer?
     
     init(studySessionId: String, isHost: Bool, existingState: PomodoroState? = nil) {
         self.studySessionId = studySessionId
@@ -256,9 +256,8 @@ class PomodoroViewModel: ObservableObject {
     func setupRealtimeListeners() {
         // Listen for timer state changes from Firebase
         liveSessionService.observePomodoroState(sessionId: studySessionId) { [weak self] state in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                
+            guard let self = self else { return }
+            Task { @MainActor in
                 // If timer state changed, update UI
                 if state.isRunning != self.pomodoroState.isRunning {
                     if state.isRunning {
@@ -274,8 +273,9 @@ class PomodoroViewModel: ObservableObject {
         
         // Listen for active participants
         liveSessionService.observeActiveParticipants(sessionId: studySessionId) { [weak self] participants in
-            DispatchQueue.main.async {
-                self?.activeParticipants = participants
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.activeParticipants = participants
             }
         }
     }
@@ -337,20 +337,22 @@ class PomodoroViewModel: ObservableObject {
         timerSubscription = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             
-            if self.pomodoroState.secondsRemaining > 0 {
-                self.pomodoroState.secondsRemaining -= 1
-                
-                if self.pomodoroState.currentPhase == .work {
-                    self.totalMinutesStudied += 1
+            Task { @MainActor in
+                if self.pomodoroState.secondsRemaining > 0 {
+                    self.pomodoroState.secondsRemaining -= 1
+                    
+                    if self.pomodoroState.currentPhase == .work {
+                        self.totalMinutesStudied += 1
+                    }
+                    
+                    // Sync every 10 seconds if host
+                    if self.isHost && self.pomodoroState.secondsRemaining % 10 == 0 {
+                        self.syncToFirebase()
+                    }
+                } else {
+                    // Phase completed
+                    self.handlePhaseCompletion()
                 }
-                
-                // Sync every 10 seconds if host
-                if self.isHost && self.pomodoroState.secondsRemaining % 10 == 0 {
-                    self.syncToFirebase()
-                }
-            } else {
-                // Phase completed
-                self.handlePhaseCompletion()
             }
         }
     }
