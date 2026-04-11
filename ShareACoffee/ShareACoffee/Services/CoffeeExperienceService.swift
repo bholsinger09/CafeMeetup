@@ -20,9 +20,8 @@ class CoffeeExperienceService: ObservableObject {
     )
     @Published var userBadges: [CoffeeBadge] = CoffeeBadgeSystem.allBadges
     
-    nonisolated private init() {
-        // Note: Cannot call loadMockData() here as it's @MainActor isolated
-        // Mock data will be loaded on first access
+    private init() {
+        // Mock data will be loaded on first access via ensureInitialized()
     }
     
     // Lazy initialization flag
