@@ -141,9 +141,10 @@ class MapViewModel: ObservableObject {
         
         do {
             let response = try await search.start()
-            if let coordinate = response.mapItems.first?.placemark.coordinate {
+            // Access coordinate through location property to avoid deprecated placemark
+            if let location = response.mapItems.first?.location {
                 region = MKCoordinateRegion(
-                    center: coordinate,
+                    center: location.coordinate,
                     span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                 )
             }
