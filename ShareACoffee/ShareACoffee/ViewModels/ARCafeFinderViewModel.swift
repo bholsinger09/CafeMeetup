@@ -114,19 +114,24 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
         userLocation = location
         
         // Recalculate distances and bearings
-        for index in nearbyCafes.indices {
+        var updatedCafes = nearbyCafes
+        for index in updatedCafes.indices {
             let shopLocation = CLLocation(
-                latitude: nearbyCafes[index].coordinate.latitude,
-                longitude: nearbyCafes[index].coordinate.longitude
+                latitude: updatedCafes[index].coordinate.latitude,
+                longitude: updatedCafes[index].coordinate.longitude
             )
             let userLoc = CLLocation(latitude: location.latitude, longitude: location.longitude)
             
-            nearbyCafes[index].distance = shopLocation.distance(from: userLoc)
-            nearbyCafes[index].bearing = userLoc.bearing(to: shopLocation)
+            updatedCafes[index].distance = shopLocation.distance(from: userLoc)
+            updatedCafes[index].bearing = userLoc.bearing(to: shopLocation)
         }
         
         // Re-sort by distance
-        nearbyCafes.sort { $0.distance < $1.distance }
+        updatedCafes.sort { $0.distance < $1.distance }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.nearbyCafes = updatedCafes
+        }
     }
     
     func updateHeading(_ heading: Double) {
@@ -183,8 +188,8 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     func navigateToCafe(_ cafe: ARCafeLocation) {
         // Open in Maps app
         let location = CLLocation(latitude: cafe.coordinate.latitude, longitude: cafe.coordinate.longitude)
-        let mapItem = MKMapItem(location: location)
-        mapItem.name = cafe.name
+        let address = MKAddress(name: cafe.name)
+        let mapItem = MKMapItem(location: location, address: address)
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
     }
     
