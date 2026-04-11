@@ -186,12 +186,19 @@ class ARCafeFinderViewModel: NSObject, ObservableObject {
     }
     
     func navigateToCafe(_ cafe: ARCafeLocation) {
-        // Open in Maps app
-        let location = CLLocation(latitude: cafe.coordinate.latitude, longitude: cafe.coordinate.longitude)
-        var address = MKAddress()
-        address.name = cafe.name
-        let mapItem = MKMapItem(location: location, address: address)
-        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
+        // Open in Maps app using coordinate-based approach
+        let regionDistance: CLLocationDistance = 1000
+        let coordinates = cafe.coordinate
+        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
+        let options = [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span),
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking
+        ] as [String : Any]
+        let placemark = MKPlacemark(coordinate: coordinates)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = cafe.name
+        mapItem.openInMaps(launchOptions: options)
     }
     
     // MARK: - Load Real-time Data
