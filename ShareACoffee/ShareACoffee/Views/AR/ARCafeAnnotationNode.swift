@@ -4,22 +4,19 @@ import SceneKit
 import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
-@MainActor
 class ARCafeAnnotationNode: SCNNode {
     let cafe: ARCafeLocation
     private var infoCardNode: SCNNode?
     private var pulseAnimation: CAAnimation?
     
-    nonisolated init(cafe: ARCafeLocation) {
+    init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
         
-        Task { @MainActor in
-            self.setupNode()
-        }
+        setupNode()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -228,21 +225,18 @@ class ARCafeAnnotationNode: SCNNode {
 }
 
 /// AR Direction Arrow - Floating arrow that points to selected cafe
-@MainActor
 class ARDirectionArrowNode: SCNNode {
     private let targetCafe: ARCafeLocation
     private var arrowNode: SCNNode?
     
-    nonisolated init(targetCafe: ARCafeLocation) {
+    init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
         super.init()
         
-        Task { @MainActor in
-            self.setupArrow()
-        }
+        setupArrow()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -302,20 +296,17 @@ class ARDirectionArrowNode: SCNNode {
 }
 
 /// AR Occupancy Heatmap - Visual overlay showing cafe occupancy levels
-@MainActor
 class AROccupancyHeatmapNode: SCNNode {
     private let cafes: [ARCafeLocation]
     
-    nonisolated init(cafes: [ARCafeLocation]) {
+    init(cafes: [ARCafeLocation]) {
         self.cafes = cafes
         super.init()
         
-        Task { @MainActor in
-            self.createHeatmap()
-        }
+        createHeatmap()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
