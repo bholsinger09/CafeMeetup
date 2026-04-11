@@ -9,14 +9,14 @@ class ARCafeAnnotationNode: SCNNode {
     private var infoCardNode: SCNNode?
     private var pulseAnimation: CAAnimation?
     
-    init(cafe: ARCafeLocation) {
+    nonisolated init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
         
         setupNode()
     }
     
-    required init?(coder: NSCoder) {
+    nonisolated required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
