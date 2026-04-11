@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>StudyBrew uses the camera to show augmented reality markers that help you find nearby coffee shops and study spots in your surroundings.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>StudyBrew uses your location to find nearby students, coffee shops, and study sessions in your area.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>StudyBrew uses your location to find nearby students, coffee shops, and study sessions in your area.</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+		<string>arkit</string>
+	</array>
+</dict>
+</plist>
