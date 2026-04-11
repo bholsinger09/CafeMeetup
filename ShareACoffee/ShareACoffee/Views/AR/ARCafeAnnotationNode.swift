@@ -13,14 +13,16 @@ class ARCafeAnnotationNode: SCNNode {
         self.cafe = cafe
         super.init()
         
-        setupNode()
+        MainActor.assumeIsolated {
+            setupNode()
+        }
     }
     
     nonisolated required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    nonisolated private func setupNode() {
+    private func setupNode() {
         // Create main marker
         let markerNode = createMarker()
         addChildNode(markerNode)
@@ -40,7 +42,7 @@ class ARCafeAnnotationNode: SCNNode {
         addPulseAnimation()
     }
     
-    nonisolated private func createMarker() -> SCNNode {
+    private func createMarker() -> SCNNode {
         let node = SCNNode()
         
         // Main cone marker
@@ -67,7 +69,7 @@ class ARCafeAnnotationNode: SCNNode {
         return node
     }
     
-    nonisolated private func createInfoCard() -> SCNNode {
+    private func createInfoCard() -> SCNNode {
         let cardNode = SCNNode()
         
         // Create card background
@@ -91,7 +93,7 @@ class ARCafeAnnotationNode: SCNNode {
         return cardNode
     }
     
-    nonisolated private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
+    private func createCardView(width: CGFloat, height: CGFloat) -> UIView {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.backgroundColor = UIColor.black.withAlphaComponent(0.85)
         view.layer.cornerRadius = 20
@@ -156,7 +158,7 @@ class ARCafeAnnotationNode: SCNNode {
         return view
     }
     
-    nonisolated private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
+    private func createInfoItem(icon: String, value: String, label: String, frame: CGRect) -> UIView {
         let container = UIView(frame: frame)
         
         let iconLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 30))
@@ -182,7 +184,7 @@ class ARCafeAnnotationNode: SCNNode {
         return container
     }
     
-    nonisolated private func getMarkerColor() -> UIColor {
+    private func getMarkerColor() -> UIColor {
         // Color based on distance and occupancy
         if cafe.distance < 100 {
             return .systemGreen // Very close
@@ -195,7 +197,7 @@ class ARCafeAnnotationNode: SCNNode {
         }
     }
     
-    nonisolated private func addPulseAnimation() {
+    private func addPulseAnimation() {
         let pulseAnimation = CABasicAnimation(keyPath: "scale")
         pulseAnimation.duration = 1.5
         pulseAnimation.fromValue = SCNVector3(1, 1, 1)
@@ -240,7 +242,7 @@ class ARDirectionArrowNode: SCNNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    nonisolated private func setupNode() {
+    private func setupArrow() {
         // Create arrow shape
         let arrowPath = createArrowPath()
         let arrowShape = SCNShape(path: arrowPath, extrusionDepth: 0.05)
