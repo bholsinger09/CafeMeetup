@@ -260,6 +260,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ShareACoffee;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "StudyBrew uses the camera to show augmented reality markers that help you find nearby coffee shops and study spots in your surroundings.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ShareACoffee uses your location to show nearby coffee shops and cafés where you can meet and connect with others. We display coffee shop locations to help you find convenient places to share a coffee and conversation.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -298,6 +299,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ShareACoffee;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "StudyBrew uses the camera to show augmented reality markers that help you find nearby coffee shops and study spots in your surroundings.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ShareACoffee uses your location to show nearby coffee shops and cafés where you can meet and connect with others. We display coffee shop locations to help you find convenient places to share a coffee and conversation.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
