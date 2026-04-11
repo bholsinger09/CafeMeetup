@@ -360,8 +360,4 @@ class LiveSessionService {
         pollSubjects.removeAll()
         quizSubjects.removeAll()
     }
-    
-    deinit {
-        removeAllListeners()
-    }
 }
