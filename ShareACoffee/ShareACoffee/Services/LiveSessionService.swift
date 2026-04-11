@@ -351,7 +351,7 @@ class LiveSessionService {
     // MARK: - Cleanup
     
     /// Remove all listeners
-    func removeAllListeners() {
+    nonisolated func removeAllListeners() {
         cancellables.removeAll()
         whiteboardSubjects.removeAll()
         pomodoroSubjects.removeAll()
