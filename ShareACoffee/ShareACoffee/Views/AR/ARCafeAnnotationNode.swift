@@ -9,14 +9,14 @@ class ARCafeAnnotationNode: SCNNode {
     private var infoCardNode: SCNNode?
     private var pulseAnimation: CAAnimation?
     
-    init(cafe: ARCafeLocation) {
+    nonisolated init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
         
         setupNode()
     }
     
-    required init?(coder: NSCoder) {
+    nonisolated required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -229,14 +229,14 @@ class ARDirectionArrowNode: SCNNode {
     private let targetCafe: ARCafeLocation
     private var arrowNode: SCNNode?
     
-    init(targetCafe: ARCafeLocation) {
+    nonisolated init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
         super.init()
         
         setupArrow()
     }
     
-    required init?(coder: NSCoder) {
+    nonisolated required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -299,14 +299,14 @@ class ARDirectionArrowNode: SCNNode {
 class AROccupancyHeatmapNode: SCNNode {
     private let cafes: [ARCafeLocation]
     
-    init(cafes: [ARCafeLocation]) {
+    nonisolated init(cafes: [ARCafeLocation]) {
         self.cafes = cafes
         super.init()
         
         createHeatmap()
     }
     
-    required init?(coder: NSCoder) {
+    nonisolated required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
