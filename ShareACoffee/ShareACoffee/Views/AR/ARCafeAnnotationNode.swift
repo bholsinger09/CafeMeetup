@@ -4,7 +4,7 @@ import SceneKit
 @preconcurrency import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
-class ARCafeAnnotationNode: SCNNode {
+class ARCafeAnnotationNode: @preconcurrency SCNNode {
     let cafe: ARCafeLocation
     nonisolated(unsafe) private var infoCardNode: SCNNode?
     nonisolated(unsafe) private var pulseAnimation: CAAnimation?
@@ -236,7 +236,7 @@ class ARCafeAnnotationNode: SCNNode {
 }
 
 /// AR Direction Arrow - Floating arrow that points to selected cafe
-class ARDirectionArrowNode: SCNNode {
+class ARDirectionArrowNode: @preconcurrency SCNNode {
     private let targetCafe: ARCafeLocation
     nonisolated(unsafe) private var arrowNode: SCNNode?
     
@@ -313,7 +313,7 @@ class ARDirectionArrowNode: SCNNode {
 }
 
 /// AR Occupancy Heatmap - Visual overlay showing cafe occupancy levels
-class AROccupancyHeatmapNode: SCNNode {
+class AROccupancyHeatmapNode: @preconcurrency SCNNode {
     private let cafes: [ARCafeLocation]
     
     nonisolated init(cafes: [ARCafeLocation]) {
