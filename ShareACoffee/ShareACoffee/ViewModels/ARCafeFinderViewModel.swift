@@ -41,6 +41,7 @@ struct ARCafeLocation: Identifiable {
 }
 
 /// ViewModel for AR Cafe Finder
+@MainActor
 class ARCafeFinderViewModel: NSObject, ObservableObject {
     @Published var nearbyCafes: [ARCafeLocation] = []
     @Published var selectedCafe: ARCafeLocation?
