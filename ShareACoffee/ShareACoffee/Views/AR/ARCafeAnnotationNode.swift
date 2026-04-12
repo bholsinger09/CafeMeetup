@@ -1,7 +1,7 @@
 import Foundation
 import ARKit
 import SceneKit
-import UIKit
+@preconcurrency import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
 class ARCafeAnnotationNode: SCNNode {
