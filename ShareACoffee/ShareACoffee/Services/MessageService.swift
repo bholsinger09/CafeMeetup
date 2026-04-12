@@ -8,6 +8,7 @@ protocol MessageServiceProtocol {
     func getUnreadCount(forUserId userId: String) async throws -> Int
 }
 
+@MainActor
 class MessageService: MessageServiceProtocol {
     static let shared = MessageService()
     

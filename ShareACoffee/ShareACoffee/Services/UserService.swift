@@ -7,6 +7,7 @@ protocol UserServiceProtocol {
     func getAllUsers() -> [User]
 }
 
+@MainActor
 class UserService: UserServiceProtocol {
     static let shared = UserService()
     

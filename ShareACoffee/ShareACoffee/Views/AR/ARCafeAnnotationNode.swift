@@ -1,6 +1,13 @@
+//  ARCafeAnnotationNode.swift
+//  ShareACoffee
+//
+//  AR visualization nodes for cafe navigation
+//  Note: SCNNode has unfixable actor isolation conflicts in iOS SDK as of Swift 6.0
+//  Using async Task initialization to work around framework limitations
+
 import Foundation
-import ARKit
-import SceneKit
+@preconcurrency import ARKit
+@preconcurrency import SceneKit
 @preconcurrency import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
@@ -12,7 +19,7 @@ class ARCafeAnnotationNode: SCNNode {
     init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
-        MainActor.assumeIsolated {
+        Task { @MainActor in
             self.setupNode()
         }
     }
@@ -242,7 +249,7 @@ class ARDirectionArrowNode: SCNNode {
     init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
         super.init()
-        MainActor.assumeIsolated {
+        Task { @MainActor in
             self.setupArrow()
         }
     }
@@ -317,7 +324,7 @@ class AROccupancyHeatmapNode: SCNNode {
     init(cafes: [ARCafeLocation]) {
         self.cafes = cafes
         super.init()
-        MainActor.assumeIsolated {
+        Task { @MainActor in
             self.createHeatmap()
         }
     }
