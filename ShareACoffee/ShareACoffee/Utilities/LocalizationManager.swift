@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 class LocalizationManager: ObservableObject {
-    static let shared = LocalizationManager()
+    nonisolated(unsafe) static let shared = LocalizationManager()
     
     @Published var appLanguage: String {
         didSet {

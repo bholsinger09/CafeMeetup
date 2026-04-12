@@ -3,9 +3,8 @@ import Combine
 
 /// Service for managing real-time collaborative features during live study sessions
 /// Note: This is a mock implementation. For production, integrate with Firebase Realtime Database.
-@MainActor
 class LiveSessionService {
-    static let shared = LiveSessionService()
+    nonisolated(unsafe) static let shared = LiveSessionService()
     
     // Mock in-memory storage
     private var liveSessions: [String: LiveSession] = [:]
