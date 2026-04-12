@@ -13,7 +13,9 @@ class ARCafeAnnotationNode: SCNNode {
         self.cafe = cafe
         super.init()
         
-        setupNode()
+        Task { @MainActor in
+            self.setupNode()
+        }
     }
     
     nonisolated required init?(coder: NSCoder) {
@@ -233,7 +235,9 @@ class ARDirectionArrowNode: SCNNode {
         self.targetCafe = targetCafe
         super.init()
         
-        setupArrow()
+        Task { @MainActor in
+            self.setupArrow()
+        }
     }
     
     nonisolated required init?(coder: NSCoder) {
@@ -303,7 +307,9 @@ class AROccupancyHeatmapNode: SCNNode {
         self.cafes = cafes
         super.init()
         
-        createHeatmap()
+        Task { @MainActor in
+            self.createHeatmap()
+        }
     }
     
     nonisolated required init?(coder: NSCoder) {
