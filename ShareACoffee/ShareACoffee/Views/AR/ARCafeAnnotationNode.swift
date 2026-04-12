@@ -6,8 +6,8 @@ import SceneKit
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
 class ARCafeAnnotationNode: SCNNode {
     let cafe: ARCafeLocation
-    private var infoCardNode: SCNNode?
-    private var pulseAnimation: CAAnimation?
+    nonisolated(unsafe) private var infoCardNode: SCNNode?
+    nonisolated(unsafe) private var pulseAnimation: CAAnimation?
     
     nonisolated init(cafe: ARCafeLocation) {
         self.cafe = cafe
@@ -227,7 +227,7 @@ class ARCafeAnnotationNode: SCNNode {
 /// AR Direction Arrow - Floating arrow that points to selected cafe
 class ARDirectionArrowNode: SCNNode {
     private let targetCafe: ARCafeLocation
-    private var arrowNode: SCNNode?
+    nonisolated(unsafe) private var arrowNode: SCNNode?
     
     nonisolated init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
