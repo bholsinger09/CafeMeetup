@@ -4,21 +4,20 @@ import SceneKit
 @preconcurrency import UIKit
 
 /// AR Annotation Node - Enhanced 3D markers with info overlays for cafes
-class ARCafeAnnotationNode: @preconcurrency SCNNode {
+class ARCafeAnnotationNode: SCNNode {
     let cafe: ARCafeLocation
-    nonisolated(unsafe) private var infoCardNode: SCNNode?
-    nonisolated(unsafe) private var pulseAnimation: CAAnimation?
+    private var infoCardNode: SCNNode?
+    private var pulseAnimation: CAAnimation?
     
-    nonisolated init(cafe: ARCafeLocation) {
+    @MainActor
+    init(cafe: ARCafeLocation) {
         self.cafe = cafe
         super.init()
-        
-        Task { @MainActor in
-            self.setupNode()
-        }
+        self.setupNode()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    @MainActor
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -236,20 +235,19 @@ class ARCafeAnnotationNode: @preconcurrency SCNNode {
 }
 
 /// AR Direction Arrow - Floating arrow that points to selected cafe
-class ARDirectionArrowNode: @preconcurrency SCNNode {
+class ARDirectionArrowNode: SCNNode {
     private let targetCafe: ARCafeLocation
-    nonisolated(unsafe) private var arrowNode: SCNNode?
+    private var arrowNode: SCNNode?
     
-    nonisolated init(targetCafe: ARCafeLocation) {
+    @MainActor
+    init(targetCafe: ARCafeLocation) {
         self.targetCafe = targetCafe
         super.init()
-        
-        Task { @MainActor in
-            self.setupArrow()
-        }
+        self.setupArrow()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    @MainActor
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -313,19 +311,18 @@ class ARDirectionArrowNode: @preconcurrency SCNNode {
 }
 
 /// AR Occupancy Heatmap - Visual overlay showing cafe occupancy levels
-class AROccupancyHeatmapNode: @preconcurrency SCNNode {
+class AROccupancyHeatmapNode: SCNNode {
     private let cafes: [ARCafeLocation]
     
-    nonisolated init(cafes: [ARCafeLocation]) {
+    @MainActor
+    init(cafes: [ARCafeLocation]) {
         self.cafes = cafes
         super.init()
-        
-        Task { @MainActor in
-            self.createHeatmap()
-        }
+        self.createHeatmap()
     }
     
-    nonisolated required init?(coder: NSCoder) {
+    @MainActor
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
