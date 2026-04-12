@@ -17,7 +17,7 @@ protocol BlogServiceProtocol {
 }
 
 class BlogService: BlogServiceProtocol {
-    static let shared = BlogService()
+    nonisolated(unsafe) static let shared = BlogService()
     
     private init() {
         // Start with empty posts - users will create their own

@@ -11,7 +11,7 @@ protocol AuthenticationServiceProtocol {
 }
 
 class AuthenticationService: AuthenticationServiceProtocol {
-    static let shared = AuthenticationService()
+    nonisolated(unsafe) static let shared = AuthenticationService()
     
     private init() {
         // Initialize reviewer demo account

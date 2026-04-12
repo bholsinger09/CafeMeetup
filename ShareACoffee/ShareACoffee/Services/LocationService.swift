@@ -10,7 +10,7 @@ protocol LocationServiceProtocol {
 }
 
 class LocationService: NSObject, LocationServiceProtocol, ObservableObject {
-    static let shared = LocationService()
+    nonisolated(unsafe) static let shared = LocationService()
     
     private let locationManager = CLLocationManager()
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined

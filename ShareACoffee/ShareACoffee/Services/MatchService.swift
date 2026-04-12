@@ -9,7 +9,7 @@ protocol MatchServiceProtocol {
 }
 
 class MatchService: MatchServiceProtocol {
-    static let shared = MatchService()
+    nonisolated(unsafe) static let shared = MatchService()
     
     private init() {}
     
