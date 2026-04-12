@@ -226,6 +226,7 @@ struct StatItem: View {
 
 // MARK: - ViewModel
 
+@MainActor
 class PomodoroViewModel: ObservableObject {
     @Published var pomodoroState: PomodoroState
     @Published var activeParticipants: [String] = []

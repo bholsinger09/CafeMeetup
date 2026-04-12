@@ -367,6 +367,7 @@ struct CreatePollView: View {
 
 // MARK: - ViewModel
 
+@MainActor
 class LivePollViewModel: ObservableObject {
     @Published var currentPoll: LivePoll?
     @Published var userVote: Int?

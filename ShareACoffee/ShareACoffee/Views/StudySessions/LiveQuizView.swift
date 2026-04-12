@@ -493,6 +493,7 @@ struct CreateQuizView: View {
 
 // MARK: - ViewModel
 
+@MainActor
 class LiveQuizViewModel: ObservableObject {
     @Published var currentQuiz: LiveQuiz?
     

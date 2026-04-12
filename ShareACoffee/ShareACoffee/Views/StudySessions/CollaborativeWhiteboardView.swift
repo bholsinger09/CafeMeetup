@@ -222,6 +222,7 @@ struct CollaborativeWhiteboardView: View {
 
 // MARK: - ViewModel
 
+@MainActor
 class WhiteboardViewModel: ObservableObject {
     @Published var strokes: [WhiteboardStroke] = []
     @Published var backgroundColor: String = "#FFFFFF"

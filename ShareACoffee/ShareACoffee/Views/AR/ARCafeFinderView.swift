@@ -277,6 +277,7 @@ struct ARViewContainer: UIViewRepresentable {
         Coordinator(viewModel: viewModel)
     }
     
+    @MainActor
     class Coordinator: NSObject, ARSCNViewDelegate, ARSessionDelegate {
         let viewModel: ARCafeFinderViewModel
         private var annotationNodes: [String: SCNNode] = [:]

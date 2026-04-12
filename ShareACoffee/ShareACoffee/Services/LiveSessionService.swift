@@ -6,6 +6,8 @@ import Combine
 class LiveSessionService {
     nonisolated(unsafe) static let shared = LiveSessionService()
     
+    private init() {}
+    
     // Mock in-memory storage
     private var liveSessions: [String: LiveSession] = [:]
     private var whiteboardStates: [String: WhiteboardState] = [:]
@@ -23,12 +25,10 @@ class LiveSessionService {
     
     private var cancellables = Set<AnyCancellable>()
     
-    private init() {}
-    
     // MARK: - Live Session Management
     
     /// Start a live session for a study session
-    func startLiveSession(studySessionId: String, userId: String, completion: @escaping (Bool) -> Void) {
+    func startLiveSession(studySessionId: String, userId: String, completion: @escaping @Sendable (Bool) -> Void) {
         let liveSession = LiveSession(studySessionId: studySessionId)
         liveSessions[studySessionId] = liveSession
         
@@ -69,7 +69,7 @@ class LiveSessionService {
     }
     
     /// Observe active participants
-    func observeActiveParticipants(sessionId: String, completion: @escaping ([String]) -> Void) {
+    func observeActiveParticipants(sessionId: String, completion: @escaping @Sendable ([String]) -> Void) {
         // Create subject if doesn't exist
         if participantsSubjects[sessionId] == nil {
             participantsSubjects[sessionId] = PassthroughSubject<[String], Never>()
@@ -90,7 +90,7 @@ class LiveSessionService {
     // MARK: - Whiteboard Management
     
     /// Add a stroke to the whiteboard
-    func addWhiteboardStroke(sessionId: String, stroke: WhiteboardStroke, completion: @escaping (Bool) -> Void) {
+    func addWhiteboardStroke(sessionId: String, stroke: WhiteboardStroke, completion: @escaping @Sendable (Bool) -> Void) {
         if whiteboardStates[sessionId] == nil {
             whiteboardStates[sessionId] = WhiteboardState()
         }
@@ -111,7 +111,7 @@ class LiveSessionService {
     }
     
     /// Clear the whiteboard
-    func clearWhiteboard(sessionId: String, completion: @escaping (Bool) -> Void) {
+    func clearWhiteboard(sessionId: String, completion: @escaping @Sendable (Bool) -> Void) {
         whiteboardStates[sessionId] = WhiteboardState()
         
         // Notify observers
@@ -126,7 +126,7 @@ class LiveSessionService {
     }
     
     /// Observe whiteboard state
-    func observeWhiteboardState(sessionId: String, completion: @escaping (WhiteboardState) -> Void) {
+    func observeWhiteboardState(sessionId: String, completion: @escaping @Sendable (WhiteboardState) -> Void) {
         // Create subject if doesn't exist
         if whiteboardSubjects[sessionId] == nil {
             whiteboardSubjects[sessionId] = PassthroughSubject<WhiteboardState, Never>()
@@ -147,7 +147,7 @@ class LiveSessionService {
     // MARK: - Pomodoro Timer Management
     
     /// Update Pomodoro timer state
-    func updatePomodoroState(sessionId: String, state: PomodoroState, completion: @escaping (Bool) -> Void) {
+    func updatePomodoroState(sessionId: String, state: PomodoroState, completion: @escaping @Sendable (Bool) -> Void) {
         pomodoroStates[sessionId] = state
         
         // Notify observers
@@ -161,7 +161,7 @@ class LiveSessionService {
     }
     
     /// Observe Pomodoro timer state
-    func observePomodoroState(sessionId: String, completion: @escaping (PomodoroState) -> Void) {
+    func observePomodoroState(sessionId: String, completion: @escaping @Sendable (PomodoroState) -> Void) {
         // Create subject if doesn't exist
         if pomodoroSubjects[sessionId] == nil {
             pomodoroSubjects[sessionId] = PassthroughSubject<PomodoroState, Never>()
@@ -182,7 +182,7 @@ class LiveSessionService {
     // MARK: - Live Poll Management
     
     /// Create a new poll
-    func createPoll(sessionId: String, poll: LivePoll, completion: @escaping (Bool) -> Void) {
+    func createPoll(sessionId: String, poll: LivePoll, completion: @escaping @Sendable (Bool) -> Void) {
         currentPolls[sessionId] = poll
         
         // Notify observers
@@ -196,7 +196,7 @@ class LiveSessionService {
     }
     
     /// Submit a vote for a poll
-    func submitPollVote(sessionId: String, pollId: String, userId: String, optionIndex: Int, completion: @escaping (Bool) -> Void) {
+    func submitPollVote(sessionId: String, pollId: String, userId: String, optionIndex: Int, completion: @escaping @Sendable (Bool) -> Void) {
         guard var poll = currentPolls[sessionId] else {
             completion(false)
             return
@@ -223,7 +223,7 @@ class LiveSessionService {
     }
     
     /// Close a poll
-    func closePoll(sessionId: String, pollId: String, completion: @escaping (Bool) -> Void) {
+    func closePoll(sessionId: String, pollId: String, completion: @escaping @Sendable (Bool) -> Void) {
         guard var poll = currentPolls[sessionId] else {
             completion(false)
             return
@@ -244,7 +244,7 @@ class LiveSessionService {
     }
     
     /// Observe current poll
-    func observeCurrentPoll(sessionId: String, completion: @escaping (LivePoll?) -> Void) {
+    func observeCurrentPoll(sessionId: String, completion: @escaping @Sendable (LivePoll?) -> Void) {
         // Create subject if doesn't exist
         if pollSubjects[sessionId] == nil {
             pollSubjects[sessionId] = PassthroughSubject<LivePoll?, Never>()
@@ -264,7 +264,7 @@ class LiveSessionService {
     // MARK: - Live Quiz Management
     
     /// Create a new quiz
-    func createQuiz(sessionId: String, quiz: LiveQuiz, completion: @escaping (Bool) -> Void) {
+    func createQuiz(sessionId: String, quiz: LiveQuiz, completion: @escaping @Sendable (Bool) -> Void) {
         currentQuizzes[sessionId] = quiz
         
         // Notify observers
@@ -278,7 +278,7 @@ class LiveSessionService {
     }
     
     /// Submit an answer for a quiz question
-    func submitQuizAnswer(sessionId: String, quizId: String, questionIndex: Int, userId: String, answerIndex: Int, completion: @escaping (Bool) -> Void) {
+    func submitQuizAnswer(sessionId: String, quizId: String, questionIndex: Int, userId: String, answerIndex: Int, completion: @escaping @Sendable (Bool) -> Void) {
         guard var quiz = currentQuizzes[sessionId] else {
             completion(false)
             return
@@ -311,7 +311,7 @@ class LiveSessionService {
     }
     
     /// Advance to next question
-    func nextQuizQuestion(sessionId: String, quizId: String, completion: @escaping (Bool) -> Void) {
+    func nextQuizQuestion(sessionId: String, quizId: String, completion: @escaping @Sendable (Bool) -> Void) {
         guard var quiz = currentQuizzes[sessionId] else {
             completion(false)
             return
@@ -331,7 +331,7 @@ class LiveSessionService {
     }
     
     /// Observe current quiz
-    func observeCurrentQuiz(sessionId: String, completion: @escaping (LiveQuiz?) -> Void) {
+    func observeCurrentQuiz(sessionId: String, completion: @escaping @Sendable (LiveQuiz?) -> Void) {
         // Create subject if doesn't exist
         if quizSubjects[sessionId] == nil {
             quizSubjects[sessionId] = PassthroughSubject<LiveQuiz?, Never>()
