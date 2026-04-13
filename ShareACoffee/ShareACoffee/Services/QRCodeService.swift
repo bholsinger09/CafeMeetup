@@ -4,7 +4,7 @@ import UIKit
 
 /// QR Code Service - Generate and parse QR codes for study sessions and cafes
 class QRCodeService {
-    static let shared = QRCodeService()
+    nonisolated(unsafe) static let shared = QRCodeService()
     
     private init() {}
     
