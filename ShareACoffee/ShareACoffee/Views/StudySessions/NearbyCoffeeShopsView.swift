@@ -143,7 +143,6 @@ struct NearbyCoffeeShopsView: View {
             }
         }
     }
-    }
     
     private func timeAgo(from date: Date) -> String {
         let seconds = Date().timeIntervalSince(date)
