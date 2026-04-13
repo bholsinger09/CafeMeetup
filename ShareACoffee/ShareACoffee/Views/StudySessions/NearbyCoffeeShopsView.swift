@@ -368,15 +368,6 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
                         return nil
                     }
                     
-                    // Only include places that seem coffee-related
-                    let nameLower = name.lowercased()
-                    guard nameLower.contains("coffee") || 
-                          nameLower.contains("cafe") || 
-                          nameLower.contains("espresso") ||
-                          nameLower.contains("brew") else {
-                        return nil
-                    }
-                    
                     return CoffeeShop(
                         name: name,
                         address: [
