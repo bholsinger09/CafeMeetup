@@ -319,7 +319,9 @@ struct LiveStudySessionView: View {
         
         // Observe active participants
         LiveSessionService.shared.observeActiveParticipants(sessionId: studySession.id) { participants in
-            activeParticipants = participants
+            Task { @MainActor in
+                activeParticipants = participants
+            }
         }
         
         isSessionActive = studySession.status == .active
