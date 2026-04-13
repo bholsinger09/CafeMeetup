@@ -292,7 +292,7 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
     }
     
     func checkLocationPermissionAndFetch() {
-        let status = CLLocationManager.authorizationStatus()
+        let status = CLLocationManager().authorizationStatus
         
         switch status {
         case .notDetermined:
@@ -412,8 +412,13 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
                 print("[NearbyCoffeeShops] Query '\(query)' returned \(response.mapItems.count) results")
                 
                 let shops = response.mapItems.compactMap { mapItem -> CoffeeShop? in
-                    guard let name = mapItem.name,
-                          let location = mapItem.placemark.location else {
+                    guard let name = mapItem.name else {
+                        return nil
+                    }
+                    
+                    // Use placemark for location data (standard MKMapItem API)
+                    let placemark = mapItem.placemark
+                    guard let location = placemark.location else {
                         return nil
                     }
                     
@@ -422,12 +427,12 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
                     return CoffeeShop(
                         name: name,
                         address: [
-                            mapItem.placemark.thoroughfare,
-                            mapItem.placemark.subThoroughfare
+                            placemark.thoroughfare,
+                            placemark.subThoroughfare
                         ].compactMap { $0 }.joined(separator: " "),
-                        city: mapItem.placemark.locality ?? "",
-                        state: mapItem.placemark.administrativeArea ?? "",
-                        zipCode: mapItem.placemark.postalCode ?? "",
+                        city: placemark.locality ?? "",
+                        state: placemark.administrativeArea ?? "",
+                        zipCode: placemark.postalCode ?? "",
                         location: Location(coordinate: location.coordinate),
                         phoneNumber: mapItem.phoneNumber,
                         website: mapItem.url?.absoluteString
