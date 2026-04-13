@@ -471,7 +471,7 @@ class QRCodeScannerViewModel: NSObject, ObservableObject, AVCaptureMetadataOutpu
         }
     }
     
-    private func checkCameraPermission(completion: @escaping (Bool) -> Void) {
+    private func checkCameraPermission(completion: @escaping @Sendable (Bool) -> Void) {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             completion(true)
