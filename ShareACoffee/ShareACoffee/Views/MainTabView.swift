@@ -6,6 +6,8 @@ struct MainTabView: View {
     @StateObject private var mapViewModel = MapViewModel()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
+    @State private var showQRScanner = false
+    
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
@@ -58,9 +60,35 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Profile", systemImage: "person.fill")
                     }
+                .overlay(alignment: .bottomTrailing) {
+                    // Floating QR Scanner Button
+                    Button(action: { showQRScanner = true }) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [.blue, .purple],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 60, height: 60)
+                                .shadow(color: .blue.opacity(0.4), radius: 10, x: 0, y: 5)
+                            
+                            Image(systemName: "qrcode.viewfinder")
+                                .font(.system(size: 28))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 20)
                 }
-                .accentColor(.brown)
             }
+        }
+        .preferredColorScheme(.dark)
+        .fullScreenCover(isPresented: $showQRScanner) {
+            QRCodeScannerView()
+        }
         }
         .preferredColorScheme(.dark)
     }

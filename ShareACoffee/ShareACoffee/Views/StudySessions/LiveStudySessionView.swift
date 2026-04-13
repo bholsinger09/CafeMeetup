@@ -13,6 +13,7 @@ struct LiveStudySessionView: View {
     @State private var showPoll = false
     @State private var showQuiz = false
     @State private var isSessionActive = false
+    @State private var showQRCode = false
     
     @Environment(\.dismiss) var dismiss
     
@@ -91,6 +92,15 @@ struct LiveStudySessionView: View {
         .navigationTitle("Live Session")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if isHost {
+                    Button(action: { showQRCode = true }) {
+                        Image(systemName: "qrcode")
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: leaveSession) {
                     Text("Leave")
@@ -133,6 +143,12 @@ struct LiveStudySessionView: View {
                     userName: userName,
                     isHost: isHost
                 )
+            )
+        }
+        .sheet(isPresented: $showQRCode) {
+            QRCodeGeneratorView(
+                studySession: studySession,
+                userId: userId
             )
         }
         .onAppear {
