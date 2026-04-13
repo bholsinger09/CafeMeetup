@@ -30,34 +30,34 @@ struct QRCodeScannerView: View {
                         .foregroundColor(.white)
                         .padding(8)
                         .background(Color.black.opacity(0.3))
-                            .clipShape(Circle())
-                    }
-                }
-                
-                ToolbarItem(placement: .principal) {
-                    Text("Scan QR Code")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .clipShape(Circle())
                 }
             }
-            .alert("Camera Access Required", isPresented: $viewModel.showPermissionAlert) {
-                Button("Open Settings") {
-                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(settingsURL)
-                    }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Scan QR Code")
+                    .font(.headline)
+                    .foregroundColor(.white)
+            }
+        }
+        .alert("Camera Access Required", isPresented: $viewModel.showPermissionAlert) {
+            Button("Open Settings") {
+                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(settingsURL)
                 }
-                Button("Cancel", role: .cancel) {
-                    dismiss()
-                }
-            } message: {
-                Text("Please enable camera access in Settings to scan QR codes.")
             }
-            .sheet(isPresented: $viewModel.showManualEntry) {
-                ManualCodeEntryView(viewModel: viewModel)
+            Button("Cancel", role: .cancel) {
+                dismiss()
             }
-            .sheet(item: $viewModel.scannedData) { qrData in
-                QRCodeActionView(qrData: qrData, viewModel: viewModel)
-            }
+        } message: {
+            Text("Please enable camera access in Settings to scan QR codes.")
+        }
+        .sheet(isPresented: $viewModel.showManualEntry) {
+            ManualCodeEntryView(viewModel: viewModel)
+        }
+        .sheet(item: $viewModel.scannedData) { qrData in
+            QRCodeActionView(qrData: qrData, viewModel: viewModel)
+        }
         }
     }
     
