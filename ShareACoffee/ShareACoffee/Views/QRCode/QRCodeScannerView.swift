@@ -58,7 +58,6 @@ struct QRCodeScannerView: View {
         .sheet(item: $viewModel.scannedData) { qrData in
             QRCodeActionView(qrData: qrData, viewModel: viewModel)
         }
-        }
     }
     
     @ViewBuilder
