@@ -8,6 +8,8 @@ struct NearbyCoffeeShopsView: View {
     @Binding var selectedCafeName: String
     
     @StateObject private var viewModel = NearbyCoffeeShopsViewModel()
+    @State private var showManualEntry = false
+    @State private var manualCafeName = ""
     
     var body: some View {
         NavigationView {
@@ -36,6 +38,21 @@ struct NearbyCoffeeShopsView: View {
             }
             .onAppear {
                 viewModel.checkLocationPermissionAndFetch()
+            }
+            .alert("Enter Coffee Shop Name", isPresented: $showManualEntry) {
+                TextField("Coffee shop name", text: $manualCafeName)
+                Button("Cancel", role: .cancel) {
+                    manualCafeName = ""
+                }
+                Button("Add") {
+                    if !manualCafeName.isEmpty {
+                        selectedCafeName = manualCafeName
+                        manualCafeName = ""
+                        dismiss()
+                    }
+                }
+            } message: {
+                Text("Type the name of your coffee shop exactly as you want it to appear.")
             }
         }
     }
@@ -110,7 +127,22 @@ struct NearbyCoffeeShopsView: View {
                     CoffeeShopRow(shop: shop)
                 }
             }
+            
+            Section {
+                Button(action: {
+                    showManualEntry = true
+                }) {
+                    HStack {
+                        Image(systemName: "pencil.circle.fill")
+                            .foregroundColor(.blue)
+                        Text("Can't find your shop? Enter manually")
+                            .foregroundColor(.primary)
+                        Spacer()
+                    }
+                }
+            }
         }
+    }
     }
     
     private func timeAgo(from date: Date) -> String {
@@ -166,11 +198,22 @@ struct NearbyCoffeeShopsView: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text("No coffee shops found within 15 miles of your location. Try expanding your search area.")
+            Text("No coffee shops found within 15 miles of your location.")
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
+            
+            Button(action: {
+                showManualEntry = true
+            }) {
+                Label("Enter Coffee Shop Manually", systemImage: "pencil.circle.fill")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(12)
+            }
         }
         .padding()
     }
