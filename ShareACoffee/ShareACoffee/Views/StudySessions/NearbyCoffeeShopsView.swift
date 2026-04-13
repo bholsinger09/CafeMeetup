@@ -416,7 +416,9 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
                         return nil
                     }
                     
-                    // Use placemark for location data (standard MKMapItem API)
+                    // NOTE: placemark deprecated in iOS 26.0, but we target iOS 16.0+
+                    // Using placemark is correct for our deployment target
+                    // Will migrate when minimum iOS version is 26.0+
                     let placemark = mapItem.placemark
                     guard let location = placemark.location else {
                         return nil
