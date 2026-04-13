@@ -152,10 +152,11 @@ struct LiveStudySessionView: View {
             Text(studySession.courseName)
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundColor(.primary)
             
             Text(studySession.studyTopic)
                 .font(.headline)
-                .foregroundColor(.secondary)
+                .foregroundColor(.gray)
             
             if isSessionActive {
                 HStack(spacing: 4) {
@@ -185,6 +186,7 @@ struct LiveStudySessionView: View {
                 
                 Text("Active Now (\(activeParticipants.count))")
                     .font(.headline)
+                    .foregroundColor(.primary)
             }
             
             ScrollView(.horizontal, showsIndicators: false) {
@@ -203,6 +205,7 @@ struct LiveStudySessionView: View {
                             
                             Text(participant)
                                 .font(.caption2)
+                                .foregroundColor(.primary)
                                 .lineLimit(1)
                         }
                         .frame(width: 70)
@@ -225,11 +228,12 @@ struct LiveStudySessionView: View {
                 
                 Text(title)
                     .font(.headline)
-                    .foregroundColor(.primary)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(UIColor.label))
                 
                 Text(description)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color(UIColor.secondaryLabel))
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
@@ -245,6 +249,7 @@ struct LiveStudySessionView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Session Details")
                 .font(.headline)
+                .foregroundColor(.primary)
             
             InfoRow(icon: "building.2.fill", label: "Location", value: studySession.cafeName)
             InfoRow(icon: "calendar", label: "Date", value: studySession.scheduledDate.formatted(date: .abbreviated, time: .shortened))
@@ -259,12 +264,13 @@ struct LiveStudySessionView: View {
                         Text("Materials:")
                             .font(.caption)
                             .fontWeight(.semibold)
+                            .foregroundColor(.primary)
                     }
                     
                     ForEach(materials, id: \.self) { material in
                         Text("• \(material)")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.gray)
                     }
                 }
             }
@@ -279,6 +285,7 @@ struct LiveStudySessionView: View {
         VStack(spacing: 12) {
             Text("Host Controls")
                 .font(.headline)
+                .foregroundColor(.primary)
             
             if isSessionActive {
                 Button(action: endSession) {
@@ -364,11 +371,12 @@ struct InfoRow: View {
             Text(label + ":")
                 .font(.caption)
                 .fontWeight(.semibold)
+                .foregroundColor(.primary)
                 .frame(width: 80, alignment: .leading)
             
             Text(value)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(.gray)
             
             Spacer()
         }
