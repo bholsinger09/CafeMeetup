@@ -305,6 +305,37 @@ struct SessionCard: View {
                 .cornerRadius(8)
             }
             .disabled(session.isFull)
+            
+            // Enter Live Session button (only shows when joined)
+            if hasJoined {
+                NavigationLink(destination: 
+                    LiveStudySessionView(
+                        studySession: session,
+                        userId: currentUserId,
+                        userName: "Current User",
+                        isHost: session.hostId == currentUserId
+                    )
+                ) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "live.photo")
+                            .font(.caption)
+                        Text("Enter Live Session")
+                            .font(.caption)
+                    }
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(
+                        LinearGradient(
+                            colors: [Color.purple, Color.blue],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(8)
+                }
+            }
         }
         .padding(12)
         .background(Color(UIColor.secondarySystemBackground))
