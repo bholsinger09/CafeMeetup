@@ -152,11 +152,11 @@ struct LiveStudySessionView: View {
             Text(studySession.courseName)
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
             
             Text(studySession.studyTopic)
                 .font(.headline)
-                .foregroundColor(.gray)
+                .foregroundColor(Color.black.opacity(0.6))
             
             if isSessionActive {
                 HStack(spacing: 4) {
@@ -176,6 +176,7 @@ struct LiveStudySessionView: View {
         .background(Color.white.opacity(0.9))
         .cornerRadius(16)
         .padding(.horizontal)
+        .colorScheme(.light)
     }
     
     private var activeParticipantsView: some View {
@@ -186,7 +187,7 @@ struct LiveStudySessionView: View {
                 
                 Text("Active Now (\(activeParticipants.count))")
                     .font(.headline)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
             }
             
             ScrollView(.horizontal, showsIndicators: false) {
@@ -205,7 +206,7 @@ struct LiveStudySessionView: View {
                             
                             Text(participant)
                                 .font(.caption2)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.black)
                                 .lineLimit(1)
                         }
                         .frame(width: 70)
@@ -217,6 +218,7 @@ struct LiveStudySessionView: View {
         .background(Color.white.opacity(0.9))
         .cornerRadius(16)
         .padding(.horizontal)
+        .colorScheme(.light)
     }
     
     private func featureCard(title: String, icon: String, color: Color, description: String, action: @escaping () -> Void) -> some View {
@@ -229,11 +231,11 @@ struct LiveStudySessionView: View {
                 Text(title)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundColor(Color(UIColor.label))
+                    .foregroundColor(.black)
                 
                 Text(description)
                     .font(.caption)
-                    .foregroundColor(Color(UIColor.secondaryLabel))
+                    .foregroundColor(Color.black.opacity(0.6))
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
@@ -242,6 +244,7 @@ struct LiveStudySessionView: View {
             .background(Color.white.opacity(0.9))
             .cornerRadius(16)
             .shadow(color: color.opacity(0.3), radius: 8, x: 0, y: 4)
+            .colorScheme(.light)
         }
     }
     
@@ -249,7 +252,7 @@ struct LiveStudySessionView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Session Details")
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
             
             InfoRow(icon: "building.2.fill", label: "Location", value: studySession.cafeName)
             InfoRow(icon: "calendar", label: "Date", value: studySession.scheduledDate.formatted(date: .abbreviated, time: .shortened))
@@ -264,13 +267,13 @@ struct LiveStudySessionView: View {
                         Text("Materials:")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundColor(.primary)
+                            .foregroundColor(.black)
                     }
                     
                     ForEach(materials, id: \.self) { material in
                         Text("• \(material)")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.black.opacity(0.6))
                     }
                 }
             }
@@ -279,13 +282,14 @@ struct LiveStudySessionView: View {
         .background(Color.white.opacity(0.9))
         .cornerRadius(16)
         .padding(.horizontal)
+        .colorScheme(.light)
     }
     
     private var sessionControlsView: some View {
         VStack(spacing: 12) {
             Text("Host Controls")
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
             
             if isSessionActive {
                 Button(action: endSession) {
@@ -313,6 +317,7 @@ struct LiveStudySessionView: View {
         .background(Color.white.opacity(0.9))
         .cornerRadius(16)
         .padding(.horizontal)
+        .colorScheme(.light)
     }
     
     // MARK: - Actions
@@ -371,12 +376,12 @@ struct InfoRow: View {
             Text(label + ":")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
                 .frame(width: 80, alignment: .leading)
             
             Text(value)
                 .font(.caption)
-                .foregroundColor(.gray)
+                .foregroundColor(Color.black.opacity(0.6))
             
             Spacer()
         }
