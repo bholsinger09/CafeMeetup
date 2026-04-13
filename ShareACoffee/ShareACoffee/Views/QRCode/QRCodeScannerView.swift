@@ -91,7 +91,7 @@ struct QRCodeScannerView: View {
                 .frame(width: 280, height: 280)
             
             if viewModel.isScanning {
-                scanningLine
+                makeScanningLine()
             }
             
             ForEach(0..<4) { index in
@@ -160,7 +160,8 @@ struct QRCodeScannerView: View {
         }
     }
     
-    private var scanningLine: some View {
+    @ViewBuilder
+    private func makeScanningLine() -> some View {
         Rectangle()
             .fill(
                 LinearGradient(
