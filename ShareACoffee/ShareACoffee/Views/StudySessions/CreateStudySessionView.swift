@@ -14,16 +14,10 @@ struct CreateStudySessionView: View {
     @State private var isPublic = true
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showNearbyCoffeeShops = false
     
     private let durationOptions = [60, 90, 120, 150, 180]
     private let attendeeOptions = [3, 4, 5, 6, 7, 8]
-    private let mockCafes = [
-        "Campus Coffee Co.",
-        "Brewed Awakening",
-        "The Grind",
-        "Study Brew",
-        "Java Junction"
-    ]
     
     var body: some View {
         NavigationView {
@@ -38,10 +32,24 @@ struct CreateStudySessionView: View {
                 }
                 
                 Section(header: Text("Location & Time")) {
-                    Picker("Coffee Shop", selection: $selectedCafe) {
-                        Text("Select a café").tag("")
-                        ForEach(mockCafes, id: \.self) { cafe in
-                            Text(cafe).tag(cafe)
+                    // Coffee Shop Selection
+                    Button(action: {
+                        showNearbyCoffeeShops = true
+                    }) {
+                        HStack {
+                            Text("Coffee Shop")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if selectedCafe.isEmpty {
+                                Text("Select a café")
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text(selectedCafe)
+                                    .foregroundColor(.secondary)
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                     }
                     
@@ -100,6 +108,9 @@ struct CreateStudySessionView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(errorMessage)
+            }
+            .sheet(isPresented: $showNearbyCoffeeShops) {
+                NearbyCoffeeShopsView(selectedCafeName: $selectedCafe)
             }
         }
     }

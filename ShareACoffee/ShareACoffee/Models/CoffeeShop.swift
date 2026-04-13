@@ -20,6 +20,15 @@ struct CoffeeShop: Identifiable, Codable, Equatable {
     var studyEnvironment: StudyEnvironment?
     var currentlyStudyingCount: Int = 0 // Real-time count
     
+    // Distance from user (not persisted, computed on demand)
+    var distance: Double? = nil
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, address, city, state, zipCode, location
+        case phoneNumber, website, rating, priceRange, amenities, hours, createdAt
+        case studyEnvironment, currentlyStudyingCount
+    }
+    
     init(
         id: String = UUID().uuidString,
         name: String,
