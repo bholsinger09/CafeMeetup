@@ -75,9 +75,31 @@ struct NearbyCoffeeShopsView: View {
     private var coffeeShopsList: some View {
         List {
             Section {
-                Text("Showing \(viewModel.nearbyCoffeeShops.count) coffee shops within 15 miles")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Showing \(viewModel.nearbyCoffeeShops.count) coffee shops within 15 miles")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        if let timestamp = viewModel.cacheTimestamp {
+                            Text("Updated \(timeAgo(from: timestamp))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        Task {
+                            await viewModel.fetchNearbyCoffeeShops()
+                        }
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(.blue)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             
             ForEach(viewModel.nearbyCoffeeShops) { shop in
@@ -88,6 +110,19 @@ struct NearbyCoffeeShopsView: View {
                     CoffeeShopRow(shop: shop)
                 }
             }
+        }
+    }
+    
+    private func timeAgo(from date: Date) -> String {
+        let seconds = Date().timeIntervalSince(date)
+        if seconds < 60 {
+            return "just now"
+        } else if seconds < 3600 {
+            let minutes = Int(seconds / 60)
+            return "\(minutes) minute\(minutes == 1 ? "" : "s") ago"
+        } else {
+            let hours = Int(seconds / 3600)
+            return "\(hours) hour\(hours == 1 ? "" : "s") ago"
         }
     }
     
@@ -200,9 +235,19 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isRequestingPermission = false
     @Published var errorMessage: String?
+    @Published var cacheTimestamp: Date?
     
     private let locationService = LocationService.shared
     private let radiusMiles: Double = 15.0
+    
+    // Cache to prevent hitting MapKit rate limits
+    private var cachedShops: [CoffeeShop] = []
+    private let cacheValidityDuration: TimeInterval = 300 // 5 minutes
+    
+    private var isCacheValid: Bool {
+        guard let timestamp = cacheTimestamp else { return false }
+        return Date().timeIntervalSince(timestamp) < cacheValidityDuration
+    }
     
     func checkLocationPermissionAndFetch() {
         let status = CLLocationManager.authorizationStatus()
@@ -213,8 +258,13 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
         case .restricted, .denied:
             errorMessage = "Location access is required to find nearby coffee shops. Please enable location access in Settings."
         case .authorizedWhenInUse, .authorizedAlways:
-            Task {
-                await fetchNearbyCoffeeShops()
+            // Use cache if available and valid
+            if isCacheValid && !cachedShops.isEmpty {
+                nearbyCoffeeShops = cachedShops
+            } else {
+                Task {
+                    await fetchNearbyCoffeeShops()
+                }
             }
         @unknown default:
             errorMessage = "Unknown location authorization status"
@@ -243,7 +293,7 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
             let coffeeShops = try await searchNearbyCoffeeShops(near: userLocation)
             
             // Calculate distances and filter by radius
-            self.nearbyCoffeeShops = coffeeShops
+            let filteredShops = coffeeShops
                 .map { shop in
                     var updatedShop = shop
                     let shopLocation = CLLocation(
@@ -262,9 +312,29 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
                 .filter { ($0.distance ?? 0) <= radiusMiles }
                 .sorted { ($0.distance ?? 0) < ($1.distance ?? 0) }
             
+            // Update cache
+            self.nearbyCoffeeShops = filteredShops
+            self.cachedShops = filteredShops
+            self.cacheTimestamp = Date()
+            
             isLoading = false
-        } catch {
-            errorMessage = "Failed to fetch nearby coffee shops: \(error.localizedDescription)"
+        } catch let error as NSError {
+            // Check for MapKit rate limiting error
+            if error.domain == "GEOErrorDomain" && error.code == -3 {
+                // Use cached results if available
+                if !cachedShops.isEmpty {
+                    nearbyCoffeeShops = cachedShops
+                    errorMessage = "Using cached results. MapKit search limit reached, please wait a moment before refreshing."
+                } else {
+                    if let resetTime = error.userInfo["timeUntilReset"] as? Int {
+                        errorMessage = "Too many searches. Please wait \(resetTime) seconds and try again."
+                    } else {
+                        errorMessage = "Search limit reached. Please wait a moment and try again."
+                    }
+                }
+            } else {
+                errorMessage = "Failed to fetch nearby coffee shops: \(error.localizedDescription)"
+            }
             isLoading = false
         }
     }
