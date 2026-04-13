@@ -60,6 +60,8 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Profile", systemImage: "person.fill")
                     }
+                }
+                .accentColor(.brown)
                 .overlay(alignment: .bottomTrailing) {
                     // Floating QR Scanner Button
                     Button(action: { showQRScanner = true }) {
@@ -83,12 +85,10 @@ struct MainTabView: View {
                     .padding(.trailing, 20)
                     .padding(.bottom, 20)
                 }
+                .fullScreenCover(isPresented: $showQRScanner) {
+                    QRCodeScannerView()
+                }
             }
-        }
-        .preferredColorScheme(.dark)
-        .fullScreenCover(isPresented: $showQRScanner) {
-            QRCodeScannerView()
-        }
         }
         .preferredColorScheme(.dark)
     }

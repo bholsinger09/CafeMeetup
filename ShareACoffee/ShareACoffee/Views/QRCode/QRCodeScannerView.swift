@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import Combine
 
 /// QR Code Scanner View - Scan QR codes to join sessions or check into cafes
 struct QRCodeScannerView: View {
@@ -8,6 +9,11 @@ struct QRCodeScannerView: View {
     
     var body: some View {
         NavigationView {
+            scannerContent
+        }
+    }
+    
+    private var scannerContent: some View {
             ZStack {
                 // Camera preview
                 QRCodeCameraView(viewModel: viewModel)
@@ -35,16 +41,7 @@ struct QRCodeScannerView: View {
                         
                         // Animated scanning line
                         if viewModel.isScanning {
-                            Rectangle()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [.clear, .blue, .clear],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .frame(width: 280, height: 2)
-                                .offset(y: viewModel.scanLineOffset)
+                            scanningLine
                         }
                         
                         // Corner decorations
@@ -152,6 +149,19 @@ struct QRCodeScannerView: View {
         }
     }
     
+    private var scanningLine: some View {
+        Rectangle()
+            .fill(
+                LinearGradient(
+                    colors: [.clear, .blue, .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .frame(width: 280, height: 2)
+            .offset(y: viewModel.scanLineOffset)
+    }
+    
     private func cornerBracket() -> some View {
         ZStack {
             Rectangle()
@@ -165,7 +175,6 @@ struct QRCodeScannerView: View {
                 .offset(x: -13, y: -13)
         }
     }
-}
 
 // MARK: - Camera View
 
