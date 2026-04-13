@@ -341,7 +341,13 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
     
     private func searchNearbyCoffeeShops(near coordinate: CLLocationCoordinate2D) async throws -> [CoffeeShop] {
         // Search with multiple queries to find more results
-        let searchQueries = ["coffee", "cafe", "coffeehouse"]
+        let searchQueries = [
+            "coffee shop",
+            "coffee",
+            "cafe",
+            "coffeehouse",
+            "espresso bar"
+        ]
         var allShops: [CoffeeShop] = []
         
         let region = MKCoordinateRegion(
@@ -355,18 +361,21 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
             let request = MKLocalSearch.Request()
             request.naturalLanguageQuery = query
             request.region = region
-            request.resultTypes = .pointOfInterest
+            // Don't restrict resultTypes - let MapKit return all relevant matches
             
             let search = MKLocalSearch(request: request)
             
             do {
                 let response = try await search.start()
+                print("[NearbyCoffeeShops] Query '\(query)' returned \(response.mapItems.count) results")
                 
                 let shops = response.mapItems.compactMap { mapItem -> CoffeeShop? in
                     guard let name = mapItem.name,
                           let location = mapItem.placemark.location else {
                         return nil
                     }
+                    
+                    print("[NearbyCoffeeShops] Found: \(name)")
                     
                     return CoffeeShop(
                         name: name,
@@ -393,8 +402,13 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
             }
         }
         
+        print("[NearbyCoffeeShops] Total shops before deduplication: \(allShops.count)")
+        
         // Deduplicate by name and location (within 50 meters)
-        return deduplicateShops(allShops)
+        let deduplicated = deduplicateShops(allShops)
+        print("[NearbyCoffeeShops] Unique shops after deduplication: \(deduplicated.count)")
+        
+        return deduplicated
     }
     
     private func deduplicateShops(_ shops: [CoffeeShop]) -> [CoffeeShop] {
