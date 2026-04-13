@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreLocation
 import MapKit
+import Combine
 
 struct NearbyCoffeeShopsView: View {
     @Environment(\.dismiss) var dismiss
@@ -74,7 +75,7 @@ struct NearbyCoffeeShopsView: View {
     private var coffeeShopsList: some View {
         List {
             Section {
-                Text("Showing \\(viewModel.nearbyCoffeeShops.count) coffee shops within 15 miles")
+                Text("Showing \(viewModel.nearbyCoffeeShops.count) coffee shops within 15 miles")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -263,7 +264,7 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
             
             isLoading = false
         } catch {
-            errorMessage = "Failed to fetch nearby coffee shops: \\(error.localizedDescription)"
+            errorMessage = "Failed to fetch nearby coffee shops: \(error.localizedDescription)"
             isLoading = false
         }
     }
