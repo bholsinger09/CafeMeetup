@@ -19,8 +19,8 @@ struct QRCodeScannerView: View {
             QRCodeCameraView(viewModel: viewModel)
                 .ignoresSafeArea()
             
-            cameraOverlay
-            successOverlay
+            makeCameraOverlay()
+            makeSuccessOverlay()
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -61,17 +61,19 @@ struct QRCodeScannerView: View {
         }
     }
     
-    private var cameraOverlay: some View {
+    @ViewBuilder
+    private func makeCameraOverlay() -> some View {
         VStack {
-            topGradient
+            makeTopGradient()
             Spacer()
-            scanningFrame
+            makeScanningFrame()
             Spacer()
-            instructionsView
+            makeInstructionsView()
         }
     }
     
-    private var topGradient: some View {
+    @ViewBuilder
+    private func makeTopGradient() -> some View {
         LinearGradient(
             colors: [.black.opacity(0.5), .clear],
             startPoint: .top,
@@ -81,7 +83,8 @@ struct QRCodeScannerView: View {
         .ignoresSafeArea()
     }
     
-    private var scanningFrame: some View {
+    @ViewBuilder
+    private func makeScanningFrame() -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.white, lineWidth: 3)
@@ -102,7 +105,8 @@ struct QRCodeScannerView: View {
         }
     }
     
-    private var instructionsView: some View {
+    @ViewBuilder
+    private func makeInstructionsView() -> some View {
         VStack(spacing: 16) {
             if viewModel.isScanning {
                 Text("Position QR code within the frame")
@@ -133,7 +137,7 @@ struct QRCodeScannerView: View {
     }
     
     @ViewBuilder
-    private var successOverlay: some View {
+    private func makeSuccessOverlay() -> some View {
         if viewModel.scanSuccess {
             Color.black.opacity(0.8)
                 .ignoresSafeArea()
