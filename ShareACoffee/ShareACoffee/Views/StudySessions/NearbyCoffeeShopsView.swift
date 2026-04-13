@@ -340,37 +340,101 @@ class NearbyCoffeeShopsViewModel: ObservableObject {
     }
     
     private func searchNearbyCoffeeShops(near coordinate: CLLocationCoordinate2D) async throws -> [CoffeeShop] {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = "coffee shop"
-        request.region = MKCoordinateRegion(
+        // Search with multiple queries to find more results
+        let searchQueries = ["coffee", "cafe", "coffeehouse"]
+        var allShops: [CoffeeShop] = []
+        
+        let region = MKCoordinateRegion(
             center: coordinate,
             latitudinalMeters: radiusMiles * 1609.34 * 2,
             longitudinalMeters: radiusMiles * 1609.34 * 2
         )
         
-        let search = MKLocalSearch(request: request)
-        let response = try await search.start()
+        // Perform searches sequentially to avoid rate limiting
+        for query in searchQueries {
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = query
+            request.region = region
+            request.resultTypes = .pointOfInterest
+            
+            let search = MKLocalSearch(request: request)
+            
+            do {
+                let response = try await search.start()
+                
+                let shops = response.mapItems.compactMap { mapItem -> CoffeeShop? in
+                    guard let name = mapItem.name,
+                          let location = mapItem.placemark.location else {
+                        return nil
+                    }
+                    
+                    // Only include places that seem coffee-related
+                    let nameLower = name.lowercased()
+                    guard nameLower.contains("coffee") || 
+                          nameLower.contains("cafe") || 
+                          nameLower.contains("espresso") ||
+                          nameLower.contains("brew") else {
+                        return nil
+                    }
+                    
+                    return CoffeeShop(
+                        name: name,
+                        address: [
+                            mapItem.placemark.thoroughfare,
+                            mapItem.placemark.subThoroughfare
+                        ].compactMap { $0 }.joined(separator: " "),
+                        city: mapItem.placemark.locality ?? "",
+                        state: mapItem.placemark.administrativeArea ?? "",
+                        zipCode: mapItem.placemark.postalCode ?? "",
+                        location: Location(coordinate: location.coordinate),
+                        phoneNumber: mapItem.phoneNumber,
+                        website: mapItem.url?.absoluteString
+                    )
+                }
+                
+                allShops.append(contentsOf: shops)
+                
+                // Small delay between searches to avoid rate limiting
+                try? await Task.sleep(nanoseconds: 250_000_000) // 0.25 seconds
+            } catch {
+                // Continue with other queries if one fails
+                print("[NearbyCoffeeShops] Search for '\(query)' failed: \(error.localizedDescription)")
+            }
+        }
         
-        return response.mapItems.compactMap { mapItem in
-            guard let name = mapItem.name,
-                  let location = mapItem.placemark.location else {
-                return nil
+        // Deduplicate by name and location (within 50 meters)
+        return deduplicateShops(allShops)
+    }
+    
+    private func deduplicateShops(_ shops: [CoffeeShop]) -> [CoffeeShop] {
+        var uniqueShops: [CoffeeShop] = []
+        
+        for shop in shops {
+            let isDuplicate = uniqueShops.contains { existing in
+                // Check if same name
+                if existing.name == shop.name {
+                    return true
+                }
+                
+                // Check if very close location (within 50 meters)
+                let existingLocation = CLLocation(
+                    latitude: existing.location.latitude,
+                    longitude: existing.location.longitude
+                )
+                let shopLocation = CLLocation(
+                    latitude: shop.location.latitude,
+                    longitude: shop.location.longitude
+                )
+                
+                return existingLocation.distance(from: shopLocation) < 50
             }
             
-            return CoffeeShop(
-                name: name,
-                address: [
-                    mapItem.placemark.thoroughfare,
-                    mapItem.placemark.subThoroughfare
-                ].compactMap { $0 }.joined(separator: " "),
-                city: mapItem.placemark.locality ?? "",
-                state: mapItem.placemark.administrativeArea ?? "",
-                zipCode: mapItem.placemark.postalCode ?? "",
-                location: Location(coordinate: location.coordinate),
-                phoneNumber: mapItem.phoneNumber,
-                website: mapItem.url?.absoluteString
-            )
+            if !isDuplicate {
+                uniqueShops.append(shop)
+            }
         }
+        
+        return uniqueShops
     }
 }
 
