@@ -186,6 +186,7 @@ struct QRCodeScannerView: View {
                 .offset(x: -13, y: -13)
         }
     }
+}
 
 // MARK: - Camera View
 
