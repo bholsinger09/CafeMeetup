@@ -14,110 +14,22 @@ struct QRCodeScannerView: View {
     }
     
     private var scannerContent: some View {
-            ZStack {
-                // Camera preview
-                QRCodeCameraView(viewModel: viewModel)
-                    .ignoresSafeArea()
-                
-                // Overlay UI
-                VStack {
-                    // Top gradient for readability
-                    LinearGradient(
-                        colors: [.black.opacity(0.5), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .frame(height: 100)
-                    .ignoresSafeArea()
-                    
-                    Spacer()
-                    
-                    // Scanning frame
-                    ZStack {
-                        // Corner brackets
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.white, lineWidth: 3)
-                            .frame(width: 280, height: 280)
-                        
-                        // Animated scanning line
-                        if viewModel.isScanning {
-                            scanningLine
-                        }
-                        
-                        // Corner decorations
-                        ForEach(0..<4) { index in
-                            cornerBracket()
-                                .rotationEffect(.degrees(Double(index) * 90))
-                                .offset(
-                                    x: index % 2 == 0 ? -140 : 140,
-                                    y: index < 2 ? -140 : 140
-                                )
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    // Instructions
-                    VStack(spacing: 16) {
-                        if viewModel.isScanning {
-                            Text("Position QR code within the frame")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                        } else if let errorMessage = viewModel.errorMessage {
-                            Text(errorMessage)
-                                .font(.subheadline)
-                                .foregroundColor(.red)
-                                .padding()
-                                .background(Color.white.opacity(0.9))
-                                .cornerRadius(12)
-                        }
-                        
-                        // Manual entry option
-                        Button(action: { viewModel.showManualEntry = true }) {
-                            HStack {
-                                Image(systemName: "keyboard")
-                                Text("Enter Code Manually")
-                            }
-                            .font(.subheadline)
-                            .padding()
-                            .background(Color.white.opacity(0.2))
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                        }
-                    }
-                    .padding(.bottom, 40)
-                }
-                
-                // Success overlay
-                if viewModel.scanSuccess {
-                    Color.black.opacity(0.8)
-                        .ignoresSafeArea()
-                    
-                    VStack(spacing: 20) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 80))
-                            .foregroundColor(.green)
-                        
-                        Text("QR Code Scanned!")
-                            .font(.title2.bold())
-                            .foregroundColor(.white)
-                        
-                        if let scannedData = viewModel.scannedData {
-                            Text(scannedData.name)
-                                .font(.headline)
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(Color.black.opacity(0.3))
+        ZStack {
+            // Camera preview
+            QRCodeCameraView(viewModel: viewModel)
+                .ignoresSafeArea()
+            
+            cameraOverlay
+            successOverlay
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.white)
+                        .padding(8)
+                        .background(Color.black.opacity(0.3))
                             .clipShape(Circle())
                     }
                 }
@@ -145,6 +57,101 @@ struct QRCodeScannerView: View {
             }
             .sheet(item: $viewModel.scannedData) { qrData in
                 QRCodeActionView(qrData: qrData, viewModel: viewModel)
+            }
+        }
+    }
+    
+    private var cameraOverlay: some View {
+        VStack {
+            topGradient
+            Spacer()
+            scanningFrame
+            Spacer()
+            instructionsView
+        }
+    }
+    
+    private var topGradient: some View {
+        LinearGradient(
+            colors: [.black.opacity(0.5), .clear],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .frame(height: 100)
+        .ignoresSafeArea()
+    }
+    
+    private var scanningFrame: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.white, lineWidth: 3)
+                .frame(width: 280, height: 280)
+            
+            if viewModel.isScanning {
+                scanningLine
+            }
+            
+            ForEach(0..<4) { index in
+                cornerBracket()
+                    .rotationEffect(.degrees(Double(index) * 90))
+                    .offset(
+                        x: index % 2 == 0 ? -140 : 140,
+                        y: index < 2 ? -140 : 140
+                    )
+            }
+        }
+    }
+    
+    private var instructionsView: some View {
+        VStack(spacing: 16) {
+            if viewModel.isScanning {
+                Text("Position QR code within the frame")
+                    .font(.headline)
+                    .foregroundColor(.white)
+            } else if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .font(.subheadline)
+                    .foregroundColor(.red)
+                    .padding()
+                    .background(Color.white.opacity(0.9))
+                    .cornerRadius(12)
+            }
+            
+            Button(action: { viewModel.showManualEntry = true }) {
+                HStack {
+                    Image(systemName: "keyboard")
+                    Text("Enter Code Manually")
+                }
+                .font(.subheadline)
+                .padding()
+                .background(Color.white.opacity(0.2))
+                .foregroundColor(.white)
+                .cornerRadius(12)
+            }
+        }
+        .padding(.bottom, 40)
+    }
+    
+    @ViewBuilder
+    private var successOverlay: some View {
+        if viewModel.scanSuccess {
+            Color.black.opacity(0.8)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 80))
+                    .foregroundColor(.green)
+                
+                Text("QR Code Scanned!")
+                    .font(.title2.bold())
+                    .foregroundColor(.white)
+                
+                if let scannedData = viewModel.scannedData {
+                    Text(scannedData.name)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
             }
         }
     }
