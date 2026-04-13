@@ -16,7 +16,7 @@ class QRCodeService {
         case arMarker = "ar"
     }
     
-    struct QRCodeData: Codable {
+    struct QRCodeData: Codable, Identifiable {
         let type: String
         let id: String
         let name: String
