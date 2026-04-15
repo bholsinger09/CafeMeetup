@@ -14,6 +14,7 @@ struct MapView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var selectedUser: User?
     @State private var showARCafeFinder = false
+    @State private var showCoffeeShopList = false
     @State private var cameraPosition: MapCameraPosition = .automatic
     
     // Combine current user location and other users into annotations
@@ -87,16 +88,25 @@ struct MapView: View {
                 }
                 
                 VStack {
-                    // Debug info overlay
+                    // Coffee shop list button
                     HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("☕️ Coffee Shops: \(mapViewModel.nearbyCoffeeShops.count)")
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.black.opacity(0.6))
-                                .cornerRadius(8)
-                                .foregroundColor(.white)
+                        Button {
+                            showCoffeeShopList = true
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "cup.and.saucer.fill")
+                                    .font(.caption)
+                                Text("Coffee Shops: \(mapViewModel.nearbyCoffeeShops.count)")
+                                    .font(.caption.weight(.medium))
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(Color.brown)
+                            .cornerRadius(20)
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
                         }
                         Spacer()
                     }
@@ -174,6 +184,19 @@ struct MapView: View {
                         userLocation: userLocation
                     )
                 }
+            }
+            .sheet(isPresented: $showCoffeeShopList) {
+                CoffeeShopListSheet(
+                    coffeeShops: mapViewModel.nearbyCoffeeShops,
+                    onSelectShop: { shop in
+                        showCoffeeShopList = false
+                        // Center map on selected shop
+                        cameraPosition = .region(MKCoordinateRegion(
+                            center: shop.location.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        ))
+                    }
+                )
             }
             .task {
                 print("[MapView] Task started")
@@ -438,6 +461,127 @@ struct CoffeeShopMarker: View {
             }
             .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
         }
+    }
+}
+
+// Coffee Shop List Sheet
+struct CoffeeShopListSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let coffeeShops: [CoffeeShop]
+    let onSelectShop: (CoffeeShop) -> Void
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.backgroundGradient
+                    .ignoresSafeArea()
+                
+                if coffeeShops.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "cup.and.saucer")
+                            .font(.system(size: 60))
+                            .foregroundColor(.secondary)
+                        
+                        Text("No Coffee Shops Found")
+                            .font(.title2.weight(.semibold))
+                        
+                        Text("Try adjusting your location or search radius")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(coffeeShops) { shop in
+                                CoffeeShopListRow(shop: shop) {
+                                    onSelectShop(shop)
+                                }
+                            }
+                        }
+                        .padding()
+                    }
+                }
+            }
+            .navigationTitle("Nearby Coffee Shops")
+            .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .foregroundColor(.primaryPink)
+                }
+            }
+        }
+    }
+}
+
+// Coffee Shop Row in List
+struct CoffeeShopListRow: View {
+    let shop: CoffeeShop
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                // Coffee icon
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.orange, Color.brown],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 50, height: 50)
+                    
+                    Image(systemName: "cup.and.saucer.fill")
+                        .foregroundColor(.white)
+                        .font(.system(size: 20))
+                }
+                
+                // Shop info
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(shop.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                        .lineLimit(1)
+                    
+                    if let distance = shop.distance {
+                        HStack(spacing: 4) {
+                            Image(systemName: "location.fill")
+                                .font(.caption)
+                            Text(String(format: "%.2f mi away", distance))
+                                .font(.subheadline)
+                        }
+                        .foregroundColor(.secondary)
+                    }
+                    
+                    if !shop.address.isEmpty || !shop.city.isEmpty {
+                        Text([shop.address, shop.city].filter { !$0.isEmpty }.joined(separator: ", "))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                
+                Spacer()
+                
+                // Chevron
+                Image(systemName: "location.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(.primaryPink)
+            }
+            .padding()
+            .background(Color.darkSecondary)
+            .cornerRadius(12)
+            .shadow(color: Color.primaryPink.opacity(0.1), radius: 5, x: 0, y: 2)
+        }
+        .buttonStyle(.plain)
     }
 }
 
