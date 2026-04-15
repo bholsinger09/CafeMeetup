@@ -14,6 +14,7 @@ struct MapView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var selectedUser: User?
     @State private var showARCafeFinder = false
+    @State private var cameraPosition: MapCameraPosition = .automatic
     
     // Combine current user location and other users into annotations
     private var allMapAnnotations: [MapAnnotationData] {
@@ -49,7 +50,7 @@ struct MapView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Map(position: .constant(.region(mapViewModel.region))) {
+                Map(position: $cameraPosition) {
                     // User annotations
                     ForEach(allMapAnnotations) { annotation in
                         if annotation.isCurrentUser {
@@ -66,16 +67,23 @@ struct MapView: View {
                         }
                     }
                     
-                    // Coffee shop annotations
+                    // Coffee shop annotations - using Marker for better visibility
                     ForEach(mapViewModel.nearbyCoffeeShops) { shop in
-                        Annotation(shop.name, coordinate: shop.location.coordinate) {
-                            CoffeeShopMarker(shop: shop)
-                        }
+                        Marker(shop.name, systemImage: "cup.and.saucer.fill", coordinate: shop.location.coordinate)
+                            .tint(.brown)
                     }
                 }
                 .ignoresSafeArea()
                 .onChange(of: mapViewModel.nearbyCoffeeShops) { oldValue, newValue in
                     print("[MapView] ☕️ Coffee shops changed: \(oldValue.count) -> \(newValue.count)")
+                }
+                .onChange(of: mapViewModel.currentUserLocation) { oldValue, newValue in
+                    if let location = newValue {
+                        cameraPosition = .region(MKCoordinateRegion(
+                            center: location.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        ))
+                    }
                 }
                 
                 VStack {
