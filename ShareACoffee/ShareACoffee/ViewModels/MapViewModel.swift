@@ -166,12 +166,14 @@ class MapViewModel: ObservableObject {
     // MARK: - Coffee Shop Management
     
     func fetchNearbyCoffeeShops() async {
-        print("[MapViewModel] Fetching nearby coffee shops...")
+        print("[MapViewModel] 🔍 Starting coffee shop search...")
         
         guard let userLocation = currentUserLocation else {
-            print("[MapViewModel] No user location available for coffee shop search")
+            print("[MapViewModel] ❌ No user location available for coffee shop search")
             return
         }
+        
+        print("[MapViewModel] 📍 User location: \(userLocation.coordinate.latitude), \(userLocation.coordinate.longitude)")
         
         let searchRadius: CLLocationDistance = 24140 // 15 miles in meters
         let region = MKCoordinateRegion(
@@ -179,6 +181,8 @@ class MapViewModel: ObservableObject {
             latitudinalMeters: searchRadius * 2,
             longitudinalMeters: searchRadius * 2
         )
+        
+        print("[MapViewModel] 🔎 Searching in region centered at: \(region.center.latitude), \(region.center.longitude)")
         
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = "coffee shop"
@@ -188,7 +192,7 @@ class MapViewModel: ObservableObject {
         
         do {
             let response = try await search.start()
-            print("[MapViewModel] Found \(response.mapItems.count) coffee shops")
+            print("[MapViewModel] ✅ MapKit returned \(response.mapItems.count) items")
             
             let shops = response.mapItems.compactMap { mapItem -> CoffeeShop? in
                 guard let name = mapItem.name else {
@@ -197,6 +201,7 @@ class MapViewModel: ObservableObject {
                 
                 let location = mapItem.placemark.location
                 guard let location = location else {
+                    print("[MapViewModel] ⚠️ No location for: \(name)")
                     return nil
                 }
                 
@@ -208,8 +213,13 @@ class MapViewModel: ObservableObject {
                 let distanceMeters = userCLLocation.distance(from: shopLocation)
                 let distanceMiles = distanceMeters / 1609.34
                 
+                print("[MapViewModel] ☕️ Found: \(name) at \(distanceMiles) miles")
+                
                 // Only include shops within 15 miles
-                guard distanceMiles <= 15.0 else { return nil }
+                guard distanceMiles <= 15.0 else { 
+                    print("[MapViewModel] ⏭️ Skipping \(name) - too far (\(distanceMiles) mi)")
+                    return nil
+                }
                 
                 var shop = CoffeeShop(
                     name: name,
@@ -227,10 +237,18 @@ class MapViewModel: ObservableObject {
             }
             
             nearbyCoffeeShops = shops.sorted { ($0.distance ?? 0) < ($1.distance ?? 0) }
-            print("[MapViewModel] Displaying \(nearbyCoffeeShops.count) coffee shops within 15 miles")
+            print("[MapViewModel] ✨ Displaying \(nearbyCoffeeShops.count) coffee shops on map")
+            
+            if nearbyCoffeeShops.isEmpty {
+                print("[MapViewModel] ⚠️ No coffee shops found within 15 miles!")
+            } else {
+                for (index, shop) in nearbyCoffeeShops.prefix(5).enumerated() {
+                    print("[MapViewModel]   \(index+1). \(shop.name) - \(String(format: "%.2f", shop.distance ?? 0)) mi")
+                }
+            }
             
         } catch {
-            print("[MapViewModel] Failed to fetch coffee shops: \(error.localizedDescription)")
+            print("[MapViewModel] ❌ Failed to fetch coffee shops: \(error.localizedDescription)")
         }
     }
 }

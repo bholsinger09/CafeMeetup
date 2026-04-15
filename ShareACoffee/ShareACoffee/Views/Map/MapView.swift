@@ -74,8 +74,26 @@ struct MapView: View {
                     }
                 }
                 .ignoresSafeArea()
+                .onChange(of: mapViewModel.nearbyCoffeeShops) { oldValue, newValue in
+                    print("[MapView] ☕️ Coffee shops changed: \(oldValue.count) -> \(newValue.count)")
+                }
                 
                 VStack {
+                    // Debug info overlay
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("☕️ Coffee Shops: \(mapViewModel.nearbyCoffeeShops.count)")
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.black.opacity(0.6))
+                                .cornerRadius(8)
+                                .foregroundColor(.white)
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    
                     Spacer()
                     
                     HStack {
@@ -393,14 +411,24 @@ struct CoffeeShopMarker: View {
         VStack(spacing: 0) {
             ZStack {
                 Circle()
-                    .fill(Color.brown)
-                    .frame(width: 36, height: 36)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.orange, Color.brown],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 44, height: 44)
+                
+                Circle()
+                    .strokeBorder(Color.white, lineWidth: 3)
+                    .frame(width: 44, height: 44)
                 
                 Image(systemName: "cup.and.saucer.fill")
                     .foregroundColor(.white)
-                    .font(.system(size: 16))
+                    .font(.system(size: 20, weight: .bold))
             }
-            .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 2)
+            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
         }
     }
 }
