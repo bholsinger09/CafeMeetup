@@ -50,6 +50,7 @@ struct MapView: View {
         NavigationStack {
             ZStack {
                 Map(position: .constant(.region(mapViewModel.region))) {
+                    // User annotations
                     ForEach(allMapAnnotations) { annotation in
                         if annotation.isCurrentUser {
                             Annotation("You", coordinate: annotation.coordinate) {
@@ -62,6 +63,13 @@ struct MapView: View {
                                         selectedUser = user
                                     }
                             }
+                        }
+                    }
+                    
+                    // Coffee shop annotations
+                    ForEach(mapViewModel.nearbyCoffeeShops) { shop in
+                        Annotation(shop.name, coordinate: shop.location.coordinate) {
+                            CoffeeShopMarker(shop: shop)
                         }
                     }
                 }
@@ -157,6 +165,10 @@ struct MapView: View {
                 
                 // Give it another moment to stabilize
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+                
+                // Fetch nearby coffee shops
+                print("[MapView] Fetching nearby coffee shops...")
+                await mapViewModel.fetchNearbyCoffeeShops()
                 
                 // Then fetch nearby users if we have a current user
                 if let currentUser = authViewModel.currentUser {
@@ -369,6 +381,26 @@ struct DetailRow: View {
             }
             
             Spacer()
+        }
+    }
+}
+
+// Coffee Shop marker
+struct CoffeeShopMarker: View {
+    let shop: CoffeeShop
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                Circle()
+                    .fill(Color.brown)
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: "cup.and.saucer.fill")
+                    .foregroundColor(.white)
+                    .font(.system(size: 16))
+            }
+            .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 2)
         }
     }
 }

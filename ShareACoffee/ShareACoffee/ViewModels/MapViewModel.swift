@@ -162,4 +162,75 @@ class MapViewModel: ObservableObject {
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
     }
+    
+    // MARK: - Coffee Shop Management
+    
+    func fetchNearbyCoffeeShops() async {
+        print("[MapViewModel] Fetching nearby coffee shops...")
+        
+        guard let userLocation = currentUserLocation else {
+            print("[MapViewModel] No user location available for coffee shop search")
+            return
+        }
+        
+        let searchRadius: CLLocationDistance = 24140 // 15 miles in meters
+        let region = MKCoordinateRegion(
+            center: userLocation.coordinate,
+            latitudinalMeters: searchRadius * 2,
+            longitudinalMeters: searchRadius * 2
+        )
+        
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = "coffee shop"
+        request.region = region
+        
+        let search = MKLocalSearch(request: request)
+        
+        do {
+            let response = try await search.start()
+            print("[MapViewModel] Found \(response.mapItems.count) coffee shops")
+            
+            let shops = response.mapItems.compactMap { mapItem -> CoffeeShop? in
+                guard let name = mapItem.name else {
+                    return nil
+                }
+                
+                let location = mapItem.placemark.location
+                guard let location = location else {
+                    return nil
+                }
+                
+                // Calculate distance
+                let shopLocation = CLLocation(latitude: location.coordinate.latitude,
+                                             longitude: location.coordinate.longitude)
+                let userCLLocation = CLLocation(latitude: userLocation.coordinate.latitude,
+                                               longitude: userLocation.coordinate.longitude)
+                let distanceMeters = userCLLocation.distance(from: shopLocation)
+                let distanceMiles = distanceMeters / 1609.34
+                
+                // Only include shops within 15 miles
+                guard distanceMiles <= 15.0 else { return nil }
+                
+                var shop = CoffeeShop(
+                    name: name,
+                    address: mapItem.placemark.thoroughfare ?? "",
+                    city: mapItem.placemark.locality ?? "",
+                    state: mapItem.placemark.administrativeArea ?? "",
+                    zipCode: mapItem.placemark.postalCode ?? "",
+                    location: Location(coordinate: location.coordinate),
+                    phoneNumber: mapItem.phoneNumber,
+                    website: mapItem.url?.absoluteString
+                )
+                shop.distance = distanceMiles
+                
+                return shop
+            }
+            
+            nearbyCoffeeShops = shops.sorted { ($0.distance ?? 0) < ($1.distance ?? 0) }
+            print("[MapViewModel] Displaying \(nearbyCoffeeShops.count) coffee shops within 15 miles")
+            
+        } catch {
+            print("[MapViewModel] Failed to fetch coffee shops: \(error.localizedDescription)")
+        }
+    }
 }
