@@ -360,7 +360,7 @@ class NearbyCoffeeShopsViewModel: NSObject, ObservableObject {
     
     /// Apply filters and re-sort current list
     private func applyFiltersAndSort() {
-        guard let userLocation = self.userLocation else { return }
+        guard userLocation != nil else { return }
         
         let filtered = applyFilters(to: nearbyCoffeeShops)
         nearbyCoffeeShops = sortShops(filtered)
