@@ -29,6 +29,14 @@ struct MainTabView: View {
                         Label("Study Sessions", systemImage: "book.fill")
                     }
                     
+                    // ML-Powered Study Buddy Recommendations
+                    NavigationStack {
+                        StudyBuddyRecommendationView()
+                    }
+                    .tabItem {
+                        Label("Discover", systemImage: "person.2.fill")
+                    }
+                    
                     // Academic Progress Dashboard
                     NavigationStack {
                         AcademicDashboardView()
@@ -100,6 +108,12 @@ struct MainTabView: View {
                 StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
             } label: {
                 Label("Study Sessions", systemImage: "book.fill")
+            }
+            
+            NavigationLink {
+                StudyBuddyRecommendationView()
+            } label: {
+                Label("Discover", systemImage: "person.2.fill")
             }
             
             NavigationLink {

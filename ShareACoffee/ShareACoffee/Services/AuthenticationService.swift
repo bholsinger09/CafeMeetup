@@ -16,6 +16,8 @@ class AuthenticationService: AuthenticationServiceProtocol {
     private init() {
         // Initialize reviewer demo account
         initializeReviewerAccount()
+        // Initialize additional sample users for demonstration
+        initializeSampleUsers()
     }
     
     // Mock implementation - replace with Firebase/backend integration
@@ -41,7 +43,8 @@ class AuthenticationService: AuthenticationServiceProtocol {
             profileImageURL: nil,
             lastActiveAt: Date(),
             createdAt: Date(),
-            updatedAt: Date()
+            updatedAt: Date(),
+            isTestUser: true  // Mark as sample profile for transparency
         )
         
         // Store in auth system
@@ -51,6 +54,88 @@ class AuthenticationService: AuthenticationServiceProtocol {
         userService.addMockUser(reviewerUser)
         
         print("✅ [AuthService] Reviewer demo account initialized: reviewer@studybrew.demo")
+    }
+    
+    private func initializeSampleUsers() {
+        // Create additional sample users for diversity in recommendations
+        // All marked as test users for transparency
+        
+        let sampleUsers: [User] = [
+            User(
+                id: "sample-user-1",
+                email: "demo1@studybrew.demo",
+                fullName: "Alex Chen",
+                college: "Boise State University",
+                state: "Idaho",
+                city: "Boise",
+                address: nil,
+                favoriteCoffee: "Espresso",
+                favoriteCoffeeShop: "Starbucks",
+                bio: "CS major passionate about AI and machine learning.",
+                gender: "Male",
+                location: Location(latitude: 43.6187, longitude: -116.2146),
+                profileImageURL: nil,
+                lastActiveAt: Date(),
+                major: "Computer Science",
+                graduationYear: 2026,
+                studyHoursThisWeek: 15,
+                totalStudySessions: 42,
+                studyStreak: 7,
+                isTestUser: true
+            ),
+            User(
+                id: "sample-user-2",
+                email: "demo2@studybrew.demo",
+                fullName: "Emma Davis",
+                college: "Boise State University",
+                state: "Idaho",
+                city: "Boise",
+                address: nil,
+                favoriteCoffee: "Caramel Macchiato",
+                favoriteCoffeeShop: "Dutch Bros",
+                bio: "Biology student who loves studying at cozy coffee shops.",
+                gender: "Female",
+                location: Location(latitude: 43.6202, longitude: -116.2034),
+                profileImageURL: nil,
+                lastActiveAt: Date(),
+                major: "Biology",
+                graduationYear: 2025,
+                isTutor: true,
+                tutorSubjects: ["Biology", "Chemistry"],
+                studyHoursThisWeek: 20,
+                totalStudySessions: 67,
+                studyStreak: 12,
+                isTestUser: true
+            ),
+            User(
+                id: "sample-user-3",
+                email: "demo3@studybrew.demo",
+                fullName: "Michael Rodriguez",
+                college: "Boise State University",
+                state: "Idaho",
+                city: "Boise",
+                address: nil,
+                favoriteCoffee: "Cold Brew",
+                favoriteCoffeeShop: "The Human Bean",
+                bio: "Engineering student. Always down for a study session!",
+                gender: "Male",
+                location: Location(latitude: 43.6125, longitude: -116.1985),
+                profileImageURL: nil,
+                lastActiveAt: Date(),
+                major: "Mechanical Engineering",
+                graduationYear: 2027,
+                studyHoursThisWeek: 18,
+                totalStudySessions: 28,
+                studyStreak: 5,
+                isTestUser: true
+            )
+        ]
+        
+        for user in sampleUsers {
+            userService.addMockUser(user)
+        }
+        
+        print("✅ [AuthService] Initialized \(sampleUsers.count) sample users for demonstration")
     }
     
     func signUp(email: String, password: String, user: User) async throws -> User {

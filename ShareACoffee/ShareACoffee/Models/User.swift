@@ -32,6 +32,9 @@ struct User: Identifiable, Codable, Equatable {
     var totalStudySessions: Int = 0
     var studyStreak: Int = 0 // Days in a row with study activity
     
+    // Privacy & Testing
+    var isTestUser: Bool = false // Indicates if this is a sample/demo user for testing
+    
     init(
         id: String = UUID().uuidString,
         email: String,
@@ -59,7 +62,8 @@ struct User: Identifiable, Codable, Equatable {
         tutorSubjects: [String]? = nil,
         studyHoursThisWeek: Int = 0,
         totalStudySessions: Int = 0,
-        studyStreak: Int = 0
+        studyStreak: Int = 0,
+        isTestUser: Bool = false
     ) {
         self.id = id
         self.email = email
@@ -88,6 +92,7 @@ struct User: Identifiable, Codable, Equatable {
         self.studyHoursThisWeek = studyHoursThisWeek
         self.totalStudySessions = totalStudySessions
         self.studyStreak = studyStreak
+        self.isTestUser = isTestUser
     }
     
     // Helper to check if user is recently active (within last 30 minutes)
