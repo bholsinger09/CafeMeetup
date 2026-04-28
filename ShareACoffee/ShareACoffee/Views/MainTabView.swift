@@ -70,8 +70,8 @@ struct MainTabView: View {
                     }
                 }
                 .accentColor(.brown)
-                .overlay(alignment: .bottomTrailing) {
-                    // Floating QR Scanner Button
+                .overlay(alignment: .topTrailing) {
+                    // QR Scanner Button (Top Right)
                     Button(action: { showQRScanner = true }) {
                         ZStack {
                             Circle()
@@ -82,16 +82,16 @@ struct MainTabView: View {
                                         endPoint: .bottomTrailing
                                     )
                                 )
-                                .frame(width: 60, height: 60)
-                                .shadow(color: .blue.opacity(0.4), radius: 10, x: 0, y: 5)
+                                .frame(width: 50, height: 50)
+                                .shadow(color: .blue.opacity(0.4), radius: 8, x: 0, y: 2)
                             
                             Image(systemName: "qrcode.viewfinder")
-                                .font(.system(size: 28))
+                                .font(.system(size: 22))
                                 .foregroundColor(.white)
                         }
                     }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
+                    .padding(.trailing, 16)
+                    .padding(.top, 50)
                 }
                 .fullScreenCover(isPresented: $showQRScanner) {
                     QRCodeScannerView()
