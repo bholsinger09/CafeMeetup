@@ -16,7 +16,7 @@ struct StudyBuddyCard: View {
     var body: some View {
         GeometryReader { geometry in
             let cardWidth = min(geometry.size.width - 40, 380)
-            let cardHeight = min(geometry.size.height * 0.7, 550)
+            let cardHeight = min(geometry.size.height * 0.65, 520)
             
             ZStack {
                 // Card background with gradient
@@ -24,25 +24,25 @@ struct StudyBuddyCard: View {
                     .cornerRadius(20)
                 
                 // Card content
-                VStack(spacing: 12) {
+                VStack(spacing: 6) {
                     // Profile header
                     profileHeader
-                        .padding(.top, 8)
+                        .padding(.top, 4)
                     
                     // Compatibility score section
                     compatibilitySection
                     
-                    Spacer(minLength: 10)
+                    Spacer(minLength: 4)
                     
                     // Match reasons
                     matchReasonsSection
                     
                     // Bottom info
                     bottomInfoSection
-                        .padding(.bottom, 4)
+                        .padding(.bottom, 2)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
                 
                 // Swipe indicators
                 swipeIndicators
@@ -91,12 +91,12 @@ struct StudyBuddyCard: View {
     // MARK: - Profile Header
     
     private var profileHeader: some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .top, spacing: 8) {
             // Avatar
             if let avatarId = recommendation.user.avatarId {
                 Image(systemName: "person.circle.fill")
                     .resizable()
-                    .frame(width: 60, height: 60)
+                    .frame(width: 50, height: 50)
                     .foregroundColor(.purple)
             } else {
                 Circle()
@@ -105,22 +105,22 @@ struct StudyBuddyCard: View {
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ))
-                    .frame(width: 60, height: 60)
+                    .frame(width: 50, height: 50)
                     .overlay(
                         Text(recommendation.user.fullName.prefix(1))
-                            .font(.title)
+                            .font(.title3)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                     )
             }
             
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(recommendation.user.fullName)
-                    .font(.title3)
+                    .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(0.7)
                 
                 // Test User Badge
                 if recommendation.user.isTestUser {
@@ -166,12 +166,12 @@ struct StudyBuddyCard: View {
     // MARK: - Compatibility Section
     
     private var compatibilitySection: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
             // Score ring
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 6)
-                    .frame(width: 80, height: 80)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: 5)
+                    .frame(width: 70, height: 70)
                 
                 Circle()
                     .trim(from: 0, to: recommendation.compatibilityScore)
@@ -184,70 +184,70 @@ struct StudyBuddyCard: View {
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
-                        style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                        style: StrokeStyle(lineWidth: 5, lineCap: .round)
                     )
-                    .frame(width: 80, height: 80)
+                    .frame(width: 70, height: 70)
                     .rotationEffect(.degrees(-90))
                 
-                VStack(spacing: 1) {
+                VStack(spacing: 0) {
                     Text("\(recommendation.scorePercentage)")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.white)
                     
                     Text("MATCH")
-                        .font(.caption2)
+                        .font(.system(size: 8))
                         .fontWeight(.semibold)
                         .foregroundColor(.gray)
                 }
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 4)
             
             // Category badge
-            HStack(spacing: 4) {
+            HStack(spacing: 3) {
                 Text(recommendation.scoreCategory.emoji)
-                    .font(.caption)
+                    .font(.system(size: 10))
                 Text(recommendation.scoreCategory.rawValue)
-                    .font(.caption)
+                    .font(.system(size: 10))
                     .fontWeight(.semibold)
             }
             .foregroundColor(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 4)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
             .background(
                 Capsule()
                     .fill(Color(recommendation.scoreCategory.color).opacity(0.3))
             )
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
     }
     
     // MARK: - Match Reasons
     
     private var matchReasonsSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("Why you match")
-                .font(.subheadline)
+                .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.white.opacity(0.9))
             
             ForEach(recommendation.topReasons) { reason in
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     Image(systemName: reason.category.icon)
-                        .font(.system(size: 12))
+                        .font(.system(size: 10))
                         .foregroundColor(Color(reason.category.color))
-                        .frame(width: 20)
+                        .frame(width: 16)
                     
                     Text(reason.description)
-                        .font(.caption)
+                        .font(.system(size: 11))
                         .foregroundColor(.white.opacity(0.85))
                         .lineLimit(1)
                     
                     Spacer()
                 }
-                .padding(.vertical, 4)
-                .padding(.horizontal, 10)
+                .padding(.vertical, 3)
+                .padding(.horizontal, 8)
                 .background(
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: 4)
                         .fill(Color.white.opacity(0.05))
                 )
             }
@@ -257,13 +257,13 @@ struct StudyBuddyCard: View {
     // MARK: - Bottom Info
     
     private var bottomInfoSection: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             // Location
-            HStack(spacing: 3) {
+            HStack(spacing: 2) {
                 Image(systemName: "mappin.circle.fill")
-                    .font(.system(size: 11))
+                    .font(.system(size: 9))
                 Text("\(recommendation.user.city), \(recommendation.user.state)")
-                    .font(.system(size: 11))
+                    .font(.system(size: 9))
                     .lineLimit(1)
             }
             .foregroundColor(.gray)
@@ -272,18 +272,18 @@ struct StudyBuddyCard: View {
             
             // Distance
             if recommendation.features.distanceMiles < 50 {
-                HStack(spacing: 3) {
+                HStack(spacing: 2) {
                     Image(systemName: "location.fill")
-                        .font(.system(size: 11))
+                        .font(.system(size: 9))
                     Text(String(format: "%.1f mi", recommendation.features.distanceMiles))
-                        .font(.system(size: 11))
+                        .font(.system(size: 9))
                         .lineLimit(1)
                 }
                 .foregroundColor(.green.opacity(0.8))
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 6)
+        .padding(.horizontal, 14)
+        .padding(.top, 4)
     }
     
     // MARK: - Swipe Indicators
