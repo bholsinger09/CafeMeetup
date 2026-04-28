@@ -4,6 +4,7 @@ struct MainTabView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject private var blogViewModel = BlogViewModel()
     @StateObject private var mapViewModel = MapViewModel()
+    @StateObject private var themeManager = ThemeManager.shared
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @State private var showQRScanner = false
@@ -28,6 +29,8 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Study Sessions", systemImage: "book.fill")
                     }
+                    .toolbarBackground(themeManager.currentTheme.cardBackgroundColor, for: .tabBar)
+                    .toolbarBackground(.visible, for: .tabBar)
                     
                     // ML-Powered Study Buddy Recommendations
                     NavigationStack {
@@ -69,21 +72,19 @@ struct MainTabView: View {
                         Label("Profile", systemImage: "person.fill")
                     }
                 }
-                .accentColor(.brown)
+                .accentColor(themeManager.currentTheme.accentColor)
+                .background(
+                    themeManager.currentTheme.primaryGradient
+                        .ignoresSafeArea()
+                )
                 .overlay(alignment: .topTrailing) {
                     // QR Scanner Button (Top Right)
                     Button(action: { showQRScanner = true }) {
                         ZStack {
                             Circle()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [.blue, .purple],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
+                                .fill(themeManager.currentTheme.accentColor.gradient)
                                 .frame(width: 50, height: 50)
-                                .shadow(color: .blue.opacity(0.4), radius: 8, x: 0, y: 2)
+                                .shadow(color: themeManager.currentTheme.accentColor.opacity(0.4), radius: 8, x: 0, y: 2)
                             
                             Image(systemName: "qrcode.viewfinder")
                                 .font(.system(size: 22))

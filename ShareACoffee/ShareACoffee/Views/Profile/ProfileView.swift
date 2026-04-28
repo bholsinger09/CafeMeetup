@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var showEditProfile = false
     @State private var showSignOutAlert = false
     @State private var showAvatarPicker = false
@@ -20,17 +21,17 @@ struct ProfileView: View {
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
                                 .clipShape(Circle())
-                                .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+                                .shadow(color: themeManager.currentTheme.accentColor.opacity(0.3), radius: 12)
                         } else {
                             Circle()
-                                .fill(Color.primaryGradient)
+                                .fill(themeManager.currentTheme.primaryGradient)
                                 .frame(width: 100, height: 100)
                                 .overlay(
                                     Text(authViewModel.currentUser?.fullName.prefix(1) ?? "?")
                                         .font(.system(size: 40, weight: .semibold))
                                         .foregroundColor(.white)
                                 )
-                                .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+                                .shadow(color: themeManager.currentTheme.accentColor.opacity(0.3), radius: 12)
                         }
                         
                         VStack(spacing: 4) {
@@ -56,9 +57,9 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
-                                .background(Color.purple)
+                                .background(themeManager.currentTheme.primaryGradient)
                                 .cornerRadius(20)
-                                .shadow(color: Color.purple.opacity(0.3), radius: 8)
+                                .shadow(color: themeManager.currentTheme.accentColor.opacity(0.3), radius: 8)
                             }
                             
                             Button {
@@ -68,9 +69,9 @@ struct ProfileView: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 10)
-                                    .background(Color.accentGradient)
+                                    .background(themeManager.currentTheme.primaryGradient)
                                     .cornerRadius(20)
-                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                                    .shadow(color: themeManager.currentTheme.accentColor.opacity(0.3), radius: 8)
                             }
                         }
                     }
@@ -97,12 +98,12 @@ struct ProfileView: View {
                             ProfileDetailRow(icon: "person.fill", title: "Gender", value: gender)
                         }
                     }
-                    .background(Color.darkSecondary)
+                    .background(themeManager.currentTheme.cardBackgroundColor)
                     .cornerRadius(12)
-                    .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
+                    .shadow(color: themeManager.currentTheme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                            .stroke(themeManager.currentTheme.accentColor.opacity(0.2), lineWidth: 1)
                     )
                     .padding(.horizontal)
                     
@@ -117,12 +118,12 @@ struct ProfileView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
-                        .background(Color.darkSecondary)
+                        .background(themeManager.currentTheme.cardBackgroundColor)
                         .cornerRadius(12)
-                        .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
+                        .shadow(color: themeManager.currentTheme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
+                                .stroke(themeManager.currentTheme.accentColor.opacity(0.2), lineWidth: 1)
                         )
                         .padding(.horizontal)
                     }
@@ -145,9 +146,9 @@ struct ProfileView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.brown)
+                            .background(themeManager.currentTheme.accentColor)
                             .cornerRadius(12)
-                            .shadow(color: Color.brown.opacity(0.3), radius: 8)
+                            .shadow(color: themeManager.currentTheme.accentColor.opacity(0.3), radius: 8)
                         }
                         
                         // Academic Info Display
@@ -175,7 +176,7 @@ struct ProfileView: View {
                                 }
                             }
                             .padding()
-                            .background(Color.darkSecondary)
+                            .background(themeManager.currentTheme.cardBackgroundColor)
                             .cornerRadius(12)
                         }
                     }
@@ -304,11 +305,11 @@ struct ProfileView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.darkSecondary)
+                            .background(themeManager.currentTheme.cardBackgroundColor)
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.primaryPink.opacity(0.3), lineWidth: 1)
+                                    .stroke(themeManager.currentTheme.accentColor.opacity(0.3), lineWidth: 1)
                             )
                         }
                         
@@ -337,7 +338,7 @@ struct ProfileView: View {
                 }
                 .padding(.vertical)
             }
-            .background(Color.backgroundGradient)
+            .background(themeManager.currentTheme.primaryGradient)
             .navigationTitle("Profile")
             .preferredColorScheme(.dark)
             .sheet(isPresented: $showEditProfile) {
