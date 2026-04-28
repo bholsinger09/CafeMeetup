@@ -31,6 +31,11 @@ struct User: Identifiable, Codable, Equatable {
     var studyHoursThisWeek: Int = 0
     var totalStudySessions: Int = 0
     var studyStreak: Int = 0 // Days in a row with study activity
+    var totalStudyHours: Int = 0 // Lifetime study hours
+    
+    // Customization & Aesthetics
+    var selectedTheme: String? // Theme preference (AppTheme.rawValue)
+    var isPremiumUser: Bool = false
     
     // Privacy & Testing
     var isTestUser: Bool = false // Indicates if this is a sample/demo user for testing
@@ -63,6 +68,9 @@ struct User: Identifiable, Codable, Equatable {
         studyHoursThisWeek: Int = 0,
         totalStudySessions: Int = 0,
         studyStreak: Int = 0,
+        totalStudyHours: Int = 0,
+        selectedTheme: String? = nil,
+        isPremiumUser: Bool = false,
         isTestUser: Bool = false
     ) {
         self.id = id
@@ -92,6 +100,9 @@ struct User: Identifiable, Codable, Equatable {
         self.studyHoursThisWeek = studyHoursThisWeek
         self.totalStudySessions = totalStudySessions
         self.studyStreak = studyStreak
+        self.totalStudyHours = totalStudyHours
+        self.selectedTheme = selectedTheme
+        self.isPremiumUser = isPremiumUser
         self.isTestUser = isTestUser
     }
     

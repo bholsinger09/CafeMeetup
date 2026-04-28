@@ -181,6 +181,107 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal)
                     
+                    // Customization & Achievements Section
+                    VStack(spacing: 12) {
+                        // Theme Customization Button
+                        NavigationLink {
+                            ProfileCustomizationView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "paintpalette.fill")
+                                    .foregroundStyle(
+                                        LinearGradient(
+                                            colors: [.purple, .pink],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Study Aesthetics")
+                                        .font(.headline)
+                                    Text("Customize your theme")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.purple.opacity(0.3), Color.pink.opacity(0.2)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [.purple, .pink],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        ),
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                        
+                        // Achievements Button
+                        NavigationLink {
+                            AchievementsView()
+                        } label: {
+                            HStack {
+                                Image(systemName: "trophy.fill")
+                                    .foregroundStyle(
+                                        LinearGradient(
+                                            colors: [.yellow, .orange],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Achievements")
+                                        .font(.headline)
+                                    let manager = AchievementManager.shared
+                                    Text("\(manager.unlockedCount) of \(manager.totalCount) unlocked")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.yellow.opacity(0.2), Color.orange.opacity(0.2)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [.yellow, .orange],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        ),
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                     // Rewards & Achievements Section
                     RewardsPreviewCard()
                         .padding(.horizontal)
