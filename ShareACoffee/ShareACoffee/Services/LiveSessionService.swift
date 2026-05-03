@@ -348,6 +348,28 @@ class LiveSessionService {
         completion(currentQuizzes[sessionId])
     }
     
+    // MARK: - State Getters (for Session Recap)
+    
+    /// Get current Pomodoro state for a session
+    func getPomodoroState(sessionId: String) -> PomodoroState? {
+        return pomodoroStates[sessionId]
+    }
+    
+    /// Get current whiteboard state for a session
+    func getWhiteboardState(sessionId: String) -> WhiteboardState? {
+        return whiteboardStates[sessionId]
+    }
+    
+    /// Get current poll for a session
+    func getCurrentPoll(sessionId: String) -> LivePoll? {
+        return currentPolls[sessionId]
+    }
+    
+    /// Get current quiz for a session
+    func getCurrentQuiz(sessionId: String) -> LiveQuiz? {
+        return currentQuizzes[sessionId]
+    }
+    
     // MARK: - Cleanup
     
     /// Remove all listeners

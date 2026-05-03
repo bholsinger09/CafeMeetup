@@ -14,6 +14,10 @@ struct LiveStudySessionView: View {
     @State private var showQuiz = false
     @State private var isSessionActive = false
     @State private var showQRCode = false
+    @State private var showRecap = false
+    @State private var recapData: SessionRecapData?
+    @State private var isGeneratingRecap = false
+    @State private var sessionStartTime: Date?
     
     @Environment(\.dismiss) var dismiss
     
@@ -150,6 +154,32 @@ struct LiveStudySessionView: View {
                 studySession: studySession,
                 userId: userId
             )
+        }
+        .sheet(isPresented: $showRecap) {
+            if let recapData = recapData {
+                SessionRecapView(recapData: recapData)
+            }
+        }
+        .overlay {
+            if isGeneratingRecap {
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(1.5)
+                        
+                        Text("Generating Session Recap...")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .padding(32)
+                    .background(Color.black.opacity(0.8))
+                    .cornerRadius(20)
+                }
+            }
         }
         .onAppear {
             joinLiveSession()
@@ -308,8 +338,8 @@ struct LiveStudySessionView: View {
                 .foregroundColor(.black)
             
             if isSessionActive {
-                Button(action: endSession) {
-                    Label("End Session", systemImage: "stop.circle.fill")
+                Button(action: endSessionAndShowRecap) {
+                    Label("End Session & View Recap", systemImage: "stop.circle.fill")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -325,6 +355,19 @@ struct LiveStudySessionView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.green)
+                        .cornerRadius(12)
+                }
+            }
+            
+            // Show recap for completed sessions
+            if studySession.status == .completed || recapData != nil {
+                Button(action: { showRecap = true }) {
+                    Label("View Session Recap", systemImage: "photo.stack.fill")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.purple)
                         .cornerRadius(12)
                 }
             }
@@ -361,6 +404,7 @@ struct LiveStudySessionView: View {
     
     private func startSession() {
         isSessionActive = true
+        sessionStartTime = Date()
         // Update session status in database
     }
     
@@ -368,6 +412,40 @@ struct LiveStudySessionView: View {
         isSessionActive = false
         // Update session status in database
         dismiss()
+    }
+    
+    private func endSessionAndShowRecap() {
+        isSessionActive = false
+        isGeneratingRecap = true
+        
+        Task {
+            do {
+                // Generate recap from session data
+                let recap = try await SessionRecapService.shared.generateRecap(
+                    for: studySession,
+                    sessionStartTime: sessionStartTime ?? Date().addingTimeInterval(-3600),
+                    participantNames: studySession.attendeeNames
+                )
+                
+                // Save recap for later viewing
+                try await SessionRecapService.shared.saveRecap(recap)
+                
+                await MainActor.run {
+                    recapData = recap
+                    isGeneratingRecap = false
+                    showRecap = true
+                }
+            } catch {
+                print("Error generating recap: \(error.localizedDescription)")
+                
+                await MainActor.run {
+                    // Fallback to sample data if generation fails
+                    recapData = SessionRecapService.mockRecap(for: studySession)
+                    isGeneratingRecap = false
+                    showRecap = true
+                }
+            }
+        }
     }
     
     private func leaveSession() {
