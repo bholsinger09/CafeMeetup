@@ -1,4 +1,6 @@
 import SwiftUI
+import ShareACoffeeCore
+import ShareACoffeeAuth
 
 @main
 struct ShareACoffeeApp: App {

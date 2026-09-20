@@ -6,6 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		36DE7B9E305F3EC5004F6C8F /* ShareACoffeeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7B9D305F3EC5004F6C8F /* ShareACoffeeCore */; };
+		36DE7BA1305F3EE5004F6C8F /* ShareACoffeeAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BA0305F3EE5004F6C8F /* ShareACoffeeAuth */; };
+		36DE7BA4305F3EFC004F6C8F /* ShareACoffeeSocial in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BA3305F3EFC004F6C8F /* ShareACoffeeSocial */; };
+		36DE7BA7305F3F18004F6C8F /* ShareACoffeeCoffee in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BA6305F3F18004F6C8F /* ShareACoffeeCoffee */; };
+		36DE7BAA305F3F2B004F6C8F /* ShareACoffeeDiscovery in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BA9305F3F2B004F6C8F /* ShareACoffeeDiscovery */; };
+		36DE7BAD305F3F42004F6C8F /* ShareACoffeeStudy in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BAC305F3F42004F6C8F /* ShareACoffeeStudy */; };
+		36DE7BB0305F3F57004F6C8F /* ShareACoffeeBlog in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BAF305F3F57004F6C8F /* ShareACoffeeBlog */; };
+		36DE7BB3305F3F6F004F6C8F /* ShareACoffeeProfile in Frameworks */ = {isa = PBXBuildFile; productRef = 36DE7BB2305F3F6F004F6C8F /* ShareACoffeeProfile */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		36B149F22EE094C3003A8640 /* StudyBrew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyBrew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +34,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36DE7BB3305F3F6F004F6C8F /* ShareACoffeeProfile in Frameworks */,
+				36DE7BAA305F3F2B004F6C8F /* ShareACoffeeDiscovery in Frameworks */,
+				36DE7BB0305F3F57004F6C8F /* ShareACoffeeBlog in Frameworks */,
+				36DE7BA1305F3EE5004F6C8F /* ShareACoffeeAuth in Frameworks */,
+				36DE7BAD305F3F42004F6C8F /* ShareACoffeeStudy in Frameworks */,
+				36DE7B9E305F3EC5004F6C8F /* ShareACoffeeCore in Frameworks */,
+				36DE7BA7305F3F18004F6C8F /* ShareACoffeeCoffee in Frameworks */,
+				36DE7BA4305F3EFC004F6C8F /* ShareACoffeeSocial in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +84,14 @@
 			);
 			name = StudyBrew;
 			packageProductDependencies = (
+				36DE7B9D305F3EC5004F6C8F /* ShareACoffeeCore */,
+				36DE7BA0305F3EE5004F6C8F /* ShareACoffeeAuth */,
+				36DE7BA3305F3EFC004F6C8F /* ShareACoffeeSocial */,
+				36DE7BA6305F3F18004F6C8F /* ShareACoffeeCoffee */,
+				36DE7BA9305F3F2B004F6C8F /* ShareACoffeeDiscovery */,
+				36DE7BAC305F3F42004F6C8F /* ShareACoffeeStudy */,
+				36DE7BAF305F3F57004F6C8F /* ShareACoffeeBlog */,
+				36DE7BB2305F3F6F004F6C8F /* ShareACoffeeProfile */,
 			);
 			productName = ShareACoffee;
 			productReference = 36B149F22EE094C3003A8640 /* StudyBrew.app */;
@@ -94,6 +121,16 @@
 			);
 			mainGroup = 36B149E92EE094C3003A8640;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				36DE7B9C305F3EC5004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeCore" */,
+				36DE7B9F305F3EE5004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeAuth" */,
+				36DE7BA2305F3EFC004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeSocial" */,
+				36DE7BA5305F3F18004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeCoffee" */,
+				36DE7BA8305F3F2B004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeDiscovery" */,
+				36DE7BAB305F3F42004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeStudy" */,
+				36DE7BAE305F3F57004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeBlog" */,
+				36DE7BB1305F3F6F004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeProfile" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 36B149F32EE094C3003A8640 /* Products */;
 			projectDirPath = "";
@@ -256,7 +293,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShareACoffee/ShareACoffee.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PL58734CZ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -273,7 +310,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8;
+				MARKETING_VERSION = 4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.holsinger.shareacoffee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -294,7 +331,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShareACoffee/ShareACoffee.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = PL58734CZ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -311,7 +348,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8;
+				MARKETING_VERSION = 4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.holsinger.shareacoffee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -346,6 +383,76 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		36DE7B9C305F3EC5004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeCore;
+		};
+		36DE7B9F305F3EE5004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeAuth" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeAuth;
+		};
+		36DE7BA2305F3EFC004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeSocial" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeSocial;
+		};
+		36DE7BA5305F3F18004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeCoffee" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeCoffee;
+		};
+		36DE7BA8305F3F2B004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeDiscovery" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeDiscovery;
+		};
+		36DE7BAB305F3F42004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeStudy" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeStudy;
+		};
+		36DE7BAE305F3F57004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeBlog" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeBlog;
+		};
+		36DE7BB1305F3F6F004F6C8F /* XCLocalSwiftPackageReference "ShareACoffeeProfile" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ShareACoffeeProfile;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		36DE7B9D305F3EC5004F6C8F /* ShareACoffeeCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeCore;
+		};
+		36DE7BA0305F3EE5004F6C8F /* ShareACoffeeAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeAuth;
+		};
+		36DE7BA3305F3EFC004F6C8F /* ShareACoffeeSocial */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeSocial;
+		};
+		36DE7BA6305F3F18004F6C8F /* ShareACoffeeCoffee */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeCoffee;
+		};
+		36DE7BA9305F3F2B004F6C8F /* ShareACoffeeDiscovery */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeDiscovery;
+		};
+		36DE7BAC305F3F42004F6C8F /* ShareACoffeeStudy */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeStudy;
+		};
+		36DE7BAF305F3F57004F6C8F /* ShareACoffeeBlog */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeBlog;
+		};
+		36DE7BB2305F3F6F004F6C8F /* ShareACoffeeProfile */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShareACoffeeProfile;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 36B149EA2EE094C3003A8640 /* Project object */;
 }

@@ -1,4 +1,6 @@
 import SwiftUI
+import ShareACoffeeCore
+import ShareACoffeeAuth
 
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
