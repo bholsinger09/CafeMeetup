@@ -315,11 +315,10 @@ struct ARViewContainer: UIViewRepresentable {
             let node = createCafeAnnotationNode(cafe: cafe)
             
             // Calculate position based on location
-            if let position = viewModel.calculateARPosition(for: cafe) {
-                node.position = position
-                arView.scene.rootNode.addChildNode(node)
-                annotationNodes[cafe.id] = node
-            }
+            let position = viewModel.calculateARPosition(for: cafe)
+            node.position = position
+            arView.scene.rootNode.addChildNode(node)
+            annotationNodes[cafe.id] = node
         }
         
         private func createCafeAnnotationNode(cafe: ARCafeLocation) -> SCNNode {

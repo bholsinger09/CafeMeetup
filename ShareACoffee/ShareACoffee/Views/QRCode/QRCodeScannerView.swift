@@ -286,24 +286,34 @@ struct QRCodeActionView: View {
                         )
                     )
                 
-                Text(qrData.name)
+                Text(qrData.name ?? "QR Code")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
                 // Details
                 VStack(alignment: .leading, spacing: 12) {
-                    if let details = qrData.details {
-                        ForEach(Array(details.keys.sorted()), id: \.self) { key in
-                            if let value = details[key] {
-                                HStack {
-                                    Text(key.capitalized + ":")
-                                        .foregroundColor(.secondary)
-                                    Text(String(describing: value))
-                                        .fontWeight(.medium)
-                                }
-                            }
-                        }
+                    HStack {
+                        Text("Data:")
+                            .foregroundColor(.secondary)
+                        Text(qrData.rawData)
+                            .fontWeight(.medium)
+                            .lineLimit(1)
+                    }
+                    
+                    HStack {
+                        Text("Type:")
+                            .foregroundColor(.secondary)
+                        Text(typeDescription(qrData.type))
+                            .fontWeight(.medium)
+                    }
+                    
+                    HStack {
+                        Text("Time:")
+                            .foregroundColor(.secondary)
+                        Text(qrData.timestamp.formatted())
+                            .fontWeight(.medium)
+                            .font(.caption)
                     }
                 }
                 .padding()
@@ -337,6 +347,15 @@ struct QRCodeActionView: View {
     
     private func gradientColors(for type: String?) -> [Color] {
         return [.blue, .purple]
+    }
+    
+    private func typeDescription(_ type: QRCodeService.QRCodeType) -> String {
+        switch type {
+        case .sessionJoin: return "Session Join"
+        case .userProfile: return "User Profile"
+        case .coffeeShop: return "Coffee Shop"
+        case .other: return "Other"
+        }
     }
     
     @ViewBuilder

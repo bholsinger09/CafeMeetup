@@ -1,7 +1,7 @@
 import Foundation
 import ShareACoffeeCore
 
-protocol MessageServiceProtocol {
+public protocol MessageServiceProtocol {
     func sendMessage(senderId: String, receiverId: String, content: String, isPriority: Bool) async throws -> Message
     func sendGift(senderId: String, receiverId: String, giftType: GiftType, message: String?) async throws -> Message
     func getConversation(userId1: String, userId2: String) async throws -> [Message]
@@ -9,14 +9,15 @@ protocol MessageServiceProtocol {
     func getUnreadCount(forUserId userId: String) async throws -> Int
 }
 
-class MessageService: MessageServiceProtocol {
-    nonisolated(unsafe) static let shared = MessageService()
+@MainActor
+public class MessageService: MessageServiceProtocol {
+    public nonisolated(unsafe) static let shared = MessageService()
     
-    private init() {}
+    nonisolated private init() {}
     
     private var messages: [Message] = []
     
-    func sendMessage(senderId: String, receiverId: String, content: String, isPriority: Bool = false) async throws -> Message {
+    public func sendMessage(senderId: String, receiverId: String, content: String, isPriority: Bool = false) async throws -> Message {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 300_000_000)
         
@@ -33,7 +34,7 @@ class MessageService: MessageServiceProtocol {
         return message
     }
     
-    func sendGift(senderId: String, receiverId: String, giftType: GiftType, message: String? = nil) async throws -> Message {
+    public func sendGift(senderId: String, receiverId: String, giftType: GiftType, message: String? = nil) async throws -> Message {
         try await Task.sleep(nanoseconds: 300_000_000)
         
         let giftMessage = Message(
@@ -49,7 +50,7 @@ class MessageService: MessageServiceProtocol {
         return giftMessage
     }
     
-    func getConversation(userId1: String, userId2: String) async throws -> [Message] {
+    public func getConversation(userId1: String, userId2: String) async throws -> [Message] {
         try await Task.sleep(nanoseconds: 200_000_000)
         
         let conversation = messages.filter {
@@ -61,7 +62,7 @@ class MessageService: MessageServiceProtocol {
         return conversation
     }
     
-    func markAsRead(messageId: String) async throws {
+    public func markAsRead(messageId: String) async throws {
         try await Task.sleep(nanoseconds: 100_000_000)
         
         if let index = messages.firstIndex(where: { $0.id == messageId }) {
@@ -70,7 +71,7 @@ class MessageService: MessageServiceProtocol {
         }
     }
     
-    func getUnreadCount(forUserId userId: String) async throws -> Int {
+    public func getUnreadCount(forUserId userId: String) async throws -> Int {
         let unread = messages.filter { $0.receiverId == userId && $0.readAt == nil }
         return unread.count
     }

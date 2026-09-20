@@ -65,9 +65,7 @@ struct StudyBuddyRecommendationView: View {
             matchCelebrationOverlay
         )
         .task {
-            if let user = authViewModel.currentUser {
-                await viewModel.loadRecommendations(for: user)
-            }
+            await viewModel.loadRecommendations()
         }
     }
     
@@ -208,7 +206,7 @@ struct StudyBuddyRecommendationView: View {
             StudyBuddyCardStack(
                 recommendations: viewModel.recommendations,
                 onSwipe: { recommendation, action in
-                    viewModel.handleSwipe(recommendation: recommendation, action: action)
+                    viewModel.handleSwipe(action, for: recommendation)
                 },
                 onNeedMore: {
                     Task {

@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Message Model
-public struct Message: Identifiable, Codable, Equatable {
+public struct Message: Identifiable, Codable, Equatable, Sendable {
     public let id: String
     public let senderId: String
     public let receiverId: String
@@ -41,7 +41,7 @@ public struct Message: Identifiable, Codable, Equatable {
 }
 
 // MARK: - Gift Types
-public enum GiftType: String, Codable, CaseIterable {
+public enum GiftType: String, Codable, CaseIterable, Sendable {
     case coffee = "☕️"
     case heart = "❤️"
     case rose = "🌹"

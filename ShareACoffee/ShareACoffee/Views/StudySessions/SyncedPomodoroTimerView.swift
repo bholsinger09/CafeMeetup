@@ -264,19 +264,32 @@ class PomodoroViewModel: ObservableObject {
     
     func setupRealtimeListeners() {
         // Listen for timer state changes from Firebase
-        liveSessionService.observePomodoroState(sessionId: studySessionId) { [weak self] state in
+        liveSessionService.observePomodoroState(sessionId: studySessionId) { [weak self] stateParam in
             guard let self = self else { return }
+            // Extract fields from state parameter BEFORE Task boundary
+            let isRunning = stateParam.isRunning
+            let phase = stateParam.currentPhase
+            let secondsRemaining = stateParam.secondsRemaining
+            let completedPomodoros = stateParam.completedPomodoros
+            
             Task { @MainActor in
                 // If timer state changed, update UI
-                if state.isRunning != self.pomodoroState.isRunning {
-                    if state.isRunning {
+                if isRunning != self.pomodoroState.isRunning {
+                    if isRunning {
                         self.startLocalTimer()
                     } else {
                         self.stopLocalTimer()
                     }
                 }
                 
-                self.pomodoroState = state
+                // Update state with copied fields
+                var updatedState = self.pomodoroState
+                updatedState.isRunning = isRunning
+                let phaseToAssign = phase  // Copy enum value
+                updatedState.currentPhase = phaseToAssign
+                updatedState.secondsRemaining = secondsRemaining
+                updatedState.completedPomodoros = completedPomodoros
+                self.pomodoroState = updatedState
             }
         }
         
