@@ -1,159 +1,162 @@
 import SwiftUI
 import ShareACoffeeCore
 import ShareACoffeeAuth
+import ShareACoffeeStudy
+import ShareACoffeeCoffee
+import ShareACoffeeSocial
+import ShareACoffeeBlog
+import ShareACoffeeDiscovery
+import ShareACoffeeProfile
 
-public struct MainTabView: View {
+struct MainTabView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @EnvironmentObject var themeManager: ThemeManager
+    @StateObject private var blogViewModel = BlogViewModel()
+    @StateObject private var mapViewModel = MapViewModel()
+    @StateObject private var themeManager = ThemeManager.shared
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    public var body: some View {
-        TabView {
-            // Discovery Tab
-            DiscoveryTabView()
-                .tabItem {
-                    Label("Discover", systemImage: "sparkles")
-                }
-            
-            // Study Sessions Tab
-            StudySessionsTabView()
-                .tabItem {
-                    Label("Study", systemImage: "books.vertical")
-                }
-            
-            // Messages Tab
-            MessagesTabView()
-                .tabItem {
-                    Label("Messages", systemImage: "bubble.left")
-                }
-            
-            // Matches Tab
-            MatchesTabView()
-                .tabItem {
-                    Label("Matches", systemImage: "heart")
-                }
-            
-            // Profile Tab
-            ProfileTabView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.circle")
-                }
-        }
-        .accentColor(.blue)
-    }
-}
-
-// MARK: - Tab Views
-
-struct DiscoveryTabView: View {
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Discovery")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Discover Study Buddies")
-        }
-    }
-}
-
-struct StudySessionsTabView: View {
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Study Sessions")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Study Sessions")
-        }
-    }
-}
-
-struct MessagesTabView: View {
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Messages")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Messages")
-        }
-    }
-}
-
-struct MatchesTabView: View {
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Matches")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Your Matches")
-        }
-    }
-}
-
-struct ProfileTabView: View {
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State private var showQRScanner = false
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                Text("Profile")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                if let user = authViewModel.currentUser {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Name: \(user.fullName)")
-                        Text("Email: \(user.email)")
-                        Text("City: \(user.city), \(user.state)")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+        Group {
+            if horizontalSizeClass == .regular {
+                // iPad layout with sidebar
+                NavigationSplitView(columnVisibility: .constant(.detailOnly)) {
+                    sidebarContent
+                } detail: {
+                    StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
                 }
-                
-                Button(action: {
-                    Task {
-                        await authViewModel.signOut()
+                .navigationSplitViewStyle(.balanced)
+            } else {
+                // iPhone layout with tab bar
+                TabView {
+                    // PRIMARY TAB: Study Sessions (emphasizes academic collaboration)
+                    NavigationStack {
+                        StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
                     }
-                }) {
-                    Text("Sign Out")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.red)
-                        .cornerRadius(8)
+                    .tabItem {
+                        Label("Study Sessions", systemImage: "book.fill")
+                    }
+                    .toolbarBackground(themeManager.currentTheme.cardBackgroundColor, for: .tabBar)
+                    .toolbarBackground(.visible, for: .tabBar)
+                    
+                    // ML-Powered Study Buddy Recommendations
+                    NavigationStack {
+                        StudyBuddyRecommendationView()
+                    }
+                    .tabItem {
+                        Label("Discover", systemImage: "person.2.fill")
+                    }
+                    
+                    // Academic Progress Dashboard
+                    NavigationStack {
+                        AcademicDashboardView()
+                    }
+                    .tabItem {
+                        Label("Progress", systemImage: "chart.bar.fill")
+                    }
+                    
+                    // Map (now emphasizes study locations)
+                    MapView()
+                        .environmentObject(mapViewModel)
+                        .tabItem {
+                            Label("Study Spots", systemImage: "map.fill")
+                        }
+                    
+                    // Blog Feed (academic content)
+                    NavigationStack {
+                        BlogFeedView()
+                            .environmentObject(blogViewModel)
+                    }
+                    .tabItem {
+                        Label("Feed", systemImage: "newspaper.fill")
+                    }
+                    
+                    // Profile (now includes My Classes)
+                    NavigationStack {
+                        ProfileView()
+                    }
+                    .tabItem {
+                        Label("Profile", systemImage: "person.fill")
+                    }
                 }
-                
-                Spacer()
+                .accentColor(themeManager.currentTheme.accentColor)
+                .background(
+                    themeManager.currentTheme.primaryGradient
+                        .ignoresSafeArea()
+                )
+                .overlay(alignment: .topTrailing) {
+                    // QR Scanner Button (Top Right)
+                    Button(action: { showQRScanner = true }) {
+                        ZStack {
+                            Circle()
+                                .fill(themeManager.currentTheme.accentColor.gradient)
+                                .frame(width: 50, height: 50)
+                                .shadow(color: themeManager.currentTheme.accentColor.opacity(0.4), radius: 8, x: 0, y: 2)
+                            
+                            Image(systemName: "qrcode.viewfinder")
+                                .font(.system(size: 22))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.trailing, 16)
+                    .padding(.top, 50)
+                }
+                .fullScreenCover(isPresented: $showQRScanner) {
+                    QRCodeScannerView()
+                }
             }
-            .padding()
-            .navigationTitle("My Profile")
         }
+        .preferredColorScheme(.dark)
+    }
+    
+    @ViewBuilder
+    private var sidebarContent: some View {
+        List {
+            NavigationLink {
+                StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
+            } label: {
+                Label("Study Sessions", systemImage: "book.fill")
+            }
+            
+            NavigationLink {
+                StudyBuddyRecommendationView()
+            } label: {
+                Label("Discover", systemImage: "person.2.fill")
+            }
+            
+            NavigationLink {
+                AcademicDashboardView()
+            } label: {
+                Label("Progress", systemImage: "chart.bar.fill")
+            }
+            
+            NavigationLink {
+                MapView()
+                    .environmentObject(mapViewModel)
+            } label: {
+                Label("Study Spots", systemImage: "map.fill")
+            }
+            
+            NavigationLink {
+                BlogFeedView()
+                    .environmentObject(blogViewModel)
+            } label: {
+                Label("Feed", systemImage: "newspaper.fill")
+            }
+            
+            NavigationLink {
+                ProfileView()
+            } label: {
+                Label("Profile", systemImage: "person.fill")
+            }
+        }
+        .navigationTitle("ShareACoffee")
+        .listStyle(.sidebar)
     }
 }
 
 #Preview {
     MainTabView()
         .environmentObject(AuthenticationViewModel())
-        .environmentObject(ThemeManager.shared)
 }

@@ -1,0 +1,319 @@
+import SwiftUI
+import ShareACoffeeCore
+import ShareACoffeeAuth
+import ShareACoffeeStudy
+import ShareACoffeeCoffee
+import ShareACoffeeSocial
+import ShareACoffeeBlog
+import ShareACoffeeDiscovery
+import ShareACoffeeProfile
+
+struct CreatePostView: View {
+    @EnvironmentObject var blogViewModel: BlogViewModel
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @Environment(\.dismiss) var dismiss
+    
+    let editingPost: BlogPost?
+    
+    @State private var title = ""
+    @State private var content = ""
+    @State private var coffeeShopName = ""
+    @State private var selectedTags: Set<String> = []
+    @State private var customTag = ""
+    @State private var hasMeetupDate = false
+    @State private var meetupDate = Date()
+    @State private var isStudyMeetup = false
+    @State private var studyCourse = ""
+    @State private var studyTopic = ""
+    @State private var maxAttendees = 5
+    
+    private let suggestedTags = ["Study Meetup", "Group Study", "Exam Prep", "Project Collaboration", "Tutoring", "Study Tips", "Course Help"]
+    
+    init(editingPost: BlogPost? = nil) {
+        self.editingPost = editingPost
+    }
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                // Form sections here
+                Section("Post Details") {
+                    TextField("Title", text: $title)
+                    
+                    ZStack(alignment: .topLeading) {
+                        if content.isEmpty {
+                            Text("Share study tips, organize a group session, or ask for course help...")
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 8)
+                        }
+                        
+                        TextEditor(text: $content)
+                            .frame(minHeight: 100)
+                    }
+                }
+                
+                Section("Coffee Shop (Optional)") {
+                    TextField("Coffee Shop Name", text: $coffeeShopName)
+                }
+                
+                Section("Study Meetup (Optional)") {
+                    Toggle("This is a study meetup", isOn: $isStudyMeetup)
+                    
+                    if isStudyMeetup {
+                        TextField("Course Code (e.g., CS 101)", text: $studyCourse)
+                        TextField("Study Topic (e.g., Midterm Review)", text: $studyTopic)
+                        
+                        Stepper("Max Attendees: \(maxAttendees)", value: $maxAttendees, in: 3...15)
+                        Text("Group study works best with 3-8 people")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Section("Meetup Date (Optional)") {
+                    Toggle("Set Meetup Date", isOn: $hasMeetupDate)
+                    
+                    if hasMeetupDate {
+                        DatePicker("Date", selection: $meetupDate, in: Date()...)
+                    }
+                }
+                
+                Section("Tags") {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(suggestedTags, id: \.self) { tag in
+                                TagButton(
+                                    tag: tag,
+                                    isSelected: selectedTags.contains(tag)
+                                ) {
+                                    if selectedTags.contains(tag) {
+                                        selectedTags.remove(tag)
+                                    } else {
+                                        selectedTags.insert(tag)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    
+                    HStack {
+                        TextField("Add custom tag", text: $customTag)
+                        
+                        Button("Add") {
+                            if !customTag.isEmpty {
+                                selectedTags.insert(customTag)
+                                customTag = ""
+                            }
+                        }
+                        .disabled(customTag.isEmpty)
+                    }
+                    
+                    if !selectedTags.isEmpty {
+                        FlowLayout(spacing: 8) {
+                            ForEach(Array(selectedTags), id: \.self) { tag in
+                                HStack(spacing: 4) {
+                                    Text("#\(tag)")
+                                        .font(.caption)
+                                    
+                                    Button {
+                                        selectedTags.remove(tag)
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .font(.caption)
+                                    }
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.darkSecondary)
+                                .foregroundColor(.primaryPink)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.primaryPink.opacity(0.3), lineWidth: 1)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundGradient)
+            .navigationTitle(editingPost == nil ? "Create Post" : "Edit Post")
+            .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
+            .onAppear {
+                loadPostData()
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        print("📝 [CreatePost] Post button tapped")
+                        print("📝 [CreatePost] Title: '\(title)'")
+                        print("📝 [CreatePost] Content: '\(content)'")
+                        print("📝 [CreatePost] isValid: \(isValid)")
+                        
+                        Task {
+                            guard let currentUser = authViewModel.currentUser else {
+                                print("❌ [CreatePost] No current user found")
+                                return
+                            }
+                            
+                            print("✅ [CreatePost] Current user: \(currentUser.fullName)")
+                            print("📝 [CreatePost] Creating post...")
+                            
+                            if let existingPost = editingPost {
+                                // Update existing post
+                                var updatedPost = existingPost
+                                updatedPost.title = title
+                                updatedPost.content = content
+                                updatedPost.tags = Array(selectedTags)
+                                updatedPost.coffeeShopName = coffeeShopName.isEmpty ? nil : coffeeShopName
+                                updatedPost.meetupDate = hasMeetupDate ? meetupDate : nil
+                                updatedPost.studyCourse = isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil
+                                updatedPost.studyTopic = isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil
+                                updatedPost.isStudyMeetup = isStudyMeetup
+                                updatedPost.maxAttendees = isStudyMeetup ? maxAttendees : nil
+                                updatedPost.updatedAt = Date()
+                                
+                                await blogViewModel.updatePost(updatedPost)
+                                print("✅ [CreatePost] Post updated successfully")
+                            } else {
+                                // Create new post
+                                await blogViewModel.createPost(
+                                    title: title,
+                                    content: content,
+                                    tags: Array(selectedTags),
+                                    coffeeShopId: nil,
+                                    coffeeShopName: coffeeShopName.isEmpty ? nil : coffeeShopName,
+                                    meetupDate: hasMeetupDate ? meetupDate : nil,
+                                    currentUser: currentUser,
+                                    studyCourse: isStudyMeetup && !studyCourse.isEmpty ? studyCourse : nil,
+                                    studyTopic: isStudyMeetup && !studyTopic.isEmpty ? studyTopic : nil,
+                                    isStudyMeetup: isStudyMeetup,
+                                    maxAttendees: isStudyMeetup ? maxAttendees : nil
+                                )
+                                print("✅ [CreatePost] Post created successfully")
+                            }
+                            
+                            print("📝 [CreatePost] Dismissing view...")
+                            dismiss()
+                        }
+                    } label: {
+                        Text("Post")
+                            .foregroundColor(isValid ? Color.primaryPink : .gray)
+                            .fontWeight(.semibold)
+                    }
+                    .disabled(!isValid)
+                }
+            }
+        }
+    }
+    
+    private var isValid: Bool {
+        !title.isEmpty && !content.isEmpty
+    }
+    
+    private func loadPostData() {
+        guard let post = editingPost else { return }
+        
+        title = post.title
+        content = post.content
+        coffeeShopName = post.coffeeShopName ?? ""
+        selectedTags = Set(post.tags)
+        hasMeetupDate = post.meetupDate != nil
+        if let date = post.meetupDate {
+            meetupDate = date
+        }
+        isStudyMeetup = post.isStudyMeetup
+        studyCourse = post.studyCourse ?? ""
+        studyTopic = post.studyTopic ?? ""
+        maxAttendees = post.maxAttendees ?? 5
+    }
+}
+
+struct TagButton: View {
+    let tag: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text("#\(tag)")
+                .font(.caption)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+        }
+        .background(isSelected ? AnyShapeStyle(Color.accentGradient) : AnyShapeStyle(Color.darkSecondary))
+        .foregroundColor(isSelected ? .white : .secondaryText)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isSelected ? Color.clear : Color.primaryPink.opacity(0.2), lineWidth: 1)
+        )
+    }
+}
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = FlowResult(
+            in: proposal.replacingUnspecifiedDimensions().width,
+            subviews: subviews,
+            spacing: spacing
+        )
+        return result.size
+    }
+    
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = FlowResult(
+            in: bounds.width,
+            subviews: subviews,
+            spacing: spacing
+        )
+        for (index, subview) in subviews.enumerated() {
+            subview.place(at: CGPoint(x: bounds.minX + result.positions[index].x, y: bounds.minY + result.positions[index].y), proposal: .unspecified)
+        }
+    }
+    
+    struct FlowResult {
+        var size: CGSize = .zero
+        var positions: [CGPoint] = []
+        
+        init(in maxWidth: CGFloat, subviews: Subviews, spacing: CGFloat) {
+            var currentX: CGFloat = 0
+            var currentY: CGFloat = 0
+            var lineHeight: CGFloat = 0
+            
+            for subview in subviews {
+                let size = subview.sizeThatFits(.unspecified)
+                
+                if currentX + size.width > maxWidth && currentX > 0 {
+                    currentX = 0
+                    currentY += lineHeight + spacing
+                    lineHeight = 0
+                }
+                
+                positions.append(CGPoint(x: currentX, y: currentY))
+                lineHeight = max(lineHeight, size.height)
+                currentX += size.width + spacing
+            }
+            
+            self.size = CGSize(width: maxWidth, height: currentY + lineHeight)
+        }
+    }
+}
+
+#Preview {
+    CreatePostView()
+        .environmentObject(BlogViewModel())
+        .environmentObject(AuthenticationViewModel())
+}
