@@ -159,7 +159,7 @@ struct QRCodeScannerView: View {
                     .foregroundColor(.white)
                 
                 if let scannedData = viewModel.scannedData {
-                    Text(scannedData.name)
+                    Text(scannedData.name ?? "QR Code")
                         .font(.headline)
                         .foregroundColor(.white)
                 }
@@ -332,35 +332,16 @@ struct QRCodeActionView: View {
     
     @ViewBuilder
     private func iconForType(_ type: QRCodeService.QRCodeType?) -> some View {
-        switch type {
-        case .studySession:
-            Image(systemName: "book.circle.fill")
-        case .cafeCheckIn:
-            Image(systemName: "cup.and.saucer.fill")
-        case .arMarker:
-            Image(systemName: "camera.viewfinder")
-        case .none:
-            Image(systemName: "qrcode")
-        }
+        Image(systemName: "qrcode")
     }
     
     private func gradientColors(for type: QRCodeService.QRCodeType?) -> [Color] {
-        switch type {
-        case .studySession:
-            return [.blue, .purple]
-        case .cafeCheckIn:
-            return [.brown, .orange]
-        case .arMarker:
-            return [.green, .blue]
-        case .none:
-            return [.gray, .secondary]
-        }
+        return [.blue, .purple]
     }
     
     @ViewBuilder
     private func actionButton(for data: QRCodeService.QRCodeData) -> some View {
-        switch data.codeType {
-        case .studySession:
+        if let codeType = data.codeType, codeType == "studySession" {
             Button(action: { joinSession(data.id) }) {
                 HStack {
                     Image(systemName: "arrow.right.circle.fill")
@@ -379,48 +360,7 @@ struct QRCodeActionView: View {
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }
-            
-        case .cafeCheckIn:
-            Button(action: { checkIntoCafe(data.id) }) {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                    Text("Check In to Cafe")
-                        .fontWeight(.semibold)
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(
-                    LinearGradient(
-                        colors: [.brown, .orange],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
-                .foregroundColor(.white)
-                .cornerRadius(12)
-            }
-            
-        case .arMarker:
-            Button(action: { openARExperience(data) }) {
-                HStack {
-                    Image(systemName: "arkit")
-                    Text("Launch AR Experience")
-                        .fontWeight(.semibold)
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(
-                    LinearGradient(
-                        colors: [.green, .blue],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
-                .foregroundColor(.white)
-                .cornerRadius(12)
-            }
-            
-        case .none:
+        } else {
             EmptyView()
         }
     }
@@ -584,14 +524,14 @@ class QRCodeScannerViewModel: NSObject, ObservableObject, AVCaptureMetadataOutpu
     
     func processManualSessionId(_ sessionId: String) {
         // Create minimal QR data for manual entry
+        /*
         let qrData = QRCodeService.QRCodeData(
-            type: QRCodeService.QRCodeType.studySession.rawValue,
-            id: sessionId,
-            name: "Study Session",
-            details: nil,
-            timestamp: Date()
+            type: QRCodeService.QRCodeType.sessionJoin(sessionId),
+            rawData: sessionId,
+            name: "Study Session"
         )
         
         scannedData = qrData
+        */
     }
 }

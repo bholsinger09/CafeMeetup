@@ -105,6 +105,39 @@ public class ARCafeFinderViewModel: NSObject, ObservableObject, CLLocationManage
         }
         return normalized
     }
+    
+    // MARK: - AR Methods
+    
+    public func calculateARPosition(for cafe: ARCafeLocation) -> SCNVector3 {
+        let distance = Float(cafe.distance) / 1000.0 // Convert to approximate scene units
+        let bearing = Float((cafe.bearing ?? 0) * .pi / 180.0)
+        
+        let x = distance * sin(bearing)
+        let z = -distance * cos(bearing)
+        
+        return SCNVector3(x, 0, z)
+    }
+    
+    public func updateCafeVisibility() {
+        guard let heading = userHeading else { return }
+        
+        for i in 0..<nearbyCafes.count {
+            let cafe = nearbyCafes[i]
+            guard let bearing = cafe.bearing else { continue }
+            
+            let angleDiff = abs(bearing - heading.trueHeading)
+            nearbyCafes[i].isVisible = angleDiff < 30.0 // Show cafes within 30 degrees
+        }
+    }
+    
+    public func handleARError(_ error: Error) {
+        errorMessage = error.localizedDescription
+        stopARSession()
+    }
+    
+    public func clearError() {
+        errorMessage = nil
+    }
 }
 
 // MARK: - Double Extensions for angle conversion

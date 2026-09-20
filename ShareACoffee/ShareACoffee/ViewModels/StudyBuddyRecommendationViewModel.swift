@@ -10,6 +10,8 @@ public class StudyBuddyRecommendationViewModel: ObservableObject {
     @Published public var isLoading = false
     @Published public var errorMessage: String?
     @Published public var currentUser: User?
+    @Published public var todayMatches: [StudyBuddyRecommendation] = []
+    @Published public var error: String?
     
     public init() {
         loadRecommendations()
@@ -30,4 +32,20 @@ public class StudyBuddyRecommendationViewModel: ObservableObject {
     public func passOnRecommendation(_ recommendation: StudyBuddyRecommendation) {
         print("Passed on: \(recommendation.user.fullName)")
     }
+    
+    public func handleSwipe(_ action: SwipeAction, for recommendation: StudyBuddyRecommendation) {
+        switch action {
+        case .like:
+            likeRecommendation(recommendation)
+        case .pass:
+            passOnRecommendation(recommendation)
+        case .superLike:
+            print("Super liked: \(recommendation.user.fullName)")
+        }
+    }
+    
+    public func refresh() {
+        loadRecommendations()
+    }
 }
+

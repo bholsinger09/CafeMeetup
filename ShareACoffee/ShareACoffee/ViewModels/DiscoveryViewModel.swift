@@ -9,6 +9,9 @@ public class DiscoveryViewModel: ObservableObject {
     @Published public var recommendations: [StudyBuddyRecommendation] = []
     @Published public var isLoading = false
     @Published public var errorMessage: String?
+    @Published public var currentUser: User?
+    @Published public var showMatchPopup = false
+    @Published public var selectedRecommendation: StudyBuddyRecommendation?
     
     public init() {
         loadRecommendations()

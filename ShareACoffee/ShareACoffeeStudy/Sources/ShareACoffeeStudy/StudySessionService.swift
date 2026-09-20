@@ -21,7 +21,7 @@ public class StudySessionService: ObservableObject {
     
     // MARK: - Create Study Session
     
-    func createStudySession(
+    public func createStudySession(
         courseCode: String,
         courseName: String,
         topic: String,
