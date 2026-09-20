@@ -18,21 +18,20 @@ struct MainTabView: View {
     @State private var showQRScanner = false
     
     var body: some View {
-        Group {
-            if horizontalSizeClass == .regular {
-                // iPad layout with sidebar
-                NavigationSplitView(columnVisibility: .constant(.detailOnly)) {
-                    sidebarContent
-                } detail: {
+        if horizontalSizeClass == .regular {
+            // iPad layout with sidebar
+            NavigationSplitView(columnVisibility: .constant(.detailOnly)) {
+                sidebarContent
+            } detail: {
+                StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
+            }
+            .navigationSplitViewStyle(.balanced)
+        } else {
+            // iPhone layout with tab bar
+            TabView {
+                // PRIMARY TAB: Study Sessions (emphasizes academic collaboration)
+                NavigationStack {
                     StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
-                }
-                .navigationSplitViewStyle(.balanced)
-            } else {
-                // iPhone layout with tab bar
-                TabView {
-                    // PRIMARY TAB: Study Sessions (emphasizes academic collaboration)
-                    NavigationStack {
-                        StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
                     }
                     .tabItem {
                         Label("Study Sessions", systemImage: "book.fill")
@@ -105,7 +104,6 @@ struct MainTabView: View {
                 .fullScreenCover(isPresented: $showQRScanner) {
                     QRCodeScannerView()
                 }
-            }
         }
         .preferredColorScheme(.dark)
     }

@@ -37,4 +37,28 @@ public final class ThemeManager: NSObject, ObservableObject {
 public enum AppTheme {
     case light
     case dark
+    
+    /// Primary accent color for the theme
+    public var accentColor: Color {
+        return Color.primaryPink
+    }
+    
+    /// Card background color
+    public var cardBackgroundColor: Color {
+        switch self {
+        case .light:
+            return Color(red: 0.95, green: 0.95, blue: 1.0)
+        case .dark:
+            return Color(red: 0.2, green: 0.2, blue: 0.3)
+        }
+    }
+    
+    /// Primary gradient
+    public var primaryGradient: LinearGradient {
+        return LinearGradient(
+            gradient: Gradient(colors: [Color.primaryPink, Color.purple]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
 }

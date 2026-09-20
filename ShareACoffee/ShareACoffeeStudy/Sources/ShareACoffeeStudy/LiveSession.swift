@@ -67,7 +67,7 @@ public struct PomodoroState: Codable, Equatable {
         }
     }
     
-    init(
+    public init(
         isRunning: Bool = false,
         currentPhase: PomodoroPhase = .work,
         secondsRemaining: Int = 25 * 60,

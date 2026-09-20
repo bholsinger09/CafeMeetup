@@ -299,7 +299,7 @@ struct QRCodeActionView: View {
                                 HStack {
                                     Text(key.capitalized + ":")
                                         .foregroundColor(.secondary)
-                                    Text(value)
+                                    Text(String(describing: value))
                                         .fontWeight(.medium)
                                 }
                             }
@@ -331,11 +331,11 @@ struct QRCodeActionView: View {
     }
     
     @ViewBuilder
-    private func iconForType(_ type: QRCodeService.QRCodeType?) -> some View {
+    private func iconForType(_ type: String?) -> some View {
         Image(systemName: "qrcode")
     }
     
-    private func gradientColors(for type: QRCodeService.QRCodeType?) -> [Color] {
+    private func gradientColors(for type: String?) -> [Color] {
         return [.blue, .purple]
     }
     
@@ -495,13 +495,13 @@ class QRCodeScannerViewModel: NSObject, ObservableObject, AVCaptureMetadataOutpu
         guard !scanSuccess else { return }
         
         // Parse QR code
-        guard let qrData = QRCodeService.shared.parseQRCode(from: code) else {
+        guard let qrData = QRCodeService.shared.parseQRCode(code) else {
             errorMessage = "Invalid QR code format"
             return
         }
         
         // Validate QR code
-        guard QRCodeService.shared.isQRCodeValid(qrData) else {
+        guard QRCodeService.shared.isQRCodeValid(code) else {
             errorMessage = "This QR code has expired"
             return
         }

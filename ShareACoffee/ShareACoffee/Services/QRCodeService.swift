@@ -1,6 +1,7 @@
 import Foundation
 import Vision
 import CoreImage
+import UIKit
 
 /// Service for generating and reading QR codes
 public final class QRCodeService: Sendable {
@@ -47,18 +48,19 @@ public final class QRCodeService: Sendable {
     // MARK: - QR Code Generation
     
     /// Generate a QR code image from text
-    public func generateQRCode(from string: String) -> CIImage? {
+    public func generateQRCode(from string: String) -> UIImage? {
         guard let data = string.data(using: .utf8) else { return nil }
         
         let filter = CIFilter(name: "CIQRCodeGenerator")
         filter?.setValue(data, forKey: "inputMessage")
         filter?.setValue("H", forKey: "inputCorrectionLevel")
         
-        return filter?.outputImage
+        guard let ciImage = filter?.outputImage else { return nil }
+        return UIImage(ciImage: ciImage)
     }
     
     /// Generate QR code for study session
-    public func generateStudySessionQRCode(sessionId: String) -> CIImage? {
+    public func generateStudySessionQRCode(sessionId: String) -> UIImage? {
         let qrString = "session:\(sessionId)"
         return generateQRCode(from: qrString)
     }

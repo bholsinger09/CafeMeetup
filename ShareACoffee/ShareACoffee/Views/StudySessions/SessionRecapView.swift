@@ -243,7 +243,7 @@ struct SessionRecapView: View {
             
             // Save all images to photos
             for image in images {
-                ViewRenderer.saveToPhotos(image: image) { success, error in
+                ViewRenderer.saveToPhotos(image) { success, error in
                     // Handle individual save results if needed
                 }
             }
@@ -278,7 +278,7 @@ struct SessionRecapView: View {
                 return
             }
             
-            ViewRenderer.saveToPhotos(image: image) { success, error in
+            ViewRenderer.saveToPhotos(image) { success, error in
                 Task { @MainActor in
                     isGeneratingImages = false
                     saveSuccess = success
@@ -294,13 +294,13 @@ struct SessionRecapView: View {
         var images: [UIImage] = []
         
         // Summary card
-        if let image = ViewRenderer.renderToSquare(view: SessionSummaryCard(recapData: recapData)) {
+        if let image = ViewRenderer.renderToSquare(SessionSummaryCard(recapData: recapData)) {
             images.append(image)
         }
         
         // Pomodoro stats
         if let pomodoroStats = recapData.pomodoroStats,
-           let image = ViewRenderer.renderToSquare(view: PomodoroStatsCard(
+           let image = ViewRenderer.renderToSquare(PomodoroStatsCard(
                stats: pomodoroStats,
                sessionInfo: "\(recapData.studySession.courseCode): \(recapData.studySession.studyTopic)",
                participantCount: recapData.participantCount
@@ -310,7 +310,7 @@ struct SessionRecapView: View {
         
         // Whiteboard stats
         if let whiteboardStats = recapData.whiteboardStats, whiteboardStats.hasContent,
-           let image = ViewRenderer.renderToSquare(view: WhiteboardStatsCard(
+           let image = ViewRenderer.renderToSquare(WhiteboardStatsCard(
                stats: whiteboardStats,
                sessionInfo: "\(recapData.studySession.courseCode): \(recapData.studySession.studyTopic)"
            )) {
@@ -319,7 +319,7 @@ struct SessionRecapView: View {
         
         // Quiz results
         if let quizSummary = recapData.quizSummary,
-           let image = ViewRenderer.renderToSquare(view: QuizResultsCard(
+           let image = ViewRenderer.renderToSquare(QuizResultsCard(
                summary: quizSummary,
                sessionInfo: recapData.studySession.courseCode
            )) {
@@ -328,7 +328,7 @@ struct SessionRecapView: View {
         
         // Poll results
         for poll in recapData.topPolls {
-            if let image = ViewRenderer.renderToSquare(view: PollResultsCard(
+            if let image = ViewRenderer.renderToSquare(PollResultsCard(
                 poll: poll,
                 sessionInfo: recapData.studySession.courseCode
             )) {
@@ -344,7 +344,7 @@ struct SessionRecapView: View {
         
         // Determine which card based on index
         if index == 0 {
-            return ViewRenderer.renderToSquare(view: SessionSummaryCard(recapData: recapData))
+            return ViewRenderer.renderToSquare(SessionSummaryCard(recapData: recapData))
         }
         
         var currentIndex = 1
@@ -352,7 +352,7 @@ struct SessionRecapView: View {
         // Pomodoro
         if let pomodoroStats = recapData.pomodoroStats {
             if index == currentIndex {
-                return ViewRenderer.renderToSquare(view: PomodoroStatsCard(
+                return ViewRenderer.renderToSquare(PomodoroStatsCard(
                     stats: pomodoroStats,
                     sessionInfo: sessionInfo,
                     participantCount: recapData.participantCount
@@ -364,7 +364,7 @@ struct SessionRecapView: View {
         // Whiteboard
         if let whiteboardStats = recapData.whiteboardStats, whiteboardStats.hasContent {
             if index == currentIndex {
-                return ViewRenderer.renderToSquare(view: WhiteboardStatsCard(
+                return ViewRenderer.renderToSquare(WhiteboardStatsCard(
                     stats: whiteboardStats,
                     sessionInfo: sessionInfo
                 ))
@@ -375,7 +375,7 @@ struct SessionRecapView: View {
         // Quiz
         if let quizSummary = recapData.quizSummary {
             if index == currentIndex {
-                return ViewRenderer.renderToSquare(view: QuizResultsCard(
+                return ViewRenderer.renderToSquare(QuizResultsCard(
                     summary: quizSummary,
                     sessionInfo: recapData.studySession.courseCode
                 ))
@@ -386,7 +386,7 @@ struct SessionRecapView: View {
         // Polls
         let pollIndex = index - currentIndex
         if pollIndex >= 0 && pollIndex < recapData.topPolls.count {
-            return ViewRenderer.renderToSquare(view: PollResultsCard(
+            return ViewRenderer.renderToSquare(PollResultsCard(
                 poll: recapData.topPolls[pollIndex],
                 sessionInfo: recapData.studySession.courseCode
             ))

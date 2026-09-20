@@ -5,7 +5,7 @@ import Combine
 /// Service for managing real-time collaborative features during live study sessions
 /// Note: This is a mock implementation. For production, integrate with Firebase Realtime Database.
 public class LiveSessionService {
-    nonisolated(unsafe) static let shared = LiveSessionService()
+    public nonisolated(unsafe) static let shared = LiveSessionService()
     
     private init() {}
     
@@ -70,7 +70,7 @@ public class LiveSessionService {
     }
     
     /// Observe active participants
-    func observeActiveParticipants(sessionId: String, completion: @escaping @Sendable ([String]) -> Void) {
+    public func observeActiveParticipants(sessionId: String, completion: @escaping @Sendable ([String]) -> Void) {
         // Create subject if doesn't exist
         if participantsSubjects[sessionId] == nil {
             participantsSubjects[sessionId] = PassthroughSubject<[String], Never>()
@@ -148,7 +148,7 @@ public class LiveSessionService {
     // MARK: - Pomodoro Timer Management
     
     /// Update Pomodoro timer state
-    func updatePomodoroState(sessionId: String, state: PomodoroState, completion: @escaping @Sendable (Bool) -> Void) {
+    public func updatePomodoroState(sessionId: String, state: PomodoroState, completion: @escaping @Sendable (Bool) -> Void) {
         pomodoroStates[sessionId] = state
         
         // Notify observers
@@ -162,7 +162,7 @@ public class LiveSessionService {
     }
     
     /// Observe Pomodoro timer state
-    func observePomodoroState(sessionId: String, completion: @escaping @Sendable (PomodoroState) -> Void) {
+    public func observePomodoroState(sessionId: String, completion: @escaping @Sendable (PomodoroState) -> Void) {
         // Create subject if doesn't exist
         if pomodoroSubjects[sessionId] == nil {
             pomodoroSubjects[sessionId] = PassthroughSubject<PomodoroState, Never>()

@@ -233,10 +233,7 @@ struct QRCodeGeneratorView: View {
     
     private func generateQRCode() {
         qrCodeImage = QRCodeService.shared.generateStudySessionQRCode(
-            sessionId: studySession.id,
-            sessionName: "\(studySession.courseCode): \(studySession.studyTopic)",
-            cafeName: studySession.cafeName,
-            hostName: studySession.hostName
+            sessionId: studySession.id
         )
     }
     
