@@ -24,36 +24,23 @@ public struct WelcomeView: View {
                 VStack(spacing: 0) {
                     HStack(spacing: 40) {
                         Text("☕")
-                            .font(.system(size: 80))
-                            .opacity(0.08)
+                            .font(.system(size: 100))
+                            .opacity(0.25)
                             .offset(y: animate ? -20 : 0)
                         
                         Text("📚")
-                            .font(.system(size: 80))
-                            .opacity(0.08)
+                            .font(.system(size: 100))
+                            .opacity(0.25)
                             .offset(y: animate ? 20 : 0)
                         
-                        Text("💡")
-                            .font(.system(size: 80))
-                            .opacity(0.08)
+                        Text("🍵")
+                            .font(.system(size: 100))
+                            .opacity(0.25)
                             .offset(y: animate ? -15 : 0)
                     }
-                    .padding(.top, 40)
+                    .padding(.top, 60)
                     
                     Spacer()
-                    
-                    HStack(spacing: 50) {
-                        Text("🎓")
-                            .font(.system(size: 70))
-                            .opacity(0.08)
-                            .offset(y: animate ? 15 : 0)
-                        
-                        Text("🔥")
-                            .font(.system(size: 70))
-                            .opacity(0.08)
-                            .offset(y: animate ? -20 : 0)
-                    }
-                    .padding(.bottom, 50)
                 }
                 .ignoresSafeArea()
                 
