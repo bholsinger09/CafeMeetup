@@ -338,14 +338,22 @@ struct MeetupInterestsListView: View {
     }
 }
 
+/*
 #Preview {
     BlogPostDetailView(post: BlogPost(
         authorId: "1",
         authorName: "John Doe",
         title: "Coffee Meetup",
         content: "Anyone want to grab coffee this weekend?",
-        tags: ["Meetup", "Coffee Chat"]
+        tags: ["Meetup", "Coffee Chat"],
+        images: [],
+        likeCount: 0,
+        commentCount: 0,
+        meetupInterestCount: 0,
+        createdAt: Date(),
+        updatedAt: Date()
     ))
     .environmentObject(BlogViewModel())
     .environmentObject(AuthenticationViewModel())
 }
+*/

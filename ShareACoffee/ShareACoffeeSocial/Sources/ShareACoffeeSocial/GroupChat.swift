@@ -2,7 +2,7 @@ import Foundation
 
 /// GroupChat - For study groups of 3+ people
 /// Emphasizes academic collaboration over 1-on-1 messaging
-struct GroupChat: Identifiable, Codable, Equatable {
+public struct GroupChat: Identifiable, Codable, Equatable {
     public let id: String
     public var name: String // e.g., "CS 101 Study Group"
     public var memberIds: [String] // User IDs
@@ -55,7 +55,7 @@ struct GroupChat: Identifiable, Codable, Equatable {
 }
 
 /// GroupMessage - Messages within a group chat
-struct GroupMessage: Identifiable, Codable, Equatable {
+public struct GroupMessage: Identifiable, Codable, Equatable {
     public let id: String
     public let groupChatId: String
     public let senderId: String
@@ -66,7 +66,7 @@ struct GroupMessage: Identifiable, Codable, Equatable {
     public var messageType: MessageType
     public var attachmentURL: String? // For shared study materials
     
-    enum MessageType: String, Codable {
+    public enum MessageType: String, Codable {
         case text = "text"
         case image = "image"
         case file = "file" // Study materials, notes, PDFs

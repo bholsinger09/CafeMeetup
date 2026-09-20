@@ -11,7 +11,7 @@ public struct StudyBuddyRecommendation: Identifiable, Equatable {
     public let features: MatchFeatures
     public let timestamp: Date
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         user: User,
         compatibilityScore: Double,
@@ -91,6 +91,16 @@ public struct MatchReason: Identifiable, Equatable {
     public let description: String
     public let impact: Double // How much this reason contributes to the score (0-1)
     
+    public init(
+        category: ReasonCategory,
+        description: String,
+        impact: Double
+    ) {
+        self.category = category
+        self.description = description
+        self.impact = impact
+    }
+    
     public enum ReasonCategory: String, CaseIterable {
         case sharedCourse = "Shared Course"
         case sameMajor = "Same Major"
@@ -167,7 +177,7 @@ public struct MatchFeatures: Equatable {
     // MARK: - Initializers
     
     /// Convenience initializer for production use - calculates features from user profiles
-    init(currentUser: User, candidateUser: User, sharedCourses: Int) {
+    public init(currentUser: User, candidateUser: User, sharedCourses: Int) {
         // Course & Academic
         self.sharedCoursesCount = sharedCourses
         let currentCoursesCount = currentUser.currentCourses?.count ?? 0
@@ -214,7 +224,7 @@ public struct MatchFeatures: Equatable {
     }
     
     /// Direct initializer for testing and previews
-    init(
+    public init(
         sharedCoursesCount: Int,
         courseOverlapRatio: Double,
         sameMajor: Bool,

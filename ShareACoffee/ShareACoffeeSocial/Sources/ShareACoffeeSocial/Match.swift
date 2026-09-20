@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Match Model
-struct Match: Identifiable, Codable, Equatable {
+public struct Match: Identifiable, Codable, Equatable {
     public let id: String
     public let userId1: String
     public let userId2: String
@@ -10,7 +10,7 @@ struct Match: Identifiable, Codable, Equatable {
     public var lastMessageAt: Date?
     public var unreadCount: Int
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         userId1: String,
         userId2: String,
@@ -40,13 +40,13 @@ struct Match: Identifiable, Codable, Equatable {
 }
 
 // MARK: - Like Model
-struct UserLike: Identifiable, Codable, Equatable {
+public struct UserLike: Identifiable, Codable, Equatable {
     public let id: String
     public let userId: String // Person who liked
     public let likedUserId: String // Person being liked
     public var createdAt: Date
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         userId: String,
         likedUserId: String,

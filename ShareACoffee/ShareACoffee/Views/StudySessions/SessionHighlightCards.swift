@@ -573,7 +573,7 @@ struct SessionSummaryCard: View {
 }
 
 // MARK: - Previews
-
+/*
 #Preview("Pomodoro Card") {
     PomodoroStatsCard(
         stats: SessionRecapData.PomodoroStats(
@@ -611,3 +611,4 @@ struct SessionSummaryCard: View {
 #Preview("Summary Card") {
     SessionSummaryCard(recapData: SessionRecapData.sample)
 }
+*/

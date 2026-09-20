@@ -214,7 +214,7 @@ public struct CafeCheckIn: Identifiable, Codable {
 }
 
 /// Coffee Rewards - Gamification system unique to StudyBrew
-struct CoffeeRewards: Codable {
+public struct CoffeeRewards: Codable {
     public var points: Int
     public var level: Int
     public var streak: Int // consecutive days of activity

@@ -397,7 +397,8 @@ struct SessionRecapView: View {
 }
 
 // MARK: - Preview
-
+/*
 #Preview {
     SessionRecapView(recapData: SessionRecapData.sample)
 }
+*/

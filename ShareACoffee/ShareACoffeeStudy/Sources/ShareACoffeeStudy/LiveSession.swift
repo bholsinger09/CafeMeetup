@@ -154,7 +154,7 @@ public struct CGPointCodable: Codable, Equatable {
 }
 
 /// Live Poll for quick voting during study sessions
-struct LivePoll: Identifiable, Codable, Equatable {
+public struct LivePoll: Identifiable, Codable, Equatable {
     public let id: String
     public let studySessionId: String
     public let createdBy: String
@@ -168,7 +168,7 @@ struct LivePoll: Identifiable, Codable, Equatable {
     public let createdAt: Date
     public var closedAt: Date?
     
-    struct PollOption: Codable, Equatable, Identifiable {
+    public struct PollOption: Codable, Equatable, Identifiable {
         public let id: String
         public let text: String
         public var voteCount: Int
@@ -210,7 +210,7 @@ struct LivePoll: Identifiable, Codable, Equatable {
 }
 
 /// Live Quiz for group learning
-struct LiveQuiz: Identifiable, Codable, Equatable {
+public struct LiveQuiz: Identifiable, Codable, Equatable {
     public let id: String
     public let studySessionId: String
     public let createdBy: String
@@ -223,7 +223,7 @@ struct LiveQuiz: Identifiable, Codable, Equatable {
     public let createdAt: Date
     public var completedAt: Date?
     
-    struct QuizQuestion: Identifiable, Codable, Equatable {
+    public struct QuizQuestion: Identifiable, Codable, Equatable {
         public let id: String
         public let question: String
         public let options: [String]

@@ -12,9 +12,9 @@ public class StudySessionService: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    let currentUserId: String
+    public let currentUserId: String
     
-    init(userId: String) {
+    public init(userId: String) {
         self.currentUserId = userId
         loadMockData()
     }

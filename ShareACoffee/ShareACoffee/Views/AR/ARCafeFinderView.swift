@@ -416,7 +416,7 @@ struct RoundedCorner: Shape {
                 city: "Boston",
                 state: "MA",
                 zipCode: "02101",
-                location: Location(latitude: 42.3601, longitude: -71.0589),
+                location: User.Location(latitude: 42.3601, longitude: -71.0589),
                 rating: 4.5,
                 amenities: []
             )

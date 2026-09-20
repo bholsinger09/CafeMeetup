@@ -1,7 +1,7 @@
 import Foundation
 import ShareACoffeeCore
 
-struct BlogPost: Identifiable, Codable {
+public struct BlogPost: Identifiable, Codable {
     public let id: String
     public let authorId: String
     public var authorName: String
