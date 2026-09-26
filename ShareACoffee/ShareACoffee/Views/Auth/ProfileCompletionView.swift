@@ -212,7 +212,7 @@ struct ProfileCompletionView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(isFormValid ? Color.accentGradient : LinearGradient(colors: [Color.gray], startPoint: .leading, endPoint: .trailing))
+                                .background(isFormValid ? Color.primaryGradient : LinearGradient(colors: [Color.gray], startPoint: .leading, endPoint: .trailing))
                                 .cornerRadius(12)
                                 .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                         }

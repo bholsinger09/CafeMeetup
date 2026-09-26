@@ -514,7 +514,7 @@ class LiveQuizViewModel: ObservableObject {
         isHost && (currentQuiz == nil || currentQuiz?.isActive == false)
     }
     
-    private let liveSessionService = LiveSessionService.shared
+    nonisolated(unsafe) private let liveSessionService = LiveSessionService.shared
     
     init(studySessionId: String, userId: String, userName: String, isHost: Bool) {
         self.studySessionId = studySessionId
@@ -526,9 +526,11 @@ class LiveQuizViewModel: ObservableObject {
     }
     
     func setupRealtimeListeners() {
-        liveSessionService.observeCurrentQuiz(sessionId: studySessionId) { [weak self] quiz in
-            DispatchQueue.main.async {
-                self?.currentQuiz = quiz
+        Task {
+            for await quiz in liveSessionService.quizStream(sessionId: studySessionId) {
+                await MainActor.run {
+                    self.currentQuiz = quiz
+                }
             }
         }
     }

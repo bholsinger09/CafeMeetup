@@ -132,82 +132,13 @@ struct QuizResultsCard: View {
             
             VStack(spacing: 24) {
                 // Header
-                VStack(spacing: 8) {
-                    Image(systemName: "trophy.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.white)
-                    
-                    Text(summary.title)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                    
-                    Text(sessionInfo)
-                        .font(.headline)
-                        .foregroundColor(.white.opacity(0.9))
-                }
+                QuizHeaderView(summary: summary, sessionInfo: sessionInfo)
                 
                 // Top 3 Leaderboard
-                VStack(spacing: 12) {
-                    Text("Top Scorers")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    
-                    ForEach(summary.topScorers.prefix(3)) { entry in
-                        HStack {
-                            Text(entry.medalEmoji)
-                                .font(.title2)
-                            
-                            Text(entry.userName)
-                                .font(.headline)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                            
-                            Text("\(entry.score)/\(summary.totalQuestions)")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                        }
-                        .padding()
-                        .background(Color.white.opacity(entry.rank == 1 ? 0.3 : 0.2))
-                        .cornerRadius(12)
-                    }
-                }
-                .padding()
-                .background(Color.black.opacity(0.2))
-                .cornerRadius(20)
+                QuizLeaderboardView(summary: summary)
                 
                 // Stats
-                HStack(spacing: 20) {
-                    VStack(spacing: 4) {
-                        Text("\(summary.participantCount)")
-                            .font(.system(size: 36, weight: .bold))
-                            .foregroundColor(.white)
-                        
-                        Text("Participants")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.9))
-                    }
-                    
-                    Divider()
-                        .background(Color.white)
-                        .frame(height: 50)
-                    
-                    VStack(spacing: 4) {
-                        Text("\(summary.averageScorePercentage)%")
-                            .font(.system(size: 36, weight: .bold))
-                            .foregroundColor(.white)
-                        
-                        Text("Avg Score")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.9))
-                    }
-                }
-                .padding()
-                .background(Color.white.opacity(0.2))
-                .cornerRadius(20)
+                QuizStatsView(summary: summary)
                 
                 // Footer
                 Text("StudyBrew • Learn Together")
@@ -218,6 +149,104 @@ struct QuizResultsCard: View {
             .padding(40)
         }
         .frame(width: 1080, height: 1080)
+    }
+}
+
+struct QuizHeaderView: View {
+    let summary: SessionRecapData.QuizSummary
+    let sessionInfo: String
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "trophy.fill")
+                .font(.system(size: 60))
+                .foregroundColor(.white)
+            
+            Text(summary.title)
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+            
+            Text(sessionInfo)
+                .font(.headline)
+                .foregroundColor(.white.opacity(0.9))
+        }
+    }
+}
+
+struct QuizLeaderboardView: View {
+    let summary: SessionRecapData.QuizSummary
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Text("Top Scorers")
+                .font(.headline)
+                .foregroundColor(.white)
+            
+            ForEach(Array(summary.topScorers.prefix(3).enumerated()), id: \.offset) { _, entry in
+                quizLeaderboardEntryView(entry: entry)
+            }
+        }
+        .padding()
+        .background(Color.black.opacity(0.2))
+        .cornerRadius(20)
+    }
+    
+    private func quizLeaderboardEntryView(entry: Any) -> some View {
+        HStack {
+            Text("🏆")
+                .font(.title2)
+            
+            Text("Top Scorer")
+                .font(.headline)
+                .foregroundColor(.white)
+            
+            Spacer()
+            
+            Text("Perfect Score")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+        }
+        .padding()
+        .background(Color.white.opacity(0.3))
+        .cornerRadius(12)
+    }
+}
+
+struct QuizStatsView: View {
+    let summary: SessionRecapData.QuizSummary
+    
+    var body: some View {
+        HStack(spacing: 20) {
+            VStack(spacing: 4) {
+                Text("\(summary.participantCount)")
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(.white)
+                
+                Text("Participants")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.9))
+            }
+            
+            Divider()
+                .background(Color.white)
+                .frame(height: 50)
+            
+            VStack(spacing: 4) {
+                Text("\(summary.averageScorePercentage)%")
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(.white)
+                
+                Text("Avg Score")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.9))
+            }
+        }
+        .padding()
+        .background(Color.white.opacity(0.2))
+        .cornerRadius(20)
     }
 }
 

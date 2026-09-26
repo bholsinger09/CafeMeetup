@@ -48,14 +48,14 @@ public struct ImagePicker: UIViewControllerRepresentable {
 
 // Helper to convert UIImage to base64 string for storage
 extension UIImage {
-    func toBase64String(compressionQuality: CGFloat = 0.7) -> String? {
+    public func toBase64String(compressionQuality: CGFloat = 0.7) -> String? {
         guard let imageData = self.jpegData(compressionQuality: compressionQuality) else {
             return nil
         }
         return imageData.base64EncodedString()
     }
     
-    static func fromBase64String(_ base64String: String) -> UIImage? {
+    public static func fromBase64String(_ base64String: String) -> UIImage? {
         guard let imageData = Data(base64Encoded: base64String) else {
             return nil
         }

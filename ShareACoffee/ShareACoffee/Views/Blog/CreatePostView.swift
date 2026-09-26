@@ -251,8 +251,8 @@ struct TagButton: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
         }
-        .background(isSelected ? AnyShapeStyle(Color.accentGradient) : AnyShapeStyle(Color.darkSecondary))
-        .foregroundColor(isSelected ? .white : .secondaryText)
+        .background(isSelected ? AnyShapeStyle(Color.primaryGradient) : AnyShapeStyle(Color.darkSecondary))
+        .foregroundColor(isSelected ? .white : .secondary)
         .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)

@@ -17,8 +17,9 @@ struct DiscoveryView: View {
     @State private var viewId = UUID()
     
     var body: some View {
+        let userEmail = authViewModel.currentUser?.email ?? "none"
         let _ = print("🎨 [DiscoveryView] body being rendered")
-        let _ = print("🎨 [DiscoveryView] User: \(authViewModel.currentUser?.email ?? "none")")
+        let _ = print("🎨 [DiscoveryView] User: \(userEmail)")
         
         return ZStack {
             Color.backgroundGradient
@@ -127,7 +128,7 @@ struct DiscoveryView: View {
                                     .font(.system(size: 30, weight: .bold))
                                     .foregroundColor(.white)
                                     .frame(width: 70, height: 70)
-                                    .background(Color.accentGradient)
+                                    .background(Color.primaryGradient)
                                     .clipShape(Circle())
                                     .shadow(color: Color.primaryPink.opacity(0.4), radius: 10, x: 0, y: 4)
                             }
@@ -157,7 +158,7 @@ struct DiscoveryView: View {
                                 Text("Reload")
                                     .padding(.horizontal, 24)
                                     .padding(.vertical, 12)
-                                    .background(Color.accentGradient)
+                                    .background(Color.primaryGradient)
                                     .foregroundColor(.white)
                                     .cornerRadius(20)
                             }
@@ -183,11 +184,12 @@ struct DiscoveryView: View {
             await loadUsers()
         }
         .onAppear {
+            let userName = authViewModel.currentUser?.fullName ?? "nil"
             print("\n" + String(repeating: "=", count: 60))
             print("🔍 [DiscoveryView] onAppear called")
             print("🔍 [DiscoveryView] ViewID: \(viewId)")
             print("🔍 [DiscoveryView] Auth state: \(authViewModel.isAuthenticated)")
-            print("🔍 [DiscoveryView] Current user: \(authViewModel.currentUser?.fullName ?? "nil")")
+            print("🔍 [DiscoveryView] Current user: \(userName)")
             print("🔍 [DiscoveryView] Potential matches count: \(discoveryViewModel.potentialMatches.count)")
             print("🔍 [DiscoveryView] Current index: \(discoveryViewModel.currentUserIndex)")
             print("🔍 [DiscoveryView] ViewModel instance: \(ObjectIdentifier(discoveryViewModel))")
@@ -219,8 +221,10 @@ struct DiscoveryView: View {
             print("✅ [DiscoveryView] Swipe threshold exceeded (\(abs(offset.width)) > \(swipeThreshold))")
             // Animate card off screen
             let direction: CGFloat = offset.width > 0 ? 1 : -1
-            print("➡️ [DiscoveryView] Swipe direction: \(direction > 0 ? "RIGHT (like)" : "LEFT (pass)")")
-            print("➡️ [DiscoveryView] Direction calculation: offset.width (\(offset.width)) > 0 = \(offset.width > 0)")
+            let directionText = direction > 0 ? "RIGHT (like)" : "LEFT (pass)"
+            let isRight = offset.width > 0 ? "true" : "false"
+            print("➡️ [DiscoveryView] Swipe direction: \(directionText)")
+            print("➡️ [DiscoveryView] Direction calculation: offset.width (\(offset.width)) > 0 = \(isRight)")
             
             withAnimation(.easeOut(duration: 0.3)) {
                 offset = CGSize(width: direction * 500, height: 0)
@@ -456,7 +460,7 @@ struct MatchPopupView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.accentGradient)
+                        .background(Color.primaryGradient)
                         .cornerRadius(16)
                 }
                 .padding(.horizontal, 40)

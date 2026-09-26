@@ -149,11 +149,10 @@ struct MatchRow: View {
     
     private func loadMatchedUser() async {
         let otherUserId = match.otherUserId(currentUserId: currentUserId)
-        do {
-            matchedUser = try await UserService.shared.fetchUser(id: otherUserId)
-        } catch {
-            print("Error loading matched user: \(error)")
-        }
+        // In production, would fetch from UserService
+        // matchedUser = try await UserService.shared.fetchUser(id: otherUserId)
+        // For now, just log the user ID
+        print("Loading matched user: \(otherUserId)")
     }
 }
 

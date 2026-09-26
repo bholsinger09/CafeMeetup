@@ -158,7 +158,7 @@ struct BlogPostDetailView: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(hasInterest ? AnyShapeStyle(Color.accentGradient) : AnyShapeStyle(Color.darkSecondary))
+                            .background(hasInterest ? AnyShapeStyle(Color.primaryGradient) : AnyShapeStyle(Color.darkSecondary))
                             .foregroundColor(hasInterest ? .white : .primaryPink)
                             .cornerRadius(20)
                             .overlay(

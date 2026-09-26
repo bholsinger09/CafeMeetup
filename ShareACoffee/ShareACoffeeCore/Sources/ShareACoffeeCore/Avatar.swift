@@ -16,8 +16,8 @@ public struct Avatar: Identifiable, Codable, Equatable {
     }
 }
 
-struct AvatarSystem {
-    static let allAvatars: [Avatar] = [
+public struct AvatarSystem {
+    public static let allAvatars: [Avatar] = [
         // Animals
         Avatar(id: "cat", name: "Cat", emoji: "🐱", category: .animals),
         Avatar(id: "dog", name: "Dog", emoji: "🐕", category: .animals),
@@ -104,15 +104,15 @@ struct AvatarSystem {
         Avatar(id: "athlete", name: "Athlete", emoji: "🧑‍🦱", category: .people),
     ]
     
-    static func avatar(withId id: String) -> Avatar? {
+    public static func avatar(withId id: String) -> Avatar? {
         allAvatars.first { $0.id == id }
     }
     
-    static func avatars(in category: Avatar.AvatarCategory) -> [Avatar] {
+    public static func avatars(in category: Avatar.AvatarCategory) -> [Avatar] {
         allAvatars.filter { $0.category == category }
     }
     
-    static var defaultAvatar: Avatar {
+    public static var defaultAvatar: Avatar {
         allAvatars[0] // Cat as default
     }
 }

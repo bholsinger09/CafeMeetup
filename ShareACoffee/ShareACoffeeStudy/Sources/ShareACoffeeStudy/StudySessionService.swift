@@ -5,12 +5,12 @@ import Combine
 /// Service for managing study sessions - the PRIMARY feature of StudyBrew
 /// Handles creating, joining, and managing group study sessions
 public class StudySessionService: ObservableObject {
-    @Published var upcomingSessions: [StudySession] = []
-    @Published var mySessions: [StudySession] = []
-    @Published var publicSessions: [StudySession] = []
-    @Published var completedSessions: [StudySession] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
+    @Published public var upcomingSessions: [StudySession] = []
+    @Published public var mySessions: [StudySession] = []
+    @Published public var publicSessions: [StudySession] = []
+    @Published public var completedSessions: [StudySession] = []
+    @Published public var isLoading = false
+    @Published public var errorMessage: String?
     
     public let currentUserId: String
     
@@ -59,7 +59,7 @@ public class StudySessionService: ObservableObject {
     
     // MARK: - Join Study Session
     
-    func joinSession(_ session: StudySession, userName: String) {
+    public func joinSession(_ session: StudySession, userName: String) {
         guard !session.isFull else {
             errorMessage = "This study session is full"
             return
@@ -84,7 +84,7 @@ public class StudySessionService: ObservableObject {
     
     // MARK: - Leave Study Session
     
-    func leaveSession(_ session: StudySession) {
+    public func leaveSession(_ session: StudySession) {
         if let index = upcomingSessions.firstIndex(where: { $0.id == session.id }) {
             upcomingSessions[index].attendeeIds.removeAll { $0 == currentUserId }
             upcomingSessions[index].attendeeNames.removeValue(forKey: currentUserId)

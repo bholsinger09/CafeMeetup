@@ -389,7 +389,7 @@ class LivePollViewModel: ObservableObject {
         isHost && (currentPoll == nil || currentPoll?.isActive == false)
     }
     
-    private let liveSessionService = LiveSessionService.shared
+    nonisolated(unsafe) private let liveSessionService = LiveSessionService.shared
     
     init(studySessionId: String, userId: String, userName: String, isHost: Bool) {
         self.studySessionId = studySessionId
@@ -401,10 +401,12 @@ class LivePollViewModel: ObservableObject {
     }
     
     func setupRealtimeListeners() {
-        liveSessionService.observeCurrentPoll(sessionId: studySessionId) { [weak self] poll in
-            DispatchQueue.main.async {
-                self?.currentPoll = poll
-                self?.userVote = poll?.votes[self?.userId ?? ""]
+        Task {
+            for await poll in liveSessionService.pollStream(sessionId: studySessionId) {
+                await MainActor.run {
+                    self.currentPoll = poll
+                    self.userVote = poll?.votes[self.userId]
+                }
             }
         }
     }

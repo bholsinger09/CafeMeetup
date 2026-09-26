@@ -114,7 +114,7 @@ public struct WhiteboardStroke: Identifiable, Codable, Equatable {
     public var lineWidth: Double
     public let createdAt: Date
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         userId: String,
         userName: String,
@@ -142,12 +142,12 @@ public struct CGPointCodable: Codable, Equatable {
         CGPoint(x: x, y: y)
     }
     
-    init(x: Double, y: Double) {
+    public init(x: Double, y: Double) {
         self.x = x
         self.y = y
     }
     
-    init(_ point: CGPoint) {
+    public init(_ point: CGPoint) {
         self.x = point.x
         self.y = point.y
     }
@@ -173,14 +173,14 @@ public struct LivePoll: Identifiable, Codable, Equatable {
         public let text: String
         public var voteCount: Int
         
-        init(id: String = UUID().uuidString, text: String, voteCount: Int = 0) {
+        public init(id: String = UUID().uuidString, text: String, voteCount: Int = 0) {
             self.id = id
             self.text = text
             self.voteCount = voteCount
         }
     }
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         studySessionId: String,
         createdBy: String,
@@ -232,7 +232,7 @@ public struct LiveQuiz: Identifiable, Codable, Equatable {
         public let timeLimit: Int? // seconds
         public var revealedAt: Date?
         
-        init(
+        public init(
             id: String = UUID().uuidString,
             question: String,
             options: [String],
@@ -251,7 +251,7 @@ public struct LiveQuiz: Identifiable, Codable, Equatable {
         }
     }
     
-    init(
+    public init(
         id: String = UUID().uuidString,
         studySessionId: String,
         createdBy: String,

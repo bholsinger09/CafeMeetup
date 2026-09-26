@@ -5,7 +5,7 @@ import UIKit
 
 /// Service for generating and reading QR codes
 public final class QRCodeService: Sendable {
-    public nonisolated(unsafe) static let shared = QRCodeService()
+    public nonisolated static let shared = QRCodeService()
     
     private init() {}
     

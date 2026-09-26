@@ -60,6 +60,11 @@ public class ARCafeFinderViewModel: NSObject, ObservableObject, CLLocationManage
         print("Navigating to \(cafe.name)")
     }
     
+    public func updateCafeVisibility(cameraTransform: simd_float4x4) {
+        // Update which cafes are visible based on camera position
+        // This is called from ARSession delegate
+    }
+    
     // MARK: - CLLocationManagerDelegate
     
     public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

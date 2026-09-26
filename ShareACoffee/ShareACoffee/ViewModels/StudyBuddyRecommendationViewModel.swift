@@ -27,15 +27,16 @@ public class StudyBuddyRecommendationViewModel: ObservableObject {
     @Published public var totalPasses: Int = 0
     
     public init() {
-        loadRecommendations()
+        Task {
+            await loadRecommendations()
+        }
     }
     
-    public func loadRecommendations() {
+    public func loadRecommendations() async {
         isLoading = true
         // Mock data - in production would load from service
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.isLoading = false
-        }
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        isLoading = false
     }
     
     public func likeRecommendation(_ recommendation: StudyBuddyRecommendation) {
@@ -73,16 +74,15 @@ public class StudyBuddyRecommendationViewModel: ObservableObject {
         }
     }
     
-    public func refresh() {
-        loadRecommendations()
+    public func refresh() async {
+        await loadRecommendations()
     }
     
     public func applyFilters() async {
         isLoading = true
         // In production, this would filter recommendations based on filters
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            self?.isLoading = false
-        }
+        try? await Task.sleep(nanoseconds: 300_000_000)
+        isLoading = false
     }
     
     public func resetFilters() {

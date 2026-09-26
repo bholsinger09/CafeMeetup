@@ -177,11 +177,12 @@ private func handleAppleSignIn(_ result: Result<ASAuthorization, Error>, authVie
         let userID = appleIDCredential.user
         let email = appleIDCredential.email ?? ""
         let fullName = appleIDCredential.fullName?.givenName ?? appleIDCredential.fullName?.familyName
+        let fullNameDisplay = fullName ?? "nil"
         
         print("✅ Apple Sign In successful")
         print("  userID: \(userID)")
         print("  email: \(email)")
-        print("  fullName: \(fullName ?? "nil")")
+        print("  fullName: \(fullNameDisplay)")
         
         // Call the sign in method on auth view model
         Task {

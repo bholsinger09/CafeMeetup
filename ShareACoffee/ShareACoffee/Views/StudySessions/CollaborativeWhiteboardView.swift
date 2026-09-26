@@ -240,7 +240,7 @@ class WhiteboardViewModel: ObservableObject {
     let currentUserName: String
     let studySessionId: String
     
-    private let liveSessionService = LiveSessionService.shared
+    nonisolated(unsafe) private let liveSessionService = LiveSessionService.shared
     
     init(studySessionId: String, userId: String, userName: String) {
         self.studySessionId = studySessionId
@@ -251,18 +251,22 @@ class WhiteboardViewModel: ObservableObject {
     }
     
     func setupRealtimeListeners() {
-        // Listen for whiteboard updates from Firebase
-        liveSessionService.observeWhiteboardState(sessionId: studySessionId) { [weak self] state in
-            DispatchQueue.main.async {
-                self?.strokes = state.strokes
-                self?.backgroundColor = state.backgroundColor
+        // Listen for whiteboard updates
+        Task {
+            for await state in liveSessionService.whiteboardStream(sessionId: studySessionId) {
+                await MainActor.run {
+                    self.strokes = state.strokes
+                    self.backgroundColor = state.backgroundColor
+                }
             }
         }
         
         // Listen for active participants
-        liveSessionService.observeActiveParticipants(sessionId: studySessionId) { [weak self] participants in
-            DispatchQueue.main.async {
-                self?.activeParticipants = participants
+        Task {
+            for await participants in liveSessionService.participantsStream(sessionId: studySessionId) {
+                await MainActor.run {
+                    self.activeParticipants = participants
+                }
             }
         }
     }

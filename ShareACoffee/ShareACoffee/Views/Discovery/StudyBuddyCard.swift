@@ -88,7 +88,7 @@ struct StudyBuddyCard: View {
     private var cardBackground: some View {
         LinearGradient(
             colors: [
-                Color(recommendation.scoreCategory.color).opacity(0.1),
+                Color(red: 0.3, green: 0.1, blue: 0.3).opacity(0.2),
                 Color.black.opacity(0.8)
             ],
             startPoint: .topLeading,
@@ -101,7 +101,7 @@ struct StudyBuddyCard: View {
     private var profileHeader: some View {
         HStack(alignment: .top, spacing: 8) {
             // Avatar
-            if let avatarId = recommendation.user.avatarId {
+            if let _ = recommendation.user.avatarId {
                 Image(systemName: "person.circle.fill")
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -186,8 +186,8 @@ struct StudyBuddyCard: View {
                     .stroke(
                         LinearGradient(
                             colors: [
-                                Color(recommendation.scoreCategory.color),
-                                Color(recommendation.scoreCategory.color).opacity(0.6)
+                                Color(red: 1.0, green: 0.2, blue: 0.5),
+                                Color(red: 1.0, green: 0.2, blue: 0.5).opacity(0.6)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -212,9 +212,9 @@ struct StudyBuddyCard: View {
             
             // Category badge
             HStack(spacing: 3) {
-                Text(recommendation.scoreCategory.emoji)
+                Text("💜")
                     .font(.system(size: 10))
-                Text(recommendation.scoreCategory.rawValue)
+                Text("Great Match")
                     .font(.system(size: 10))
                     .fontWeight(.semibold)
             }
@@ -223,7 +223,7 @@ struct StudyBuddyCard: View {
             .padding(.vertical, 3)
             .background(
                 Capsule()
-                    .fill(Color(recommendation.scoreCategory.color).opacity(0.3))
+                    .fill(Color(red: 1.0, green: 0.2, blue: 0.5).opacity(0.3))
             )
         }
         .padding(.vertical, 4)
@@ -238,7 +238,7 @@ struct StudyBuddyCard: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.white.opacity(0.9))
             
-            ForEach(recommendation.topReasons) { reason in
+            ForEach(recommendation.matchReasons) { reason in
                 HStack(spacing: 6) {
                     Image(systemName: reason.category.icon)
                         .font(.system(size: 10))

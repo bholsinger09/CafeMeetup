@@ -159,7 +159,8 @@ struct QRCodeScannerView: View {
                     .foregroundColor(.white)
                 
                 if let scannedData = viewModel.scannedData {
-                    Text(scannedData.name ?? "QR Code")
+                    let displayName = scannedData.name ?? "QR Code"
+                    Text(displayName)
                         .font(.headline)
                         .foregroundColor(.white)
                 }

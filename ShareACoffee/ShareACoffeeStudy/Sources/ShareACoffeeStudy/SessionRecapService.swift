@@ -5,7 +5,7 @@ import ShareACoffeeCore
 /// Note: This is a mock implementation using in-memory data
 @MainActor
 public class SessionRecapService {
-    static let shared = SessionRecapService()
+    public static let shared = SessionRecapService()
     
     // Mock in-memory storage for saved recaps
     private var savedRecaps: [String: SessionRecapData] = [:]
@@ -18,7 +18,7 @@ public class SessionRecapService {
     ///   - sessionStartTime: When the session started
     ///   - participantNames: Dictionary of participant IDs to names
     /// - Returns: SessionRecapData with all aggregated statistics
-    func generateRecap(
+    public func generateRecap(
         for studySession: StudySession,
         sessionStartTime: Date,
         participantNames: [String: String]
@@ -150,7 +150,7 @@ public class SessionRecapService {
     // MARK: - Save Recap
     
     /// Saves a session recap to memory for later viewing
-    func saveRecap(_ recap: SessionRecapData) async throws {
+    public func saveRecap(_ recap: SessionRecapData) async throws {
         savedRecaps[recap.id] = recap
     }
     
@@ -175,7 +175,7 @@ public class SessionRecapService {
 
 extension SessionRecapService {
     /// Creates a mock recap for testing/previews
-    static func mockRecap(for studySession: StudySession) -> SessionRecapData {
+    public static func mockRecap(for studySession: StudySession) -> SessionRecapData {
         SessionRecapData.sample
     }
 }

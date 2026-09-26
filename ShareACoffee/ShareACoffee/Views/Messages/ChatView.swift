@@ -210,7 +210,7 @@ struct MessageBubble: View {
                         .padding(.vertical, 10)
                         .background(
                             isFromCurrentUser ?
-                                AnyShapeStyle(Color.accentGradient) :
+                                AnyShapeStyle(Color.primaryGradient) :
                                 AnyShapeStyle(Color.darkSecondary)
                         )
                         .foregroundColor(.white)

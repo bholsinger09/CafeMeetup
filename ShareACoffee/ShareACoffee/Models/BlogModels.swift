@@ -42,7 +42,9 @@ public struct MeetupInterest: Identifiable, Codable {
     public let postId: String
     public let userId: String
     public let userName: String
+    public let userEmail: String
     public let userImageURL: String?
+    public let createdAt: Date
     public let interestedAt: Date
     
     public init(
@@ -50,14 +52,18 @@ public struct MeetupInterest: Identifiable, Codable {
         postId: String,
         userId: String,
         userName: String,
+        userEmail: String,
         userImageURL: String? = nil,
+        createdAt: Date = Date(),
         interestedAt: Date = Date()
     ) {
         self.id = id
         self.postId = postId
         self.userId = userId
         self.userName = userName
+        self.userEmail = userEmail
         self.userImageURL = userImageURL
+        self.createdAt = createdAt
         self.interestedAt = interestedAt
     }
 }

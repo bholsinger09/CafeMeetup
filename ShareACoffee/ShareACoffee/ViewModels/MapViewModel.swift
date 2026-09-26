@@ -30,4 +30,35 @@ public class MapViewModel: NSObject, ObservableObject {
             self?.isLoading = false
         }
     }
+    
+    public func requestLocationPermission() {
+        // Request location permission from user
+    }
+    
+    public func startTrackingLocation() async {
+        // Start tracking user location
+        try? await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func centerOnCurrentLocation() async {
+        // Center map on current location
+        if let location = currentUserLocation {
+            region = MKCoordinateRegion(
+                center: location,
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+        }
+    }
+    
+    public func fetchNearbyCoffeeShops() async {
+        isLoading = true
+        defer { isLoading = false }
+        try? await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func fetchNearbyUsers(city: String, state: String, currentUserId: String) async {
+        isLoading = true
+        defer { isLoading = false }
+        try? await Task.sleep(nanoseconds: 500_000_000)
+    }
 }

@@ -127,14 +127,14 @@ struct BlogFeedView: View {
             
             Text("Share study tips, organize group sessions, or post about academic topics!")
                 .font(.subheadline)
-                .foregroundColor(.secondaryText)
+                .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
             
             Button("Create Post") {
                 showCreatePost = true
             }
             .padding()
-            .background(Color.accentGradient)
+            .background(Color.primaryGradient)
             .foregroundColor(.white)
             .cornerRadius(12)
             .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)

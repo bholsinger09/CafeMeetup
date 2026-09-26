@@ -544,6 +544,6 @@ struct MatchEmptyStateView: View {
             favoriteCoffeeShop: "The Human Bean",
             bio: "Coffee enthusiast and CS major. Love studying at cafés!"
         ),
-        match: Match(userId1: "1", userId2: "2")
+        match: Match(id: "1", userId: "1", otherUserId: "2", matchedAt: Date())
     )
 }

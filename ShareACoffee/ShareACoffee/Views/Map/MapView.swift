@@ -31,9 +31,9 @@ struct MapView: View {
         
         // Add current user's location
         if let currentLocation = mapViewModel.currentUserLocation {
-            print("[MapView] Adding current user marker at: \(currentLocation.coordinate.latitude), \(currentLocation.coordinate.longitude)")
+            print("[MapView] Adding current user marker at: \(currentLocation.latitude), \(currentLocation.longitude)")
             annotations.append(MapAnnotationData(
-                coordinate: currentLocation.coordinate,
+                coordinate: currentLocation,
                 isCurrentUser: true,
                 user: nil
             ))
@@ -59,14 +59,18 @@ struct MapView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                // Direct Map implementation
                 Map(position: $cameraPosition) {
-                    // User annotations
-                    ForEach(allMapAnnotations) { annotation in
-                        if annotation.isCurrentUser {
-                            Annotation("You", coordinate: annotation.coordinate) {
-                                CurrentUserMarker()
-                            }
-                        } else if let user = annotation.user {
+                    // Current user
+                    ForEach(allMapAnnotations.filter { $0.isCurrentUser }) { annotation in
+                        Annotation("You", coordinate: annotation.coordinate) {
+                            CurrentUserMarker()
+                        }
+                    }
+                    
+                    // Other users
+                    ForEach(allMapAnnotations.filter { !$0.isCurrentUser }) { annotation in
+                        if let user = annotation.user {
                             Annotation(user.fullName, coordinate: annotation.coordinate) {
                                 OtherUserMapMarker(user: user)
                                     .onTapGesture {
@@ -76,16 +80,14 @@ struct MapView: View {
                         }
                     }
                     
-                    // Coffee shop annotations - using Marker for better visibility
-                    ForEach(mapViewModel.nearbyCoffeeShops) { shop in
+                    // Coffee shops - get count first to avoid dynamic member access
+                    ForEach(0..<mapViewModel.nearbyCoffeeShops.count, id: \.self) { index in
+                        let shop = mapViewModel.nearbyCoffeeShops[index]
                         Marker(shop.name, systemImage: "cup.and.saucer.fill", coordinate: shop.location.coordinate)
                             .tint(.brown)
                     }
                 }
                 .ignoresSafeArea()
-                .onChange(of: mapViewModel.nearbyCoffeeShops) { oldValue, newValue in
-                    print("[MapView] ☕️ Coffee shops changed: \(oldValue.count) -> \(newValue.count)")
-                }
                 .onChange(of: mapViewModel.currentUserLocation) { oldValue, newValue in
                     if let location = newValue {
                         cameraPosition = .region(MKCoordinateRegion(
@@ -135,7 +137,7 @@ struct MapView: View {
                                     .font(.title3)
                                     .foregroundColor(.white)
                                     .frame(width: 50, height: 50)
-                                    .background(Color.accentGradient)
+                                    .background(Color.primaryGradient)
                                     .clipShape(Circle())
                                     .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                             }
@@ -151,7 +153,7 @@ struct MapView: View {
                                     .font(.title3)
                                     .foregroundColor(.white)
                                     .frame(width: 50, height: 50)
-                                    .background(Color.accentGradient)
+                                    .background(Color.primaryGradient)
                                     .clipShape(Circle())
                                     .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                             }
@@ -395,7 +397,7 @@ struct UserDetailSheet: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.accentGradient)
+                            .background(Color.primaryGradient)
                             .cornerRadius(12)
                             .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                     }

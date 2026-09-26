@@ -705,7 +705,7 @@ struct BadgeCardView: View {
                     .fill(badge.isUnlocked ? rarityColor : Color.gray.opacity(0.3))
                     .frame(width: 70, height: 70)
                 
-                Text(badge.emoji)
+                Text(badge.icon)
                     .font(.system(size: 35))
                     .grayscale(badge.isUnlocked ? 0 : 1)
                     .opacity(badge.isUnlocked ? 1 : 0.5)

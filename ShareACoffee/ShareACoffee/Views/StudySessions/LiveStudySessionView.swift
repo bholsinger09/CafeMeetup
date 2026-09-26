@@ -397,9 +397,11 @@ struct LiveStudySessionView: View {
         )
         
         // Observe active participants
-        LiveSessionService.shared.observeActiveParticipants(sessionId: studySession.id) { participants in
-            Task { @MainActor in
-                activeParticipants = participants
+        Task {
+            for await participants in LiveSessionService.shared.participantsStream(sessionId: studySession.id) {
+                await MainActor.run {
+                    activeParticipants = participants
+                }
             }
         }
         
