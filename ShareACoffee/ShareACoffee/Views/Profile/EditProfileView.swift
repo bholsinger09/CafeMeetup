@@ -94,45 +94,31 @@ struct EditProfileView: View {
                 
                 Section("Location") {
                     Picker("Country", selection: $country) {
-                        ForEach(LocationData.countries, id: \.self) { countryName in
-                            Text(countryName).tag(countryName)
-                        }
-                    }
-                    .onChange(of: country) { oldValue, newValue in
-                        // Reset state and city when country changes
-                        if oldValue != newValue {
-                            state = ""
-                            city = ""
-                        }
+                        Text("United States").tag("United States")
+                        Text("Canada").tag("Canada")
+                        Text("United Kingdom").tag("United Kingdom")
                     }
                     
-                    if LocationData.usesStates(country: country) {
+                    if country == "United States" || country == "Canada" {
                         Picker("State/Province", selection: $state) {
-                            Text("Select \(country == "United Kingdom" ? "Region" : country == "Canada" ? "Province" : "State")").tag("")
-                            ForEach(LocationData.statesOrProvinces(for: country), id: \.self) { stateName in
+                            Text("Select State").tag("")
+                            ForEach(getStatesForCountry(country), id: \.self) { stateName in
                                 Text(stateName).tag(stateName)
-                            }
-                        }
-                        .onChange(of: state) { oldValue, newValue in
-                            // Reset city when state changes
-                            if oldValue != newValue && !LocationData.cities(for: country, state: newValue).contains(city) {
-                                city = ""
                             }
                         }
                         
                         Picker("City", selection: $city) {
                             Text("Select City").tag("")
-                            ForEach(LocationData.cities(for: country, state: state), id: \.self) { cityName in
-                                Text(cityName).tag(cityName)
+                            if !state.isEmpty {
+                                ForEach(getCommonCities(for: country, state: state), id: \.self) { cityName in
+                                    Text(cityName).tag(cityName)
+                                }
                             }
                         }
                         .disabled(state.isEmpty)
                     } else {
                         Picker("City", selection: $city) {
                             Text("Select City").tag("")
-                            ForEach(LocationData.cities(for: country, state: ""), id: \.self) { cityName in
-                                Text(cityName).tag(cityName)
-                            }
                         }
                     }
                     
@@ -222,9 +208,6 @@ struct EditProfileView: View {
             .onAppear {
                 loadCurrentProfile()
             }
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(image: $profileImage)
-            }
             .alert("Save Status", isPresented: $showSaveAlert) {
                 Button("OK") { }
             } message: {
@@ -251,12 +234,46 @@ struct EditProfileView: View {
         let basicFieldsValid = !fullName.isEmpty && !college.isEmpty && !city.isEmpty && !favoriteCoffee.isEmpty && !favoriteCoffeeShop.isEmpty
         
         // For countries with states, state must not be empty
-        if LocationData.usesStates(country: country) {
+        if country == "United States" || country == "Canada" {
             return basicFieldsValid && !state.isEmpty
         }
         
         // For countries without states, just check basic fields
         return basicFieldsValid
+    }
+    
+    private func getStatesForCountry(_ country: String) -> [String] {
+        switch country {
+        case "Canada":
+            return ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"]
+        case "United Kingdom":
+            return ["England", "Scotland", "Wales", "Northern Ireland"]
+        case "United States":
+            return ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+        default:
+            return []
+        }
+    }
+    
+    private func getCommonCities(for country: String, state: String) -> [String] {
+        if country == "United States" {
+            switch state {
+            case "CA": return ["Los Angeles", "San Francisco", "San Diego", "San Jose", "Oakland"]
+            case "NY": return ["New York", "Buffalo", "Rochester", "Albany", "Syracuse"]
+            case "TX": return ["Houston", "Dallas", "Austin", "San Antonio", "Fort Worth"]
+            case "FL": return ["Miami", "Tampa", "Orlando", "Jacksonville", "Fort Lauderdale"]
+            default: return []
+            }
+        } else if country == "Canada" {
+            switch state {
+            case "ON": return ["Toronto", "Ottawa", "Hamilton", "London", "Markham"]
+            case "QC": return ["Montreal", "Quebec City", "Laval", "Gatineau", "Longueuil"]
+            case "BC": return ["Vancouver", "Victoria", "Surrey", "Burnaby", "Richmond"]
+            case "AB": return ["Calgary", "Edmonton", "Red Deer", "Lethbridge", "St. Albert"]
+            default: return []
+            }
+        }
+        return []
     }
 }
 

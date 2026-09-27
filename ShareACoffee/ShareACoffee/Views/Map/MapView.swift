@@ -171,13 +171,13 @@ struct MapView: View {
     
     private func updateCachedData() {
         cachedAnnotations = buildAnnotations()
-        cachedCoffeeShops = getCoffeeShops()
+        cachedCoffeeShops = mapViewModel.coffeeShops
     }
     
     private func buildAnnotations() -> [MapAnnotationData] {
         var annotations: [MapAnnotationData] = []
         
-        if let currentLocation = getCurrentUserLocation() {
+        if let currentLocation = mapViewModel.currentUserLocation {
             annotations.append(MapAnnotationData(
                 coordinate: currentLocation,
                 isCurrentUser: true,
@@ -185,7 +185,7 @@ struct MapView: View {
             ))
         }
         
-        for user in getOtherUsers() {
+        for user in mapViewModel.users {
             if let location = user.location {
                 annotations.append(MapAnnotationData(
                     coordinate: location.coordinate,
@@ -196,18 +196,6 @@ struct MapView: View {
         }
         
         return annotations
-    }
-    
-    private func getCurrentUserLocation() -> CLLocationCoordinate2D? {
-        mapViewModel.currentUserLocation
-    }
-    
-    private func getOtherUsers() -> [User] {
-        mapViewModel.users
-    }
-    
-    private func getCoffeeShops() -> [CoffeeShop] {
-        mapViewModel.nearbyCoffeeShops
     }
     
     // MARK: - Button Actions
@@ -235,7 +223,7 @@ struct MapView: View {
     private func initializeMap() async {
         mapViewModel.requestLocationPermission()
         try? await Task.sleep(nanoseconds: 2_000_000_000)
-        await mapViewModel.requestLocationUpdate()
+        await mapViewModel.startTrackingLocation()
         updateCachedData()
     }
 }
@@ -321,8 +309,9 @@ struct UserDetailSheet: View {
                     Text(user.fullName)
                         .font(.title2.weight(.bold))
                     
-                    if !user.major.isEmpty {
-                        Text(user.major)
+                    let majorText = user.major ?? ""
+                    if !majorText.isEmpty {
+                        Text(majorText)
                             .foregroundColor(.secondary)
                     }
                 }

@@ -93,9 +93,9 @@ struct ProfileCompletionView: View {
                                     .foregroundColor(.secondary)
                                 
                                 Picker("Select Country", selection: $country) {
-                                    ForEach(LocationData.countries, id: \.self) { countryName in
-                                        Text(countryName).tag(countryName)
-                                    }
+                                    Text("United States").tag("United States")
+                                    Text("Canada").tag("Canada")
+                                    Text("United Kingdom").tag("United Kingdom")
                                 }
                                 .pickerStyle(.menu)
                                 .padding(12)
@@ -109,7 +109,7 @@ struct ProfileCompletionView: View {
                                 }
                             }
                             
-                            if LocationData.usesStates(country: country) {
+                            if country == "United States" || country == "Canada" {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(country == "United Kingdom" ? "Region" : country == "Canada" ? "Province" : "State")
                                         .font(.subheadline)
@@ -117,7 +117,7 @@ struct ProfileCompletionView: View {
                                     
                                     Picker("Select", selection: $state) {
                                         Text("Select").tag("")
-                                        ForEach(LocationData.statesOrProvinces(for: country), id: \.self) { stateName in
+                                        ForEach(getStatesForCountry(country), id: \.self) { stateName in
                                             Text(stateName).tag(stateName)
                                         }
                                     }
@@ -140,7 +140,7 @@ struct ProfileCompletionView: View {
                                 
                                 Picker("Select City", selection: $city) {
                                     Text("Select City").tag("")
-                                    ForEach(LocationData.cities(for: country, state: state), id: \.self) { cityName in
+                                    ForEach(getCommonCities(for: country, state: state), id: \.self) { cityName in
                                         Text(cityName).tag(cityName)
                                     }
                                 }
@@ -148,10 +148,10 @@ struct ProfileCompletionView: View {
                                 .padding(12)
                                 .background(Color.darkSecondary)
                                 .cornerRadius(8)
-                                .disabled(LocationData.usesStates(country: country) && state.isEmpty)
+                                .disabled((country == "United States" || country == "Canada") && state.isEmpty)
                             }
                             
-                            if LocationData.usesStates(country: country) && state.isEmpty {
+                            if (country == "United States" || country == "Canada") && state.isEmpty {
                                 Text("Please select a \(country == "United Kingdom" ? "region" : country == "Canada" ? "province" : "state") first")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -298,6 +298,40 @@ struct ProfileCompletionView: View {
                 showError = true
             }
         }
+    }
+    
+    private func getStatesForCountry(_ country: String) -> [String] {
+        switch country {
+        case "Canada":
+            return ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"]
+        case "United Kingdom":
+            return ["England", "Scotland", "Wales", "Northern Ireland"]
+        case "United States":
+            return ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+        default:
+            return []
+        }
+    }
+    
+    private func getCommonCities(for country: String, state: String) -> [String] {
+        if country == "United States" {
+            switch state {
+            case "CA": return ["Los Angeles", "San Francisco", "San Diego", "San Jose", "Oakland"]
+            case "NY": return ["New York", "Buffalo", "Rochester", "Albany", "Syracuse"]
+            case "TX": return ["Houston", "Dallas", "Austin", "San Antonio", "Fort Worth"]
+            case "FL": return ["Miami", "Tampa", "Orlando", "Jacksonville", "Fort Lauderdale"]
+            default: return []
+            }
+        } else if country == "Canada" {
+            switch state {
+            case "ON": return ["Toronto", "Ottawa", "Hamilton", "London", "Markham"]
+            case "QC": return ["Montreal", "Quebec City", "Laval", "Gatineau", "Longueuil"]
+            case "BC": return ["Vancouver", "Victoria", "Surrey", "Burnaby", "Richmond"]
+            case "AB": return ["Calgary", "Edmonton", "Red Deer", "Lethbridge", "St. Albert"]
+            default: return []
+            }
+        }
+        return []
     }
 }
 
