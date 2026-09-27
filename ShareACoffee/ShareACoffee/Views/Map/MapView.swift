@@ -20,29 +20,212 @@ struct MapAnnotationData: Identifiable {
 struct MapView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     @State private var selectedUser: User?
     @State private var showARCafeFinder = false
     @State private var showCoffeeShopList = false
     @State private var cameraPosition: MapCameraPosition = .automatic
     
-    // Combine current user location and other users into annotations
-    private var allMapAnnotations: [MapAnnotationData] {
+    // Cache ViewModel data to avoid dynamic member access in complex contexts
+    @State private var cachedAnnotations: [MapAnnotationData] = []
+    @State private var cachedCoffeeShops: [CoffeeShop] = []
+    
+    // MARK: - View Builder
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                // Map with cached data
+                mapContent
+                
+                // Overlay controls
+                overlayControls
+            }
+            .navigationTitle("Nearby Students")
+            .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.dark)
+            .sheet(item: $selectedUser) { user in
+                UserDetailSheet(user: user)
+            }
+            .fullScreenCover(isPresented: $showARCafeFinder) {
+                arFinderContent
+            }
+            .sheet(isPresented: $showCoffeeShopList) {
+                coffeeShopListContent
+            }
+            .onReceive(Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()) { _ in
+                updateCachedData()
+            }
+            .task {
+                await initializeMap()
+            }
+        }
+    }
+    
+    // MARK: - Map Content
+    
+    @ViewBuilder
+    private var mapContent: some View {
+        Map(position: $cameraPosition) {
+            // Current user marker
+            if let currentAnnotation = cachedAnnotations.first(where: { $0.isCurrentUser }) {
+                Annotation("You", coordinate: currentAnnotation.coordinate) {
+                    CurrentUserMarker()
+                }
+            }
+            
+            // Other user markers
+            ForEach(cachedAnnotations.filter { !$0.isCurrentUser }) { annotation in
+                if let user = annotation.user {
+                    Annotation(user.fullName, coordinate: annotation.coordinate) {
+                        OtherUserMapMarker(user: user)
+                            .onTapGesture {
+                                selectedUser = user
+                            }
+                    }
+                }
+            }
+            
+            // Coffee shop markers
+            ForEach(cachedCoffeeShops) { shop in
+                Marker(shop.name, systemImage: "cup.and.saucer.fill", coordinate: shop.location.coordinate)
+                    .tint(.brown)
+            }
+        }
+        .ignoresSafeArea()
+        .onChange(of: cameraPosition) { _, _ in
+            // Track camera changes if needed
+        }
+    }
+    
+    // MARK: - Overlay Controls
+    
+    @ViewBuilder
+    private var overlayControls: some View {
+        VStack {
+            // Top coffee shop button
+            HStack {
+                Button(action: { showCoffeeShopList = true }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "cup.and.saucer.fill")
+                            .font(.caption)
+                        Text("Coffee Shops: \(cachedCoffeeShops.count)")
+                            .font(.caption.weight(.medium))
+                        Image(systemName: "chevron.right")
+                            .font(.caption2)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.brown)
+                    .cornerRadius(20)
+                    .foregroundColor(.white)
+                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                }
+                Spacer()
+            }
+            .padding()
+            
+            Spacer()
+            
+            // Right side buttons
+            HStack {
+                Spacer()
+                
+                VStack(spacing: 12) {
+                    // Location button
+                    Button(action: handleCenterLocation) {
+                        Image(systemName: "location.fill")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 50, height: 50)
+                            .background(Color.primaryGradient)
+                            .clipShape(Circle())
+                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                    }
+                    
+                    // Refresh button
+                    Button(action: handleRefreshUsers) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 50, height: 50)
+                            .background(Color.primaryGradient)
+                            .clipShape(Circle())
+                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
+                    }
+                    
+                    // AR Finder button
+                    Button(action: { showARCafeFinder = true }) {
+                        Image(systemName: "arkit")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .frame(width: 50, height: 50)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.purple, Color.blue],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .clipShape(Circle())
+                            .shadow(color: Color.purple.opacity(0.3), radius: 8)
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+    
+    // MARK: - Sheet Contents
+    
+    @ViewBuilder
+    private var arFinderContent: some View {
+        if let userLocation = cachedAnnotations.first(where: { $0.isCurrentUser })?.coordinate {
+            ARCafeFinderView(
+                cafes: cachedCoffeeShops,
+                userLocation: userLocation
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private var coffeeShopListContent: some View {
+        CoffeeShopListSheet(
+            coffeeShops: cachedCoffeeShops,
+            onSelectShop: { shop in
+                showCoffeeShopList = false
+                cameraPosition = .region(MKCoordinateRegion(
+                    center: shop.location.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                ))
+            }
+        )
+    }
+    
+    // MARK: - Data Updates
+    
+    private func updateCachedData() {
+        // Update cached annotations
+        cachedAnnotations = buildAnnotations()
+        
+        // Update cached coffee shops
+        cachedCoffeeShops = getCoffeeShops()
+    }
+    
+    private func buildAnnotations() -> [MapAnnotationData] {
         var annotations: [MapAnnotationData] = []
         
-        // Add current user's location
-        if let currentLocation = mapViewModel.currentUserLocation {
-            print("[MapView] Adding current user marker at: \(currentLocation.latitude), \(currentLocation.longitude)")
+        // Add current user location
+        if let currentLocation = getCurrentUserLocation() {
             annotations.append(MapAnnotationData(
                 coordinate: currentLocation,
                 isCurrentUser: true,
                 user: nil
             ))
-        } else {
-            print("[MapView] No current user location available")
         }
         
         // Add other users
-        for user in mapViewModel.users {
+        for user in getOtherUsers() {
             if let location = user.location {
                 annotations.append(MapAnnotationData(
                     coordinate: location.coordinate,
@@ -52,206 +235,54 @@ struct MapView: View {
             }
         }
         
-        print("[MapView] Total annotations: \(annotations.count)")
         return annotations
     }
     
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                // Direct Map implementation
-                Map(position: $cameraPosition) {
-                    // Current user
-                    ForEach(allMapAnnotations.filter { $0.isCurrentUser }) { annotation in
-                        Annotation("You", coordinate: annotation.coordinate) {
-                            CurrentUserMarker()
-                        }
-                    }
-                    
-                    // Other users
-                    ForEach(allMapAnnotations.filter { !$0.isCurrentUser }) { annotation in
-                        if let user = annotation.user {
-                            Annotation(user.fullName, coordinate: annotation.coordinate) {
-                                OtherUserMapMarker(user: user)
-                                    .onTapGesture {
-                                        selectedUser = user
-                                    }
-                            }
-                        }
-                    }
-                    
-                    // Coffee shops - get count first to avoid dynamic member access
-                    ForEach(0..<mapViewModel.nearbyCoffeeShops.count, id: \.self) { index in
-                        let shop = mapViewModel.nearbyCoffeeShops[index]
-                        Marker(shop.name, systemImage: "cup.and.saucer.fill", coordinate: shop.location.coordinate)
-                            .tint(.brown)
-                    }
-                }
-                .ignoresSafeArea()
-                .onChange(of: mapViewModel.currentUserLocation) { oldValue, newValue in
-                    if let location = newValue {
-                        cameraPosition = .region(MKCoordinateRegion(
-                            center: location.coordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                        ))
-                    }
-                }
-                
-                VStack {
-                    // Coffee shop list button
-                    HStack {
-                        Button {
-                            showCoffeeShopList = true
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "cup.and.saucer.fill")
-                                    .font(.caption)
-                                Text("Coffee Shops: \(mapViewModel.nearbyCoffeeShops.count)")
-                                    .font(.caption.weight(.medium))
-                                Image(systemName: "chevron.right")
-                                    .font(.caption2)
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(Color.brown)
-                            .cornerRadius(20)
-                            .foregroundColor(.white)
-                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
-                        }
-                        Spacer()
-                    }
-                    .padding()
-                    
-                    Spacer()
-                    
-                    HStack {
-                        Spacer()
-                        
-                        VStack(spacing: 12) {
-                            Button {
-                                Task {
-                                    await mapViewModel.centerOnCurrentLocation()
-                                }
-                            } label: {
-                                Image(systemName: "location.fill")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(Color.primaryGradient)
-                                    .clipShape(Circle())
-                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
-                            }
-                            
-                            Button {
-                                Task {
-                                    if let currentUser = authViewModel.currentUser {
-                                        await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "arrow.clockwise")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(Color.primaryGradient)
-                                    .clipShape(Circle())
-                                    .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
-                            }
-                            
-                            // AR Cafe Finder button
-                            Button {
-                                showARCafeFinder = true
-                            } label: {
-                                Image(systemName: "arkit")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(
-                                        LinearGradient(
-                                            colors: [Color.purple, Color.blue],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        )
-                                    )
-                                    .clipShape(Circle())
-                                    .shadow(color: Color.purple.opacity(0.3), radius: 8)
-                            }
-                        }
-                        .padding()
-                    }
-                }
-            }
-            .navigationTitle("Nearby Students")
-            .navigationBarTitleDisplayMode(.inline)
-            .preferredColorScheme(.dark)
-            .sheet(item: $selectedUser) { user in
-                UserDetailSheet(user: user)
-            }
-            .fullScreenCover(isPresented: $showARCafeFinder) {
-                if let userLocation = mapViewModel.currentUserLocation?.coordinate {
-                    ARCafeFinderView(
-                        cafes: mapViewModel.nearbyCoffeeShops,
-                        userLocation: userLocation
-                    )
-                }
-            }
-            .sheet(isPresented: $showCoffeeShopList) {
-                CoffeeShopListSheet(
-                    coffeeShops: mapViewModel.nearbyCoffeeShops,
-                    onSelectShop: { shop in
-                        showCoffeeShopList = false
-                        // Center map on selected shop
-                        cameraPosition = .region(MKCoordinateRegion(
-                            center: shop.location.coordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                        ))
-                    }
+    // MARK: - ViewModel Accessors
+    
+    private func getCurrentUserLocation() -> CLLocationCoordinate2D? {
+        mapViewModel.currentUserLocation
+    }
+    
+    private func getOtherUsers() -> [User] {
+        mapViewModel.users
+    }
+    
+    private func getCoffeeShops() -> [CoffeeShop] {
+        mapViewModel.nearbyCoffeeShops
+    }
+    
+    // MARK: - Button Actions
+    
+    private func handleCenterLocation() {
+        Task {
+            await mapViewModel.centerOnCurrentLocation()
+        }
+    }
+    
+    private func handleRefreshUsers() {
+        Task {
+            if let currentUser = authViewModel.currentUser {
+                await mapViewModel.fetchNearbyUsers(
+                    city: currentUser.city,
+                    state: currentUser.state,
+                    currentUserId: currentUser.id
                 )
-            }
-            .task {
-                print("[MapView] Task started")
-                
-                // Request permission first
-                mapViewModel.requestLocationPermission()
-                
-                // Give time for user to grant permission (iOS shows dialog)
-                print("[MapView] Waiting for permission...")
-                try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
-                
-                // Get current location and center map
-                print("[MapView] Starting location tracking...")
-                await mapViewModel.startTrackingLocation()
-                
-                // Give it another moment to stabilize
-                try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-                
-                // Fetch nearby coffee shops
-                print("[MapView] Fetching nearby coffee shops...")
-                await mapViewModel.fetchNearbyCoffeeShops()
-                
-                // Then fetch nearby users if we have a current user
-                if let currentUser = authViewModel.currentUser {
-                    print("[MapView] Fetching nearby users for \\(currentUser.city), \\(currentUser.state)")
-                    await mapViewModel.fetchNearbyUsers(city: currentUser.city, state: currentUser.state, currentUserId: currentUser.id)
-                } else {
-                    print("[MapView] No current user, skipping nearby users fetch")
-                }
-            }
-            .overlay {
-                if mapViewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black.opacity(0.2))
-                }
             }
         }
     }
+    
+    // MARK: - Initialization
+    
+    private func initializeMap() async {
+        mapViewModel.requestLocationPermission()
+        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        await mapViewModel.requestLocationUpdate()
+        updateCachedData()
+    }
 }
 
-// Current user marker - distinctive design
-struct CurrentUserMarker: View {
-    @State private var isPulsing = false
+// MARK: - Current User Marker
     
     var body: some View {
         ZStack {
@@ -280,8 +311,6 @@ struct CurrentUserMarker: View {
             isPulsing = true
         }
     }
-}
-
 // Other users marker - shows user's avatar
 struct OtherUserMapMarker: View {
     let user: User
