@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import ShareACoffeeCore
 import ShareACoffeeAuth
 import ShareACoffeeStudy
@@ -9,13 +10,16 @@ import ShareACoffeeDiscovery
 import ShareACoffeeProfile
 import MapKit
 
-// Helper struct for map annotations
+// MARK: - Map Annotation Data
+
 struct MapAnnotationData: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
     let isCurrentUser: Bool
     let user: User?
 }
+
+// MARK: - Main MapView
 
 struct MapView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
@@ -25,20 +29,13 @@ struct MapView: View {
     @State private var showARCafeFinder = false
     @State private var showCoffeeShopList = false
     @State private var cameraPosition: MapCameraPosition = .automatic
-    
-    // Cache ViewModel data to avoid dynamic member access in complex contexts
     @State private var cachedAnnotations: [MapAnnotationData] = []
     @State private var cachedCoffeeShops: [CoffeeShop] = []
-    
-    // MARK: - View Builder
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Map with cached data
                 mapContent
-                
-                // Overlay controls
                 overlayControls
             }
             .navigationTitle("Nearby Students")
@@ -48,10 +45,24 @@ struct MapView: View {
                 UserDetailSheet(user: user)
             }
             .fullScreenCover(isPresented: $showARCafeFinder) {
-                arFinderContent
+                if let userLocation = cachedAnnotations.first(where: { $0.isCurrentUser })?.coordinate {
+                    ARCafeFinderView(
+                        cafes: cachedCoffeeShops,
+                        userLocation: userLocation
+                    )
+                }
             }
             .sheet(isPresented: $showCoffeeShopList) {
-                coffeeShopListContent
+                CoffeeShopListSheet(
+                    coffeeShops: cachedCoffeeShops,
+                    onSelectShop: { shop in
+                        showCoffeeShopList = false
+                        cameraPosition = .region(MKCoordinateRegion(
+                            center: shop.location.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        ))
+                    }
+                )
             }
             .onReceive(Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()) { _ in
                 updateCachedData()
@@ -67,14 +78,12 @@ struct MapView: View {
     @ViewBuilder
     private var mapContent: some View {
         Map(position: $cameraPosition) {
-            // Current user marker
             if let currentAnnotation = cachedAnnotations.first(where: { $0.isCurrentUser }) {
                 Annotation("You", coordinate: currentAnnotation.coordinate) {
                     CurrentUserMarker()
                 }
             }
             
-            // Other user markers
             ForEach(cachedAnnotations.filter { !$0.isCurrentUser }) { annotation in
                 if let user = annotation.user {
                     Annotation(user.fullName, coordinate: annotation.coordinate) {
@@ -86,16 +95,12 @@ struct MapView: View {
                 }
             }
             
-            // Coffee shop markers
             ForEach(cachedCoffeeShops) { shop in
                 Marker(shop.name, systemImage: "cup.and.saucer.fill", coordinate: shop.location.coordinate)
                     .tint(.brown)
             }
         }
         .ignoresSafeArea()
-        .onChange(of: cameraPosition) { _, _ in
-            // Track camera changes if needed
-        }
     }
     
     // MARK: - Overlay Controls
@@ -103,7 +108,6 @@ struct MapView: View {
     @ViewBuilder
     private var overlayControls: some View {
         VStack {
-            // Top coffee shop button
             HStack {
                 Button(action: { showCoffeeShopList = true }) {
                     HStack(spacing: 6) {
@@ -127,48 +131,35 @@ struct MapView: View {
             
             Spacer()
             
-            // Right side buttons
             HStack {
                 Spacer()
                 
                 VStack(spacing: 12) {
-                    // Location button
                     Button(action: handleCenterLocation) {
                         Image(systemName: "location.fill")
                             .font(.title3)
                             .foregroundColor(.white)
                             .frame(width: 50, height: 50)
-                            .background(Color.primaryGradient)
+                            .background(Color.primaryPink)
                             .clipShape(Circle())
-                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                     }
                     
-                    // Refresh button
                     Button(action: handleRefreshUsers) {
                         Image(systemName: "arrow.clockwise")
                             .font(.title3)
                             .foregroundColor(.white)
                             .frame(width: 50, height: 50)
-                            .background(Color.primaryGradient)
+                            .background(Color.primaryPink)
                             .clipShape(Circle())
-                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
                     }
                     
-                    // AR Finder button
                     Button(action: { showARCafeFinder = true }) {
                         Image(systemName: "arkit")
                             .font(.title3)
                             .foregroundColor(.white)
                             .frame(width: 50, height: 50)
-                            .background(
-                                LinearGradient(
-                                    colors: [Color.purple, Color.blue],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .background(Color.purple)
                             .clipShape(Circle())
-                            .shadow(color: Color.purple.opacity(0.3), radius: 8)
                     }
                 }
                 .padding()
@@ -176,46 +167,16 @@ struct MapView: View {
         }
     }
     
-    // MARK: - Sheet Contents
-    
-    @ViewBuilder
-    private var arFinderContent: some View {
-        if let userLocation = cachedAnnotations.first(where: { $0.isCurrentUser })?.coordinate {
-            ARCafeFinderView(
-                cafes: cachedCoffeeShops,
-                userLocation: userLocation
-            )
-        }
-    }
-    
-    @ViewBuilder
-    private var coffeeShopListContent: some View {
-        CoffeeShopListSheet(
-            coffeeShops: cachedCoffeeShops,
-            onSelectShop: { shop in
-                showCoffeeShopList = false
-                cameraPosition = .region(MKCoordinateRegion(
-                    center: shop.location.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                ))
-            }
-        )
-    }
-    
-    // MARK: - Data Updates
+    // MARK: - Data Management
     
     private func updateCachedData() {
-        // Update cached annotations
         cachedAnnotations = buildAnnotations()
-        
-        // Update cached coffee shops
         cachedCoffeeShops = getCoffeeShops()
     }
     
     private func buildAnnotations() -> [MapAnnotationData] {
         var annotations: [MapAnnotationData] = []
         
-        // Add current user location
         if let currentLocation = getCurrentUserLocation() {
             annotations.append(MapAnnotationData(
                 coordinate: currentLocation,
@@ -224,7 +185,6 @@ struct MapView: View {
             ))
         }
         
-        // Add other users
         for user in getOtherUsers() {
             if let location = user.location {
                 annotations.append(MapAnnotationData(
@@ -237,8 +197,6 @@ struct MapView: View {
         
         return annotations
     }
-    
-    // MARK: - ViewModel Accessors
     
     private func getCurrentUserLocation() -> CLLocationCoordinate2D? {
         mapViewModel.currentUserLocation
@@ -276,28 +234,28 @@ struct MapView: View {
     
     private func initializeMap() async {
         mapViewModel.requestLocationPermission()
-        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        try? await Task.sleep(nanoseconds: 2_000_000_000)
         await mapViewModel.requestLocationUpdate()
         updateCachedData()
     }
 }
 
 // MARK: - Current User Marker
+
+struct CurrentUserMarker: View {
+    @State private var isPulsing = false
     
     var body: some View {
         ZStack {
-            // Outer pulsing circle
             Circle()
                 .fill(Color.blue.opacity(0.3))
                 .frame(width: isPulsing ? 80 : 60, height: isPulsing ? 80 : 60)
                 .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
             
-            // Middle circle
             Circle()
                 .fill(Color.blue.opacity(0.5))
                 .frame(width: 40, height: 40)
             
-            // Inner solid circle
             Circle()
                 .fill(Color.blue)
                 .frame(width: 24, height: 24)
@@ -311,7 +269,10 @@ struct MapView: View {
             isPulsing = true
         }
     }
-// Other users marker - shows user's avatar
+}
+
+// MARK: - Other User Marker
+
 struct OtherUserMapMarker: View {
     let user: User
     
@@ -344,288 +305,67 @@ struct OtherUserMapMarker: View {
     }
 }
 
-// Deprecated - kept for compatibility
-struct UserMapMarker: View {
-    let user: User
-    
-    var body: some View {
-        OtherUserMapMarker(user: user)
-    }
-}
+// MARK: - Placeholder Components
 
 struct UserDetailSheet: View {
     let user: User
     @Environment(\.dismiss) var dismiss
-    @State private var showingConnectionConfirmation = false
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Profile Image / Avatar
-                    Circle()
-                        .fill(Color.primaryGradient)
-                        .frame(width: 100, height: 100)
-                        .overlay(
-                            Text(user.avatar.emoji)
-                                .font(.system(size: 50))
-                        )
-                        .shadow(color: Color.primaryPink.opacity(0.3), radius: 12)
+            VStack {
+                VStack(spacing: 16) {
+                    Text(user.avatar.emoji)
+                        .font(.system(size: 80))
                     
-                    // Name and College
-                    VStack(spacing: 4) {
-                        Text(user.fullName)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Text(user.college)
-                            .font(.subheadline)
+                    Text(user.fullName)
+                        .font(.title2.weight(.bold))
+                    
+                    if !user.major.isEmpty {
+                        Text(user.major)
                             .foregroundColor(.secondary)
-                    }
-                    
-                    Divider()
-                    
-                    // Details
-                    VStack(alignment: .leading, spacing: 16) {
-                        DetailRow(icon: "location.fill", title: "Location", value: "\(user.city), \(user.state)")
-                        
-                        DetailRow(icon: "cup.and.saucer.fill", title: "Favorite Coffee", value: user.favoriteCoffee)
-                        
-                        DetailRow(icon: "building.2.fill", title: "Favorite Shop", value: user.favoriteCoffeeShop)
-                        
-                        if let bio = user.bio, !bio.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Image(systemName: "text.alignleft")
-                                        .foregroundColor(.primaryPink)
-                                    Text("About")
-                                        .font(.headline)
-                                }
-                                
-                                Text(bio)
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(Color.darkSecondary)
-                    .cornerRadius(12)
-                    .shadow(color: Color.primaryPink.opacity(0.1), radius: 10, x: 0, y: 5)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.primaryPink.opacity(0.2), lineWidth: 1)
-                    )
-                    
-                    // Action Button
-                    Button {
-                        showingConnectionConfirmation = true
-                    } label: {
-                        Text("Connect")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.primaryGradient)
-                            .cornerRadius(12)
-                            .shadow(color: Color.primaryPink.opacity(0.3), radius: 8)
-                    }
-                }
-                .padding()
-            }
-            .background(Color.backgroundGradient)
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.inline)
-            .preferredColorScheme(.dark)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct DetailRow: View {
-    let icon: String
-    let title: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(.primaryPink)
-                .frame(width: 24)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                Text(value)
-                    .font(.body)
-            }
-            
-            Spacer()
-        }
-    }
-}
-
-// Coffee Shop marker
-struct CoffeeShopMarker: View {
-    let shop: CoffeeShop
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.orange, Color.brown],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .frame(width: 44, height: 44)
-                
-                Circle()
-                    .strokeBorder(Color.white, lineWidth: 3)
-                    .frame(width: 44, height: 44)
-                
-                Image(systemName: "cup.and.saucer.fill")
-                    .foregroundColor(.white)
-                    .font(.system(size: 20, weight: .bold))
-            }
-            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-        }
-    }
-}
-
-// Coffee Shop List Sheet
-struct CoffeeShopListSheet: View {
-    @Environment(\.dismiss) private var dismiss
-    let coffeeShops: [CoffeeShop]
-    let onSelectShop: (CoffeeShop) -> Void
-    
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.backgroundGradient
-                    .ignoresSafeArea()
-                
-                if coffeeShops.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "cup.and.saucer")
-                            .font(.system(size: 60))
-                            .foregroundColor(.secondary)
-                        
-                        Text("No Coffee Shops Found")
-                            .font(.title2.weight(.semibold))
-                        
-                        Text("Try adjusting your location or search radius")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding()
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(coffeeShops) { shop in
-                                CoffeeShopListRow(shop: shop) {
-                                    onSelectShop(shop)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                }
-            }
-            .navigationTitle("Nearby Coffee Shops")
-            .navigationBarTitleDisplayMode(.inline)
-            .preferredColorScheme(.dark)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundColor(.primaryPink)
-                }
-            }
-        }
-    }
-}
-
-// Coffee Shop Row in List
-struct CoffeeShopListRow: View {
-    let shop: CoffeeShop
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 12) {
-                // Coffee icon
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.orange, Color.brown],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 50, height: 50)
-                    
-                    Image(systemName: "cup.and.saucer.fill")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
-                }
-                
-                // Shop info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(shop.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                        .lineLimit(1)
-                    
-                    if let distance = shop.distance {
-                        HStack(spacing: 4) {
-                            Image(systemName: "location.fill")
-                                .font(.caption)
-                            Text(String(format: "%.2f mi away", distance))
-                                .font(.subheadline)
-                        }
-                        .foregroundColor(.secondary)
-                    }
-                    
-                    if !shop.address.isEmpty || !shop.city.isEmpty {
-                        Text([shop.address, shop.city].filter { !$0.isEmpty }.joined(separator: ", "))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
                     }
                 }
                 
                 Spacer()
-                
-                // Chevron
-                Image(systemName: "location.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.primaryPink)
             }
             .padding()
-            .background(Color.darkSecondary)
-            .cornerRadius(12)
-            .shadow(color: Color.primaryPink.opacity(0.1), radius: 5, x: 0, y: 2)
+            .navigationTitle("Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") { dismiss() }
+                }
+            }
         }
-        .buttonStyle(.plain)
     }
 }
 
-#Preview {
-    MapView()
-        .environmentObject(MapViewModel())
-        .environmentObject(AuthenticationViewModel())
+struct CoffeeShopListSheet: View {
+    let coffeeShops: [CoffeeShop]
+    let onSelectShop: (CoffeeShop) -> Void
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            List(coffeeShops) { shop in
+                Button(action: { onSelectShop(shop) }) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(shop.name)
+                            .font(.headline)
+                        Text(shop.address)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .navigationTitle("Coffee Shops")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") { dismiss() }
+                }
+            }
+        }
+    }
 }
