@@ -15,8 +15,6 @@ struct MainTabView: View {
     @StateObject private var themeManager = ThemeManager.shared
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
-    @State private var showQRScanner = false
-    
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
@@ -40,71 +38,59 @@ struct MainTabView: View {
                         .toolbarBackground(themeManager.currentTheme.cardBackgroundColor, for: .tabBar)
                         .toolbarBackground(.visible, for: .tabBar)
                         
-                        // ML-Powered Study Buddy Recommendations
+                    // Study Roadmap - Goal Tracking
                         NavigationStack {
-                            StudyBuddyRecommendationView()
+                        StudyRoadmapView(userId: authViewModel.currentUser?.id ?? "")
                         }
                         .tabItem {
-                            Label("Discover", systemImage: "person.2.fill")
+                        Label("Roadmap", systemImage: "map.fill")
                         }
                         
-                        // Academic Progress Dashboard
+                    // ML-Powered Study Buddy Recommendations
                         NavigationStack {
-                            AcademicDashboardView()
+                        StudyBuddyRecommendationView()
                         }
                         .tabItem {
-                            Label("Progress", systemImage: "chart.bar.fill")
+                        Label("Discover", systemImage: "person.2.fill")
                         }
                         
-                        // Map (now emphasizes study locations)
-                        MapView()
-                            .environmentObject(mapViewModel)
-                            .tabItem {
-                                Label("Study Spots", systemImage: "map.fill")
-                            }
-                        
-                        // Blog Feed (academic content)
-                        NavigationStack {
-                            BlogFeedView()
-                                .environmentObject(blogViewModel)
-                        }
-                        .tabItem {
-                            Label("Feed", systemImage: "newspaper.fill")
-                        }
-                        
-                        // Profile (now includes My Classes)
-                        NavigationStack {
-                            ProfileView()
-                        }
-                        .tabItem {
-                            Label("Profile", systemImage: "person.fill")
-                        }
+                    // Academic Progress Dashboard
+                    NavigationStack {
+                        AcademicDashboardView()
                     }
+                    .tabItem {
+                        Label("Progress", systemImage: "chart.bar.fill")
+                    }
+                        
+                    // Map (now emphasizes study locations)
+                    MapView()
+                        .environmentObject(mapViewModel)
+                        .tabItem {
+                            Label("Study Spots", systemImage: "location.fill")
+                        }
+                        
+                    // Blog Feed (academic content)
+                    NavigationStack {
+                        BlogFeedView()
+                            .environmentObject(blogViewModel)
+                        }
+                        .tabItem {
+                        Label("Feed", systemImage: "newspaper.fill")
+                        }
+                        
+                    // Profile (now includes My Classes)
+                    NavigationStack {
+                        ProfileView()
+                    }
+                    .tabItem {
+                        Label("Profile", systemImage: "person.fill")
+                    }
+                }
                     .accentColor(themeManager.currentTheme.accentColor)
                     .background(
                         themeManager.currentTheme.primaryGradient
                             .ignoresSafeArea()
                     )
-                    .overlay(alignment: .topTrailing) {
-                        // QR Scanner Button (Top Right)
-                        Button(action: { showQRScanner = true }) {
-                            ZStack {
-                                Circle()
-                                    .fill(themeManager.currentTheme.accentColor.gradient)
-                                    .frame(width: 50, height: 50)
-                                    .shadow(color: themeManager.currentTheme.accentColor.opacity(0.4), radius: 8, x: 0, y: 2)
-                                
-                                Image(systemName: "qrcode.viewfinder")
-                                    .font(.system(size: 22))
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .padding(.trailing, 16)
-                        .padding(.top, 50)
-                    }
-                    .fullScreenCover(isPresented: $showQRScanner) {
-                        QRCodeScannerView()
-                    }
             }
         }
         .preferredColorScheme(.dark)
@@ -117,6 +103,12 @@ struct MainTabView: View {
                 StudySessionsView(userId: authViewModel.currentUser?.id ?? "")
             } label: {
                 Label("Study Sessions", systemImage: "book.fill")
+            }
+            
+            NavigationLink {
+                StudyRoadmapView(userId: authViewModel.currentUser?.id ?? "")
+            } label: {
+                Label("Roadmap", systemImage: "map.fill")
             }
             
             NavigationLink {
@@ -135,7 +127,7 @@ struct MainTabView: View {
                 MapView()
                     .environmentObject(mapViewModel)
             } label: {
-                Label("Study Spots", systemImage: "map.fill")
+                Label("Study Spots", systemImage: "location.fill")
             }
             
             NavigationLink {
